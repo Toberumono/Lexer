@@ -30,6 +30,7 @@ public class Lexer {
 					input = (end + d.close.length() == input.length()) ? "" : input.substring(end + d.close.length()).trim();
 					continue;
 				}
+				System.err.println("There was a Descender that did not have a matching close token.");
 			}
 			else {
 				Rule hit = null;
@@ -48,9 +49,12 @@ public class Lexer {
 					input = input.substring(match.length()).trim();
 					continue;
 				}
+				else {
+					System.err.println("There was an unrecognized character.");
+				}
 			}
 			//There was an error if this is reached
-			System.err.println("Error");
+			System.err.println("Remaining input: " + input);
 			break;
 		}
 		return tokens;
