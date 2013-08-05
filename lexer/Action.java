@@ -1,6 +1,6 @@
 package lexer;
 
-public interface Action {
+public interface Action<T> {
 	
-	public Object action(String input, Lexer lexer);
+	public T action(String input, Lexer lexer);
 }

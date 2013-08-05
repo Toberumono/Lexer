@@ -2,12 +2,12 @@ package lexer;
 
 import java.util.regex.Pattern;
 
-public class Rule {
+public final class Rule<T> {
 	final Pattern pattern;
-	private final Type type;
-	private final Action action;
+	private final Type<T> type;
+	private final Action<T> action;
 	
-	public Rule(Pattern pattern, Type type, Action action) {
+	public Rule(Pattern pattern, Type<T> type, Action<T> action) {
 		this.pattern = pattern;
 		this.type = type;
 		this.action = action;
@@ -17,9 +17,13 @@ public class Rule {
 	 * Apply the <tt>Action</tt> associated with this <tt>Rule</tt>
 	 * @param match
 	 * @param lexer
-	 * @return the resulting <tt>Token</tt>
+	 * @return the resulting value for a representative <tt>Token</tt>
 	 */
-	Token apply(String match, Lexer lexer) {
-		return new Token(action == null ? match : action.action(match, lexer), type);
+	final T apply(String match, Lexer lexer) {
+		return action == null ? (T) match : action.action(match, lexer);
+	}
+	
+	public final Type<T> getType() {
+		return type;
 	}
 }
