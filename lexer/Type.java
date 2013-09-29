@@ -2,7 +2,10 @@ package lexer;
 
 public class Type<T> {
 	
-	public static final Type<Object> EMPTY = new Type<Object>("Empty", false) {
+	/**
+	 * A pre-created type that <i>must</i> be used to denote empty tokens (e.g. the end of a list)
+	 */
+	public static final Type<Object> EMPTY = new Type<Object>("Empty") {
 		@Override
 		public String valueToString(Object value) {
 			return "";
@@ -14,39 +17,29 @@ public class Type<T> {
 		}
 	};
 	
-	public static final Type<Token> TOKEN = new Type<Token>("Token", true) {
-		@Override
-		public String valueToString(Token value) {
-			Token current = (Token) value;
-			String output = "(";
-			do {
-				output = output + current.toString() + " ";
-			} while ((current = current.getNextToken()).isNull());
-			if (output.length() > 1)
-				output = output.substring(0, output.length() - 1);
-			output = output + ")";
-			return output;
-		}
-		
-		@Override
-		public int compareValues(Token value1, Token value2) {
-			if (value1 instanceof Token)
-				if (value2 instanceof Token)
-					return ((Token) value1).compareTo((Token) value2);
-				else
-					return 1;
-			else if (value2 instanceof Token)
-				return -1;
-			return 0;
-		}
-	};
+	/**
+	 * A pre-created type that flags the <tt>Token</tt> as a descender point (e.g. parentheses)
+	 */
+	public static final Type<Token> TOKEN = new TokenType("Token", "(", ")");
 	
-	private final String name;
-	private final boolean descenderType;
+	protected final String name, open, close;
 	
-	public Type(String name, boolean descenderType) {
+	public Type(String name, String open, String close) {
 		this.name = name;
-		this.descenderType = descenderType;
+		this.open = open;
+		this.close = close;
+	}
+	
+	public Type(String name) {
+		this.name = name;
+		open = null;
+		close = null;
+	}
+	
+	public Type(Type<T> basis, String open, String close) {
+		name = basis.name;
+		this.open = open;
+		this.close = close;
 	}
 	
 	/**
@@ -60,7 +53,7 @@ public class Type<T> {
 	 * @return whether this <tt>Type</tt> indicates a descender (its associated field is a subclass of Token)
 	 */
 	public final boolean marksDescender() {
-		return descenderType;
+		return open == null;
 	}
 	
 	/**
@@ -87,6 +80,8 @@ public class Type<T> {
 	public final boolean equals(Object o) {
 		if (o instanceof Type)
 			return ((Type<?>) o).name.equals(name);
+		if (o instanceof String)
+			return ((String) o).equals(name);
 		return false;
 	}
 	
@@ -101,6 +96,30 @@ public class Type<T> {
 	public int compareValues(T value1, T value2) {
 		if (value1 instanceof Comparable)
 			return ((Comparable<T>) value1).compareTo(value2);
+		return 0;
+	}
+}
+
+class TokenType extends Type<Token> {
+	
+	public TokenType(String name, String open, String close) {
+		super(name, open, close);
+	}
+	
+	@Override
+	public String valueToString(Token value) {
+		return open + value.toString() + close;
+	}
+	
+	@Override
+	public int compareValues(Token value1, Token value2) {
+		if (value1 instanceof Token)
+			if (value2 instanceof Token)
+				return ((Token) value1).compareTo((Token) value2);
+			else
+				return 1;
+		else if (value2 instanceof Token)
+			return -1;
 		return 0;
 	}
 }

@@ -1,5 +1,10 @@
 package lexer;
 
+/**
+ * Token class that uses non-atomic S-expressions car & cdr
+ * @author Joshua Lipstone and Sean Mullan
+ *
+ */
 public class Token implements Comparable<Token> {
 	private Type<?> carType, cdrType;
 	private Object car, cdr;
@@ -46,12 +51,6 @@ public class Token implements Comparable<Token> {
 		return carType.vts(car) + (cdr instanceof Token ? " " + cdr.toString() : (cdr == null || cdrType.equals(Type.EMPTY) ? "" : " " + cdrType.vts(cdr)));
 	}
 	
-	@Override
-	public int compareTo(Token o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
 	public Token getNextToken() {
 		return (cdr == null || !(cdr instanceof Token)) ? new Token() : (Token) cdr;
 	}
@@ -96,5 +95,20 @@ public class Token implements Comparable<Token> {
 		cdr = next;
 		next.previous = this;
 		return getLastToken();
+	}
+	
+	public Token singular() {
+		return new Token(car, carType);
+	}
+	
+	public void replaceCar(Token token) {
+		car = token.car;
+		carType = token.carType;
+	}
+
+	@Override
+	public int compareTo(Token o) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

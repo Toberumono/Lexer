@@ -2,6 +2,13 @@ package lexer;
 
 import java.util.regex.Pattern;
 
+/**
+ * A Rule for the lexer
+ * 
+ * @author Joshua Lipstone
+ * @param <T>
+ *            the type of Object to be placed in the resulting token.
+ */
 public final class Rule<T> {
 	final Pattern pattern;
 	private final Type<T> type;
@@ -15,6 +22,7 @@ public final class Rule<T> {
 	
 	/**
 	 * Apply the <tt>Action</tt> associated with this <tt>Rule</tt>
+	 * 
 	 * @param match
 	 * @param lexer
 	 * @return the resulting value for a representative <tt>Token</tt>
