@@ -93,9 +93,9 @@ public class Type<T> {
 	 * @param value2
 	 * @return the value of the implied value type's compareTo method if it implements <tt>Comparable</tt> otherwise 0.
 	 */
-	public int compareValues(T value1, T value2) {
-		if (value1 instanceof Comparable)
-			return ((Comparable<T>) value1).compareTo(value2);
+	public int compareValues(Object value1, Object value2) {
+		if (value1.getClass().isInstance(value2) && value1 instanceof Comparable)
+			return ((Comparable<T>) value1).compareTo((T) value2);
 		return 0;
 	}
 }
@@ -112,7 +112,7 @@ class TokenType extends Type<Token> {
 	}
 	
 	@Override
-	public int compareValues(Token value1, Token value2) {
+	public int compareValues(Object value1, Object value2) {
 		if (value1 instanceof Token)
 			if (value2 instanceof Token)
 				return ((Token) value1).compareTo((Token) value2);

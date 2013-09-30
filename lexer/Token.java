@@ -2,8 +2,8 @@ package lexer;
 
 /**
  * Token class that uses non-atomic S-expressions car & cdr
+ * 
  * @author Joshua Lipstone and Sean Mullan
- *
  */
 public class Token implements Comparable<Token> {
 	private Type<?> carType, cdrType;
@@ -105,10 +105,12 @@ public class Token implements Comparable<Token> {
 		car = token.car;
 		carType = token.carType;
 	}
-
+	
 	@Override
 	public int compareTo(Token o) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = carType.compareValues(car, o.car);
+		if (result != 0)
+			return result;
+		return cdrType.compareValues(cdr, o.cdr);
 	}
 }
