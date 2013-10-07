@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project lipstone.joshua.parser">
-    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
-    <!--ANT 1.7 is required                                        -->
-	
-    <target name="javadoc">
-        <javadoc access="protected" author="true" classpath="libraries/simpleXML.jar:libraries/apfloat.jar:libraries/PluginLoader.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="lipstone.joshua.parser.exceptions,lipstone.joshua.parser.types,lipstone.joshua.parser.plugin,lipstone.joshua.parser.util,lipstone.joshua.parser.plugin.helpdata,testHarnesses,lipstone.joshua.parser.plugin.types,lipstone.joshua.parser.backend,lipstone.joshua.parser" source="1.7" sourcepath="src" splitindex="true" use="true" version="true">
-            <link href="../libraries/apfloat/docs"/>
-        </javadoc>
-    </target>
-	
-    <target name="create_run_jar" depends="javadoc">
-        <jar destfile="../lipstone.joshua.parser.jar" filesetmanifest="mergewithoutmain">
-            <manifest>
-                <attribute name="Main-Class" value="testHarnesses.testParser"/>
-                <attribute name="Class-Path" value="."/>
-            </manifest>
-            <fileset dir="./bin/" includes="lipstone/**, testHarnesses/**"/>
-        	<fileset dir="." includes="doc/**"/>
-        	<fileset dir="./src/"/>
-            <zipfileset excludes="META-INF/*.SF" src="libraries/PluginLoader.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="libraries/apfloat.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="libraries/simpleXML.jar"/>
-        </jar>
-    </target>
+<project default="create_run_jar" name="Create Runnable Jar for Project lexer">
+	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
+	<!--ANT 1.7 is required                                        -->
+
+	<target name="javadoc">
+		<javadoc access="protected" author="true" classpath="" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="lexer,lexer.errors" source="1.7" sourcepath="src" splitindex="true" use="true" version="true" />
+	</target>
+
+	<target name="create_run_jar" depends="javadoc">
+		<jar destfile="../lexer.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="./bin/" includes="lexer/**, testCases/**" />
+			<fileset dir="." includes="doc/**" />
+			<fileset dir="./src/" />
+		</jar>
+	</target>
 </project>
