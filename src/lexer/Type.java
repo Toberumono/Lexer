@@ -1,5 +1,7 @@
 package lexer;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class Type<T> {
 	
 	/**
@@ -98,6 +100,24 @@ public class Type<T> {
 			return ((Comparable<T>) value1).compareTo((T) value2);
 		return 0;
 	}
+	
+	/**
+	 * By default this just returns the object, which works for immutable objects like <tt>String</tt>, <tt>Integer</tt>,
+	 * <tt>Double</tt>, etc or objects that implement the <tt>Cloneable</tt> interface. However, types that use any other
+	 * object type should override this method.
+	 * 
+	 * @param value
+	 *            the value to clone
+	 * @return a clone of the passed object
+	 */
+	public T clone(Object value) {
+		try {
+			return value instanceof Cloneable ? (T) value.getClass().getMethod("clone").invoke(value) : (T) value;
+		}
+		catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+			return (T) value;
+		}
+	}
 }
 
 class TokenType extends Type<Token> {
@@ -121,5 +141,12 @@ class TokenType extends Type<Token> {
 		else if (value2 instanceof Token)
 			return -1;
 		return 0;
+	}
+	
+	@Override
+	public Token clone(Object value) {
+		if (value instanceof Token)
+			return ((Token) value).clone();
+		return super.clone(value);
 	}
 }

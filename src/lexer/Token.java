@@ -5,7 +5,7 @@ package lexer;
  * 
  * @author Joshua Lipstone and Sean Mullan
  */
-public class Token implements Comparable<Token> {
+public class Token implements Comparable<Token>, Cloneable {
 	private Type<?> carType, cdrType;
 	private Object car, cdr;
 	private Token previous;
@@ -112,5 +112,16 @@ public class Token implements Comparable<Token> {
 		if (result != 0)
 			return result;
 		return cdrType.compareValues(cdr, o.cdr);
+	}
+	
+	@Override
+	public Token clone() {
+		return clone(null);
+	}
+	
+	private Token clone(Token previous) {
+		Token clone = new Token(carType.clone(car), carType, cdrType.clone(cdr), cdrType);
+		clone.previous = previous;
+		return clone;
 	}
 }
