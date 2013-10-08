@@ -3,6 +3,7 @@ package lexer;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import lexer.errors.EmptyInputException;
 import lexer.errors.LexerException;
@@ -13,6 +14,7 @@ public class Lexer {
 	private final PairedList<String, Rule<?>> rules;
 	private final PairedList<String, Descender> descenders;
 	private final ArrayList<Type<Object>> types;
+	private final ArrayList<Pattern> ignores;
 	private final Stack<DescentPair> descentStack;
 	private String input;
 	private int head;
@@ -24,6 +26,7 @@ public class Lexer {
 		rules = new PairedList<>();
 		descenders = new PairedList<>();
 		types = new ArrayList<Type<Object>>();
+		ignores = new ArrayList<Pattern>();
 		descentStack = new Stack<DescentPair>();
 		input = "";
 		head = 0;
@@ -76,6 +79,17 @@ public class Lexer {
 	 *             if no token was found
 	 */
 	public final Token getNextToken(boolean step) throws LexerException {
+		while (ignores.size() > 0) {
+			Matcher m = null;
+			for (int i = 0; i < ignores.size(); i++) {
+				Matcher check = ignores.get(0).matcher(input);
+				if (check.find() && check.start() == head && (m == null || check.end() > m.end()))
+					m = check;
+			}
+			if (m == null)
+				break;
+			head = m.end();
+		}
 		if (head >= input.length())
 			throw new EmptyInputException();
 		Descender d = null;
@@ -145,6 +159,16 @@ public class Lexer {
 	 */
 	public final void addDescender(String name, Descender descender) {
 		descenders.put(name, descender);
+	}
+	
+	/**
+	 * Tells the lexer to skip over the given <tt>Pattern</tt>.
+	 * 
+	 * @param ignore
+	 *            the <tt>Pattern</tt> to ignore
+	 */
+	public final void ignore(Pattern ignore) {
+		ignores.add(ignore);
 	}
 	
 	/**
