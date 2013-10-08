@@ -124,4 +124,14 @@ public class Token implements Comparable<Token>, Cloneable {
 		clone.previous = previous;
 		return clone;
 	}
+	
+	public int length() {
+		if (isNull())
+			return 0;
+		Token token = this;
+		int length = 1;
+		while (!(token = token.getNextToken()).isNull())
+			length++;
+		return length;
+	}
 }
