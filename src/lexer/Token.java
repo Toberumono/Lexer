@@ -134,4 +134,22 @@ public class Token implements Comparable<Token>, Cloneable {
 			length++;
 		return length;
 	}
+	
+	/**
+	 * Removes this token from the list and returns the one after it.
+	 * 
+	 * @return the next token in the list
+	 */
+	public Token remove() {
+		if (this.previous != null) {
+			previous.cdr = cdr;
+			previous.cdrType = cdrType;
+		}
+		Token next = getNextToken();
+		next.previous = previous;
+		previous = null;
+		cdr = null;
+		cdrType = null;
+		return next;
+	}
 }

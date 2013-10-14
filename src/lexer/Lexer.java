@@ -113,9 +113,10 @@ public class Lexer {
 			m = rule.pattern.matcher(input);
 			if (!m.find(head) || m.start() != head || m.group().length() == 0)
 				continue;
-			hit = rule;
-			if (match.length() < m.group().length())
+			if (match.length() < m.group().length()) {
 				match = m.group();
+				hit = rule;
+			}
 		}
 		if (hit != null) {
 			Token result = new Token(hit.apply(match, this), hit.getType());
