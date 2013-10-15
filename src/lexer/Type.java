@@ -55,7 +55,7 @@ public class Type<T> {
 	 * @return whether this <tt>Type</tt> indicates a descender (its associated field is a subclass of Token)
 	 */
 	public final boolean marksDescender() {
-		return open == null;
+		return open != null;
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public class Type<T> {
 	 * @return the value as a <tt>String</tt>
 	 */
 	public String valueToString(T value) {
-		return value.toString();
+		return open != null ? open + value.toString() + close : value.toString();
 	}
 	
 	String vts(Object value) {
@@ -124,11 +124,6 @@ class TokenType extends Type<Token> {
 	
 	public TokenType(String name, String open, String close) {
 		super(name, open, close);
-	}
-	
-	@Override
-	public String valueToString(Token value) {
-		return open + value.toString() + close;
 	}
 	
 	@Override
