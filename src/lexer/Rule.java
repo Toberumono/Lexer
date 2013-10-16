@@ -28,8 +28,8 @@ public final class Rule<T> {
 	 * @param lexer
 	 * @return the resulting value for a representative <tt>Token</tt>
 	 */
-	final T apply(Matcher match, Lexer lexer) {
-		return action == null ? (T) match : action.action(match, lexer);
+	final Token apply(Matcher match, Lexer lexer) {
+		return action == null ? new Token((T) match, type) : action.action(match, lexer, type);
 	}
 	
 	public final Type<T> getType() {

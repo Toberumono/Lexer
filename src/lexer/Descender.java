@@ -26,7 +26,7 @@ public final class Descender {
 	 * @throws LexerException
 	 */
 	final Token apply(Matcher match, Lexer lexer) throws LexerException {
-		return action == null ? lexer.lex(match.group()) : action.action(match, lexer);
+		return action == null ? lexer.lex(match.group()) : action.action(match, lexer, type);
 	}
 	
 	public final Type<Token> getType() {

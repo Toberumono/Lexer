@@ -7,6 +7,7 @@ import lexer.Action;
 import lexer.Descender;
 import lexer.Lexer;
 import lexer.Rule;
+import lexer.Token;
 import lexer.Type;
 import lexer.errors.LexerException;
 
@@ -14,18 +15,18 @@ public class TestSystem {
 	
 	public static void main(String[] args) {
 		Lexer lexer = new Lexer();
-		Type<Integer> integer = new Type<>("Integer");
-		Type<Double> decimal = new Type<>("Decimal");
+		final Type<Integer> integer = new Type<>("Integer");
+		final Type<Double> decimal = new Type<>("Decimal");
 		lexer.addRule("Integer", new Rule<Integer>(Pattern.compile("[0-9]+"), integer, new Action<Integer>() {
 			@Override
-			public Integer action(Matcher matcher, Lexer lexer) {
-				return new Integer(matcher.group());
+			public Token action(Matcher matcher, Lexer lexer, Type<Integer> type) {
+				return new Token(new Integer(matcher.group()), type);
 			}
 		}));
 		lexer.addRule("Decimal", new Rule<Double>(Pattern.compile("([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+)"), decimal, new Action<Double>() {
 			@Override
-			public Double action(Matcher matcher, Lexer lexer) {
-				return new Double(matcher.group());
+			public Token action(Matcher matcher, Lexer lexer, Type<Double> type) {
+				return new Token(new Double(matcher.group()), type);
 			}
 		}));
 		lexer.addDescender("Parentheses", new Descender("(", ")", Type.TOKEN, null));
