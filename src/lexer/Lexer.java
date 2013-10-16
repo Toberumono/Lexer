@@ -100,7 +100,7 @@ public class Lexer {
 			int close = getEndIndex(input, head, d.open, d.close);
 			Matcher m = Pattern.compile("\\Q" + input.substring(head + d.open.length(), close) + "\\E").matcher(input);
 			m.find(head);
-			Token result = new Token(d.apply(m, this), d.getType());
+			Token result = d.apply(m, this);
 			if (step) {
 				this.head = close + d.close.length();
 				while (head < input.length() && input.charAt(head) == ' ')
@@ -122,7 +122,7 @@ public class Lexer {
 				}
 			}
 			if (hit != null) {
-				Token result = new Token(hit.apply(match, this), hit.getType());
+				Token result = hit.apply(match, this);
 				if (step) {
 					head += match.group().length();
 					while (head < input.length() && input.charAt(head) == ' ')

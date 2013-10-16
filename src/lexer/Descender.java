@@ -13,7 +13,7 @@ public final class Descender {
 	public Descender(String open, String close, Type<Token> type, Action<Token> action) {
 		this.open = open;
 		this.close = close;
-		this.type = new Type<Token>(type, open, close);
+		this.type = type instanceof TokenType ? new TokenType(type.getName(), open, close) : new Type<Token>(type, open, close);
 		this.action = action;
 	}
 	
@@ -26,7 +26,7 @@ public final class Descender {
 	 * @throws LexerException
 	 */
 	final Token apply(Matcher match, Lexer lexer) throws LexerException {
-		return action == null ? lexer.lex(match.group()) : action.action(match, lexer, type);
+		return action == null ? new Token(lexer.lex(match.group()), type) : action.action(match, lexer, type);
 	}
 	
 	public final Type<Token> getType() {

@@ -22,7 +22,7 @@ public class Type<T> {
 	/**
 	 * A pre-created type that flags the <tt>Token</tt> as a descender point (e.g. parentheses)
 	 */
-	public static final Type<Token> TOKEN = new TokenType("Token", "(", ")");
+	public static final Type<Token> TOKEN = new TokenType("Token", null, null);
 	
 	protected final String name, open, close;
 	
@@ -66,7 +66,7 @@ public class Type<T> {
 	 * @return the value as a <tt>String</tt>
 	 */
 	public String valueToString(T value) {
-		return open != null ? open + value.toString() + close : value.toString();
+		return (open != null ? open + value.toString() + close : value.toString()) + " ";
 	}
 	
 	String vts(Object value) {
