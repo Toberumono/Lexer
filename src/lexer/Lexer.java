@@ -98,7 +98,9 @@ public class Lexer {
 				d = descender;
 		if (d != null) {
 			int close = getEndIndex(input, head, d.open, d.close);
-			Token result = new Token(d.apply(input.substring(head + d.open.length(), close), this), d.getType());
+			Matcher m = Pattern.compile("\\Q" + input.substring(head + d.open.length(), close) + "\\E").matcher(input);
+			m.find(head);
+			Token result = new Token(d.apply(m, this), d.getType());
 			if (step) {
 				this.head = close + d.close.length();
 				while (head < input.length() && input.charAt(head) == ' ')
@@ -106,29 +108,30 @@ public class Lexer {
 			}
 			return result;
 		}
-		Rule<?> hit = null;
-		String match = "";
-		Matcher m;
-		for (Rule<?> rule : rules.getValues()) {
-			m = rule.pattern.matcher(input);
-			if (!m.find(head) || m.start() != head || m.group().length() == 0)
-				continue;
-			if (match.length() < m.group().length()) {
-				match = m.group();
-				hit = rule;
+		if (rules.size() > 0) {
+			Rule<?> hit = null;
+			Matcher match = null;
+			Matcher m;
+			for (Rule<?> rule : rules.getValues()) {
+				m = rule.pattern.matcher(input);
+				if (!m.find(head) || m.start() != head || m.group().length() == 0)
+					continue;
+				if (match == null || match.group().length() < m.group().length()) {
+					match = m;
+					hit = rule;
+				}
+			}
+			if (hit != null) {
+				Token result = new Token(hit.apply(match, this), hit.getType());
+				if (step) {
+					head += match.group().length();
+					while (head < input.length() && input.charAt(head) == ' ')
+						head++;
+				}
+				return result;
 			}
 		}
-		if (hit != null) {
-			Token result = new Token(hit.apply(match, this), hit.getType());
-			if (step) {
-				head += match.length();
-				while (head < input.length() && input.charAt(head) == ' ')
-					head++;
-			}
-			return result;
-		}
-		else
-			throw new UnrecognizedCharacterException(input, head);
+		throw new UnrecognizedCharacterException(input, head);
 	}
 	
 	/**

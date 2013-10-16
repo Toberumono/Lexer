@@ -1,5 +1,6 @@
 package lexer;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -27,7 +28,7 @@ public final class Rule<T> {
 	 * @param lexer
 	 * @return the resulting value for a representative <tt>Token</tt>
 	 */
-	final T apply(String match, Lexer lexer) {
+	final T apply(Matcher match, Lexer lexer) {
 		return action == null ? (T) match : action.action(match, lexer);
 	}
 	

@@ -1,5 +1,6 @@
 package testCases;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lexer.Action;
@@ -17,14 +18,14 @@ public class TestSystem {
 		Type<Double> decimal = new Type<>("Decimal");
 		lexer.addRule("Integer", new Rule<Integer>(Pattern.compile("[0-9]+"), integer, new Action<Integer>() {
 			@Override
-			public Integer action(String input, Lexer lexer) {
-				return new Integer(input);
+			public Integer action(Matcher matcher, Lexer lexer) {
+				return new Integer(matcher.group());
 			}
 		}));
 		lexer.addRule("Decimal", new Rule<Double>(Pattern.compile("([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+)"), decimal, new Action<Double>() {
 			@Override
-			public Double action(String input, Lexer lexer) {
-				return new Double(input);
+			public Double action(Matcher matcher, Lexer lexer) {
+				return new Double(matcher.group());
 			}
 		}));
 		lexer.addDescender("Parentheses", new Descender("(", ")", Type.TOKEN, null));

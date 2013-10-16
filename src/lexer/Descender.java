@@ -1,5 +1,7 @@
 package lexer;
 
+import java.util.regex.Matcher;
+
 import lexer.errors.LexerException;
 
 //Descender class for the lexer
@@ -23,8 +25,8 @@ public final class Descender {
 	 * @return the resulting value for a representative <tt>Token</tt>
 	 * @throws LexerException
 	 */
-	final Token apply(String match, Lexer lexer) throws LexerException {
-		return action == null ? lexer.lex(match) : action.action(match, lexer);
+	final Token apply(Matcher match, Lexer lexer) throws LexerException {
+		return action == null ? lexer.lex(match.group()) : action.action(match, lexer);
 	}
 	
 	public final Type<Token> getType() {
