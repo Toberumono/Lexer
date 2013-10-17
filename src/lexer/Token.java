@@ -48,7 +48,7 @@ public class Token implements Comparable<Token>, Cloneable {
 	
 	@Override
 	public String toString() {
-		return ((car != null ? carType.vts(car) : "") + (cdr != null ? cdrType.vts(cdr) : "")).trim();
+		return ((car != null ? carType.valueToString(car) : "") + (cdr != null ? cdrType.valueToString(cdr) : "")).trim();
 	}
 	
 	public Token getNextToken() {

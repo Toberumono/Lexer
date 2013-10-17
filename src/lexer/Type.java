@@ -24,7 +24,8 @@ public class Type<T> {
 	 */
 	public static final Type<Token> TOKEN = new TokenType("Token", null, null);
 	
-	protected final String name, open, close;
+	protected final String name;
+	protected String open, close;
 	
 	public Type(String name, String open, String close) {
 		this.name = name;
@@ -38,8 +39,7 @@ public class Type<T> {
 		close = null;
 	}
 	
-	public Type(Type<T> basis, String open, String close) {
-		name = basis.name;
+	public final void setOpenClose(String open, String close) {
 		this.open = open;
 		this.close = close;
 	}
@@ -65,12 +65,8 @@ public class Type<T> {
 	 * @param value
 	 * @return the value as a <tt>String</tt>
 	 */
-	public String valueToString(T value) {
-		return (open != null ? open + value.toString() + close : value.toString()) + " ";
-	}
-	
-	String vts(Object value) {
-		return valueToString((T) value);
+	public String valueToString(Object value) {
+		return (open != null ? open + ((T) value).toString() + close : ((T) value).toString()) + " ";
 	}
 	
 	@Override
