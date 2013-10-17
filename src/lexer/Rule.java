@@ -3,6 +3,8 @@ package lexer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lexer.errors.LexerException;
+
 /**
  * A Rule for the lexer
  * 
@@ -27,9 +29,10 @@ public final class Rule<T> {
 	 * @param match
 	 * @param lexer
 	 * @return the resulting value for a representative <tt>Token</tt>
+	 * @throws LexerException 
 	 */
-	final Token apply(Matcher match, Lexer lexer) {
-		return action == null ? new Token((T) match, type) : action.action(match, lexer, type);
+	final Token apply(Matcher match, Lexer lexer) throws LexerException {
+		return action == null ? new Token((T) match.group(), type) : action.action(match, lexer, type);
 	}
 	
 	public final Type<T> getType() {

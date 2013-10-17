@@ -98,7 +98,7 @@ public class Token implements Comparable<Token>, Cloneable {
 	}
 	
 	public Token singular() {
-		return new Token(car, carType);
+		return new Token(carType.clone(car), carType);
 	}
 	
 	public void replaceCar(Token token) {
