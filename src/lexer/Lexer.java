@@ -15,9 +15,10 @@ public class Lexer {
 	private final PairedList<String, Descender> descenders;
 	private final ArrayList<Type<Object>> types;
 	private final ArrayList<Pattern> ignores;
-	private final Stack<DescentPair> descentStack;
+	private final Stack<DescentSet> descentStack;
 	private String input;
 	private int head;
+	private Token current, output;
 	
 	/**
 	 * Basic constructor for a Lexer
@@ -27,9 +28,11 @@ public class Lexer {
 		descenders = new PairedList<>();
 		types = new ArrayList<Type<Object>>();
 		ignores = new ArrayList<Pattern>();
-		descentStack = new Stack<DescentPair>();
+		descentStack = new Stack<DescentSet>();
 		input = "";
 		head = 0;
+		current = new Token();
+		output = current;
 	}
 	
 	/**
@@ -41,10 +44,9 @@ public class Lexer {
 	 * @throws LexerException
 	 */
 	public final Token lex(String input) throws LexerException {
-		descentStack.push(new DescentPair(this.input, head));
+		descentStack.push(new DescentSet(this.input, head, output));
 		this.input = input;
 		head = 0;
-		Token current = new Token(), output = current;
 		try {
 			while (head < input.length())
 				current = current.append(getNextToken(true));
@@ -54,7 +56,9 @@ public class Lexer {
 			throw e;
 		}
 		this.input = descentStack.peek().getInput();
-		head = descentStack.pop().getHead();
+		head = descentStack.peek().getHead();
+		output = descentStack.pop().getOutput();
+		current = output.getLastToken();
 		return output;
 	}
 	
@@ -132,6 +136,13 @@ public class Lexer {
 			}
 		}
 		throw new UnrecognizedCharacterException(input, head);
+	}
+	
+	/**
+	 * @return the output this lexer is currently generating.
+	 */
+	public final Token getPreviousToken() {
+		return current;
 	}
 	
 	/**

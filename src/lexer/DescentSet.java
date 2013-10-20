@@ -1,12 +1,14 @@
 package lexer;
 
-class DescentPair {
+class DescentSet {
 	private final String input;
 	private final int head;
+	private final Token output;
 	
-	public DescentPair(String input, int head) {
+	public DescentSet(String input, int head, Token output) {
 		this.input = input;
 		this.head = head;
+		this.output = output;
 	}
 	
 	public String getInput() {
@@ -15,5 +17,9 @@ class DescentPair {
 	
 	public int getHead() {
 		return head;
+	}
+	
+	public Token getOutput() {
+		return output;
 	}
 }
