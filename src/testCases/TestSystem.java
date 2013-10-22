@@ -29,8 +29,8 @@ public class TestSystem {
 				return new Token(new Double(matcher.group()), type);
 			}
 		}));
-		lexer.addDescender("Parentheses", new Descender("(", ")", Type.TOKEN, null));
-		lexer.addDescender("Brackets", new Descender("[", "]", Type.TOKEN, null));
+		lexer.addDescender("Parentheses", new Descender("(", ")", new Type<Token>("Parentheses"), null));
+		lexer.addDescender("Brackets", new Descender("[", "]", new Type<Token>("Brackets"), null));
 		String test = "10.0 100 (3.0 300) [51 5 6] ()";
 		try {
 			System.out.println(test + " -> " + lexer.lex(test));

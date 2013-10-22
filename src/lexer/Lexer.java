@@ -48,6 +48,8 @@ public class Lexer {
 	public final Token lex(String input) throws LexerException {
 		descentStack.push(new DescentSet(this.input, head, output));
 		this.input = input;
+		current = new Token();
+		output = current;
 		head = 0;
 		try {
 			while (head < input.length())
@@ -60,11 +62,12 @@ public class Lexer {
 			descentStack.clear();
 			throw e;
 		}
+		Token result = output;
 		this.input = descentStack.peek().getInput();
 		head = descentStack.peek().getHead();
 		output = descentStack.pop().getOutput();
 		current = output.getLastToken();
-		return output;
+		return result;
 	}
 	
 	/**

@@ -92,6 +92,13 @@ public class Type<T> {
 	 * @return the value of the implied value type's compareTo method if it implements <tt>Comparable</tt> otherwise 0.
 	 */
 	public int compareValues(Object value1, Object value2) {
+		if (value1 instanceof Token)
+			if (value2 instanceof Token)
+				return ((Token) value1).compareTo((Token) value2);
+			else
+				return 1;
+		else if (value2 instanceof Token)
+			return -1;
 		if (value1.getClass().isInstance(value2) && value1 instanceof Comparable)
 			return ((Comparable<T>) value1).compareTo((T) value2);
 		return 0;
@@ -107,6 +114,8 @@ public class Type<T> {
 	 * @return a clone of the passed object
 	 */
 	public T clone(Object value) {
+		if (value instanceof Token)
+			return (T) ((Token) value).clone();
 		try {
 			return value instanceof Cloneable ? (T) value.getClass().getMethod("clone").invoke(value) : (T) value;
 		}
