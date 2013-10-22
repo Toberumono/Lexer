@@ -13,7 +13,7 @@ import lexer.errors.LexerException;
  *            the type of Object to be placed in the resulting token.
  */
 public final class Rule<T> {
-	final Pattern pattern;
+	private final Pattern pattern;
 	private final Type<T> type;
 	private final Action<T> action;
 	
@@ -29,7 +29,7 @@ public final class Rule<T> {
 	 * @param match
 	 * @param lexer
 	 * @return the resulting value for a representative <tt>Token</tt>
-	 * @throws LexerException 
+	 * @throws LexerException
 	 */
 	final Token apply(Matcher match, Lexer lexer) throws LexerException {
 		return action == null ? new Token((T) match.group(), type) : action.action(match, lexer, type);
@@ -37,5 +37,12 @@ public final class Rule<T> {
 	
 	public final Type<T> getType() {
 		return type;
+	}
+	
+	/**
+	 * @return the pattern that this <tt>Rule</tt> matches
+	 */
+	public Pattern getPattern() {
+		return pattern;
 	}
 }
