@@ -104,7 +104,7 @@ public class Lexer {
 			m.find(head);
 			Token result = d.apply(m, this);
 			if (step)
-				this.head = close + d.close.length();
+				head = close + d.close.length();
 			return result;
 		}
 		if (rules.size() > 0) {
@@ -141,7 +141,7 @@ public class Lexer {
 					head++;
 			Matcher m = null;
 			for (int i = 0; i < ignores.size(); i++) {
-				Matcher check = ignores.get(0).matcher(input);
+				Matcher check = ignores.get(i).matcher(input);
 				if (check.find(head) && check.start() == head && (m == null || check.end() > m.end()))
 					m = check;
 			}
