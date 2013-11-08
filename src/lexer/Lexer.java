@@ -102,9 +102,11 @@ public class Lexer {
 			int close = getEndIndex(input, head, d.open, d.close);
 			Matcher m = Pattern.compile("\\Q" + input.substring(head + d.open.length(), close) + "\\E").matcher(input);
 			m.find(head);
+			int oldHead = head;
+			head = close + d.close.length();
 			Token result = d.apply(m, this);
-			if (step)
-				head = close + d.close.length();
+			if (!step)
+				head = oldHead;
 			return result;
 		}
 		if (rules.size() > 0) {
@@ -121,9 +123,10 @@ public class Lexer {
 				}
 			}
 			if (hit != null) {
+				head += match.group().length();
 				Token result = hit.apply(match, this);
-				if (step)
-					head += match.group().length();
+				if (!step)
+					head -= match.group().length();
 				return result;
 			}
 		}
@@ -162,7 +165,7 @@ public class Lexer {
 		}
 		if (regex.charAt(0) == '(') {
 			try {
-				for (String option : regex.substring(0, getEndIndex(regex, 0, "(", ")")).split("\\|"))
+				for (String option : regex.substring(0, getEndIndex(regex, 0, "(", ")")).split("(?<!\\\\)\\|"))
 					if (startsWithSpace(option))
 						return true;
 			}
