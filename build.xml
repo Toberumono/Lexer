@@ -16,6 +16,7 @@
 			<fileset dir="./bin/" includes="lexer/**, testCases/**" />
 			<fileset dir="." includes="doc/**" />
 			<fileset dir="./src/" />
+            <zipfileset excludes="META-INF/*.SF" src="libraries/CustomStructures.jar"/>
 		</jar>
 	</target>
 </project>

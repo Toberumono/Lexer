@@ -9,6 +9,7 @@ import lexer.errors.EmptyInputException;
 import lexer.errors.LexerException;
 import lexer.errors.UnbalancedDescenderException;
 import lexer.errors.UnrecognizedCharacterException;
+import lipstone.joshua.customStructures.lists.PairedList;
 
 public class Lexer {
 	private final PairedList<String, Rule<?>> rules;
@@ -201,7 +202,7 @@ public class Lexer {
 	public final void addRule(String name, Rule<?> rule) {
 		if (ignoreSpace)
 			ignoreSpace = !startsWithSpace(rule.getPattern().pattern());
-		rules.put(name, rule);
+		rules.add(name, rule);
 	}
 	
 	/**
@@ -215,7 +216,7 @@ public class Lexer {
 	public final void addDescender(String name, Descender descender) {
 		if (ignoreSpace)
 			ignoreSpace = !(descender.open.charAt(0) == ' ' || descender.close.charAt(0) == ' ');
-		descenders.put(name, descender);
+		descenders.add(name, descender);
 	}
 	
 	/**
