@@ -116,9 +116,7 @@ public class Lexer {
 			Matcher m;
 			for (Rule<?> rule : rules.getValues()) {
 				m = rule.getPattern().matcher(input);
-				if (!m.find(head) || m.start() != head || m.group().length() == 0)
-					continue;
-				if (match == null || match.group().length() < m.group().length()) {
+				if (m.find(head) && m.group().length() != 0 && (match == null || match.group().length() < m.group().length())) {
 					match = m;
 					hit = rule;
 				}
@@ -140,22 +138,25 @@ public class Lexer {
 	
 	private final void skipIgnores() {
 		while (true) {
-			if (ignoreSpace)
+			if (ignoreSpace) //This is true if none of patterns start with spaces.
 				while (head < input.length() && input.charAt(head) == ' ')
 					head++;
-			Matcher m = null;
-			for (int i = 0; i < ignores.size(); i++) {
-				Matcher check = ignores.get(i).matcher(input);
-				if (check.find(head) && check.start() == head && (m == null || check.end() > m.end()))
+			Matcher m = null, check;
+			//Get the longest match from the read-head in the ignore patterns
+			for (Pattern p : ignores)
+				if ((check = p.matcher(input)).find(head) && (m == null || check.end() > m.end()))
 					m = check;
-			}
+			//If nothing matched starting at the read-head, break
 			if (m == null)
 				break;
+			//Otherwise, skip it
 			head = m.end();
 		}
 	}
 	
 	private final boolean startsWithSpace(String regex) {
+		if (regex.startsWith("\\G"))
+			regex = regex.substring(2);
 		if (regex.charAt(0) == ' ' || (regex.charAt(0) == '\\' && regex.length() > 1 && regex.charAt(1) == ' '))
 			return true;
 		if (regex.charAt(0) == '[') {
@@ -220,13 +221,25 @@ public class Lexer {
 	}
 	
 	/**
-	 * Tells the lexer to skip over the given <tt>Pattern</tt>.
+	 * Tells the lexer to skip over the <tt>Pattern</tt> in the given regex <tt>String</tt>.
 	 * 
 	 * @param ignore
-	 *            the <tt>Pattern</tt> to ignore
+	 *            the <tt>Pattern</tt> to ignore as a regex <tt>String</tt>
 	 */
-	public final void ignore(Pattern ignore) {
-		ignores.add(ignore);
+	public final void ignore(String ignore) {
+		ignores.add(Pattern.compile(ignore.startsWith("\\G") ? ignore : "\\G" + ignore));
+	}
+	
+	/**
+	 * Tells the lexer to skip over the <tt>Pattern</tt> in the given regex <tt>String</tt>.
+	 * 
+	 * @param ignore
+	 *            the <tt>Pattern</tt> to ignore as a regex <tt>String</tt>
+	 * @param flags
+	 *            the regex flags defined in {@link java.util.regex.Pattern Pattern}
+	 */
+	public final void ignore(String ignore, int flags) {
+		ignores.add(Pattern.compile((ignore.startsWith("\\G") ? ignore : "\\G" + ignore), flags));
 	}
 	
 	/**

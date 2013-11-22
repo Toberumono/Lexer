@@ -17,8 +17,36 @@ public final class Rule<T> {
 	private final Type<T> type;
 	private final Action<T> action;
 	
-	public Rule(Pattern pattern, Type<T> type, Action<T> action) {
-		this.pattern = pattern;
+	/**
+	 * Constructs a new <tt>Rule</tt> with the given data
+	 * 
+	 * @param pattern
+	 *            a regex <tt>String</tt> that contains the <tt>Pattern</tt> for this <tt>Rule</tt> to use.
+	 * @param type
+	 *            the the type for <tt>Token</tt>s matched by this rule
+	 * @param action
+	 *            the <tt>Action</tt> to take on <tt>Token</tt>s matched by this rule
+	 */
+	public Rule(String pattern, Type<T> type, Action<T> action) {
+		this.pattern = pattern.startsWith("\\G") ? Pattern.compile(pattern) : Pattern.compile("\\G" + pattern);
+		this.type = type;
+		this.action = action;
+	}
+	
+	/**
+	 * Constructs a new <tt>Rule</tt> with the given data
+	 * 
+	 * @param pattern
+	 *            a regex <tt>String</tt> that contains the <tt>Pattern</tt> for this <tt>Rule</tt> to use.
+	 * @param flags
+	 *            the regex flags defined in {@link java.util.regex.Pattern Pattern}
+	 * @param type
+	 *            the the type for <tt>Token</tt>s matched by this rule
+	 * @param action
+	 *            the <tt>Action</tt> to take on <tt>Token</tt>s matched by this rule
+	 */
+	public Rule(String pattern, int flags, Type<T> type, Action<T> action) {
+		this.pattern = pattern.startsWith("\\G") ? Pattern.compile(pattern, flags) : Pattern.compile("\\G" + pattern, flags);
 		this.type = type;
 		this.action = action;
 	}

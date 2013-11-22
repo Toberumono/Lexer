@@ -1,7 +1,6 @@
 package testCases;
 
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import lexer.Action;
 import lexer.Descender;
@@ -17,13 +16,13 @@ public class TestSystem {
 		Lexer lexer = new Lexer();
 		final Type<Integer> integer = new Type<>("Integer");
 		final Type<Double> decimal = new Type<>("Decimal");
-		lexer.addRule("Integer", new Rule<Integer>(Pattern.compile("[0-9]+"), integer, new Action<Integer>() {
+		lexer.addRule("Integer", new Rule<Integer>("[0-9]+", integer, new Action<Integer>() {
 			@Override
 			public Token action(Matcher matcher, Lexer lexer, Type<Integer> type) {
 				return new Token(new Integer(matcher.group()), type);
 			}
 		}));
-		lexer.addRule("Decimal", new Rule<Double>(Pattern.compile("([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+)"), decimal, new Action<Double>() {
+		lexer.addRule("Decimal", new Rule<Double>("([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+)", decimal, new Action<Double>() {
 			@Override
 			public Token action(Matcher matcher, Lexer lexer, Type<Double> type) {
 				return new Token(new Double(matcher.group()), type);
@@ -31,7 +30,7 @@ public class TestSystem {
 		}));
 		lexer.addDescender("Parentheses", new Descender("(", ")", new Type<Token>("Parentheses"), null));
 		lexer.addDescender("Brackets", new Descender("[", "]", new Type<Token>("Brackets"), null));
-		lexer.ignore(Pattern.compile("\n"));
+		lexer.ignore("\n");
 		String test = "10.0 100 (3.0 300\n) [51 5 6] ()";
 		try {
 			System.out.println(test + " -> " + lexer.lex(test));
