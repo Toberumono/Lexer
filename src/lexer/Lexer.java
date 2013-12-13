@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import lexer.abstractLexer.AbstractLexer;
 import lexer.errors.LexerException;
 
-public class Lexer extends AbstractLexer<Token, Type<?>, Rule<?>, Descender> {
+public class Lexer extends AbstractLexer<Token, Type<?>, Rule<?>, Descender, Lexer> {
 	
 	/**
 	 * Basic constructor for a Lexer

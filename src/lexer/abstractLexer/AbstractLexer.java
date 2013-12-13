@@ -12,7 +12,7 @@ import lexer.errors.UnbalancedDescenderException;
 import lexer.errors.UnrecognizedCharacterException;
 import lipstone.joshua.customStructures.lists.PairedList;
 
-public abstract class AbstractLexer<T extends AbstractToken<U, T>, U extends Type<?>, V extends AbstractRule<T, ? extends U, ? extends AbstractAction<T, ? extends U, ?>, ?, ? extends AbstractLexer<T, ? extends U, ? extends V, ? extends W>>, W extends AbstractDescender<T, ? extends Type<T>, ? extends AbstractAction<T, ? extends Type<T>, T>, ? extends AbstractLexer<T, ? extends U, ? extends V, ? extends W>>> {
+public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T>, U extends Type<?>, V extends AbstractRule<T, ? extends Type<?>, ? extends AbstractAction<T, ? extends Type<?>, ?, X>, ?, X>, W extends AbstractDescender<T, ? extends Type<T>, ? extends AbstractAction<T, ? extends Type<?>, ?, X>, X>, X extends AbstractLexer<T, ? extends Type<?>, V, W, X>> {
 	protected final PairedList<String, V> rules;
 	protected final PairedList<String, W> descenders;
 	protected final ArrayList<U> types;

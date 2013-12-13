@@ -8,4 +8,4 @@ import lexer.abstractLexer.AbstractAction;
  * 
  * @author Joshua Lipstone
  */
-public interface Action<T> extends AbstractAction<Token, Type<T>, T> {}
+public interface Action<T> extends AbstractAction<Token, Type<T>, T, Lexer> {}

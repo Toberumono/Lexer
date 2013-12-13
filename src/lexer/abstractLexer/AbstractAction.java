@@ -2,7 +2,6 @@ package lexer.abstractLexer;
 
 import java.util.regex.Matcher;
 
-import lexer.Lexer;
 import lexer.Type;
 import lexer.errors.LexerException;
 
@@ -11,7 +10,7 @@ import lexer.errors.LexerException;
  * 
  * @author Joshua Lipstone
  */
-public interface AbstractAction<T extends AbstractToken<? extends Type<?>, T>, U extends Type<V>, V> {
+public interface AbstractAction<T extends AbstractToken<? extends Type<?>, T>, U extends Type<V>, V, W extends AbstractLexer<T, ? extends Type<?>, ? extends AbstractRule<T, ? extends Type<?>, ? extends AbstractAction<T, ? extends Type<?>, ?, W>, ?, W>, ? extends AbstractDescender<T, ? extends Type<?>, ? extends AbstractAction<T, ? extends Type<?>, ?, W>, W>, W>> {
 	
 	/**
 	 * @param match
@@ -22,5 +21,5 @@ public interface AbstractAction<T extends AbstractToken<? extends Type<?>, T>, U
 	 *            the type of the output token
 	 * @return the result of applying the Action on the token
 	 */
-	public T action(Matcher match, Lexer lexer, U type) throws LexerException;
+	public T action(Matcher match, W lexer, U type) throws LexerException;
 }
