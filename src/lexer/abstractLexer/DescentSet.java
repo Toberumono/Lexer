@@ -1,11 +1,12 @@
-package lexer;
+package lexer.abstractLexer;
 
-class DescentSet {
+
+class DescentSet<T extends AbstractToken> {
 	private final String input;
 	private final int head;
-	private final Token output;
+	private final T output;
 	
-	public DescentSet(String input, int head, Token output) {
+	public DescentSet(String input, int head, T output) {
 		this.input = input;
 		this.head = head;
 		this.output = output;
@@ -19,7 +20,7 @@ class DescentSet {
 		return head;
 	}
 	
-	public Token getOutput() {
+	public T getOutput() {
 		return output;
 	}
 }

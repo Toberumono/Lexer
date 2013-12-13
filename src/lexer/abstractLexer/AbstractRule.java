@@ -1,18 +1,15 @@
-package lexer;
+package lexer.abstractLexer;
 
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import lexer.abstractLexer.AbstractRule;
+import lexer.Type;
 import lexer.errors.LexerException;
 
-/**
- * A Rule for the lexer
- * 
- * @author Joshua Lipstone
- * @param <T>
- *            the type of Object to be placed in the resulting token.
- */
-public final class Rule<T> extends AbstractRule<Token, Type<T>, Action<T>, T, Lexer> {
+public abstract class AbstractRule<T extends AbstractToken, U extends Type<W>, V extends AbstractAction<T, U, W>, W, L extends AbstractLexer<T, ?, ?, ?>> {
+	protected final Pattern pattern;
+	protected final U type;
+	protected final V action;
 	
 	/**
 	 * Constructs a new <tt>Rule</tt> with the given data
@@ -24,8 +21,10 @@ public final class Rule<T> extends AbstractRule<Token, Type<T>, Action<T>, T, Le
 	 * @param action
 	 *            the <tt>Action</tt> to take on <tt>Token</tt>s matched by this rule
 	 */
-	public Rule(String pattern, Type<T> type, Action<T> action) {
-		super(pattern, type, action);
+	public AbstractRule(String pattern, U type, V action) {
+		this.pattern = pattern.startsWith("\\G") ? Pattern.compile(pattern) : Pattern.compile("\\G" + pattern);
+		this.type = type;
+		this.action = action;
 	}
 	
 	/**
@@ -40,8 +39,10 @@ public final class Rule<T> extends AbstractRule<Token, Type<T>, Action<T>, T, Le
 	 * @param action
 	 *            the <tt>Action</tt> to take on <tt>Token</tt>s matched by this rule
 	 */
-	public Rule(String pattern, int flags, Type<T> type, Action<T> action) {
-		super(pattern, flags, type, action);
+	public AbstractRule(String pattern, int flags, U type, V action) {
+		this.pattern = pattern.startsWith("\\G") ? Pattern.compile(pattern, flags) : Pattern.compile("\\G" + pattern, flags);
+		this.type = type;
+		this.action = action;
 	}
 	
 	/**
@@ -52,8 +53,17 @@ public final class Rule<T> extends AbstractRule<Token, Type<T>, Action<T>, T, Le
 	 * @return the resulting value for a representative <tt>Token</tt>
 	 * @throws LexerException
 	 */
-	@Override
-	protected Token apply(Matcher match, Lexer lexer) throws LexerException {
-		return action == null ? new Token((T) match.group(), type) : action.action(match, lexer, type);
+	protected abstract T apply(Matcher match, L lexer) throws LexerException;
+	
+	public U getType() {
+		return type;
 	}
+	
+	/**
+	 * @return the pattern that this <tt>Rule</tt> matches
+	 */
+	public Pattern getPattern() {
+		return pattern;
+	}
+	
 }

@@ -2,6 +2,8 @@ package lexer;
 
 import java.lang.reflect.InvocationTargetException;
 
+import lexer.abstractLexer.AbstractToken;
+
 public class Type<T> {
 	
 	/**
@@ -22,7 +24,7 @@ public class Type<T> {
 	/**
 	 * A pre-created type that flags the <tt>Token</tt> as a descender point (e.g. parentheses)
 	 */
-	public static final Type<Token> TOKEN = new TokenType("Token", null, null);
+	public static final Type<AbstractToken> TOKEN = new TokenType("Token", null, null);
 	
 	protected final String name;
 	protected String open, close;
@@ -92,12 +94,12 @@ public class Type<T> {
 	 * @return the value of the implied value type's compareTo method if it implements <tt>Comparable</tt> otherwise 0.
 	 */
 	public int compareValues(Object value1, Object value2) {
-		if (value1 instanceof Token)
-			if (value2 instanceof Token)
-				return ((Token) value1).compareTo((Token) value2);
+		if (value1 instanceof AbstractToken)
+			if (value2 instanceof AbstractToken)
+				return ((AbstractToken) value1).compareTo((AbstractToken) value2);
 			else
 				return 1;
-		else if (value2 instanceof Token)
+		else if (value2 instanceof AbstractToken)
 			return -1;
 		if (value1.getClass().isInstance(value2) && value1 instanceof Comparable)
 			return ((Comparable<T>) value1).compareTo((T) value2);
@@ -114,8 +116,8 @@ public class Type<T> {
 	 * @return a clone of the passed object
 	 */
 	public T clone(Object value) {
-		if (value instanceof Token)
-			return (T) ((Token) value).clone();
+		if (value instanceof AbstractToken)
+			return (T) ((AbstractToken) value).clone();
 		try {
 			return value instanceof Cloneable ? (T) value.getClass().getMethod("clone").invoke(value) : (T) value;
 		}
@@ -125,7 +127,7 @@ public class Type<T> {
 	}
 }
 
-class TokenType extends Type<Token> {
+class TokenType extends Type<AbstractToken> {
 	
 	public TokenType(String name, String open, String close) {
 		super(name, open, close);
@@ -133,20 +135,20 @@ class TokenType extends Type<Token> {
 	
 	@Override
 	public int compareValues(Object value1, Object value2) {
-		if (value1 instanceof Token)
-			if (value2 instanceof Token)
-				return ((Token) value1).compareTo((Token) value2);
+		if (value1 instanceof AbstractToken)
+			if (value2 instanceof AbstractToken)
+				return ((AbstractToken) value1).compareTo((AbstractToken) value2);
 			else
 				return 1;
-		else if (value2 instanceof Token)
+		else if (value2 instanceof AbstractToken)
 			return -1;
 		return 0;
 	}
 	
 	@Override
-	public Token clone(Object value) {
-		if (value instanceof Token)
-			return ((Token) value).clone();
+	public AbstractToken clone(Object value) {
+		if (value instanceof AbstractToken)
+			return ((AbstractToken) value).clone();
 		return super.clone(value);
 	}
 }

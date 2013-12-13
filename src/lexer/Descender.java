@@ -2,35 +2,22 @@ package lexer;
 
 import java.util.regex.Matcher;
 
+import lexer.abstractLexer.AbstractDescender;
 import lexer.errors.LexerException;
 
-//Descender class for the lexer
-public final class Descender {
-	final String open, close;
-	private final Type<Token> type;
-	private final Action<Token> action;
+/**
+ * A Descender for the <tt>Lexer</tt> that uses the provided <tt>Token</tt> class
+ * 
+ * @author Joshua Lipstone
+ */
+public final class Descender extends AbstractDescender<Token, Type<Token>, Action<Token>, Lexer> {
 	
 	public Descender(String open, String close, Type<Token> type, Action<Token> action) {
-		this.open = open;
-		this.close = close;
-		type.setOpenClose(open, close);
-		this.type = type;
-		this.action = action;
+		super(open, close, type, action);
 	}
-	
-	/**
-	 * Apply the <tt>Action</tt> associated with this <tt>Descender</tt>
-	 * 
-	 * @param match
-	 * @param lexer
-	 * @return the resulting value for a representative <tt>Token</tt>
-	 * @throws LexerException
-	 */
-	final Token apply(Matcher match, Lexer lexer) throws LexerException {
+
+	@Override
+	protected Token apply(Matcher match, Lexer lexer) throws LexerException {
 		return action == null ? new Token(lexer.lex(match.group()), type) : action.action(match, lexer, type);
-	}
-	
-	public final Type<Token> getType() {
-		return type;
 	}
 }
