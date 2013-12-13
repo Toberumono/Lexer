@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import lexer.abstractLexer.AbstractToken;
 
+@SuppressWarnings("rawtypes")
 public class Type<T> {
 	
 	/**
@@ -127,6 +128,7 @@ public class Type<T> {
 	}
 }
 
+@SuppressWarnings("rawtypes")
 class TokenType extends Type<AbstractToken> {
 	
 	public TokenType(String name, String open, String close) {

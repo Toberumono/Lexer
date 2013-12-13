@@ -12,7 +12,7 @@ import lexer.errors.UnbalancedDescenderException;
 import lexer.errors.UnrecognizedCharacterException;
 import lipstone.joshua.customStructures.lists.PairedList;
 
-public abstract class AbstractLexer<T extends AbstractToken, U extends Type<?>, V extends AbstractRule<T, ? extends U, ? extends AbstractAction<T, ? extends U, ?>, ?, ? extends AbstractLexer<T, ? extends U, ? extends V, ? extends W>>, W extends AbstractDescender<T, ? extends Type<T>, ? extends AbstractAction<T, ? extends Type<T>, T>, ? extends AbstractLexer<T, ? extends U, ? extends V, ? extends W>>> {
+public abstract class AbstractLexer<T extends AbstractToken<U, T>, U extends Type<?>, V extends AbstractRule<T, ? extends U, ? extends AbstractAction<T, ? extends U, ?>, ?, ? extends AbstractLexer<T, ? extends U, ? extends V, ? extends W>>, W extends AbstractDescender<T, ? extends Type<T>, ? extends AbstractAction<T, ? extends Type<T>, T>, ? extends AbstractLexer<T, ? extends U, ? extends V, ? extends W>>> {
 	protected final PairedList<String, V> rules;
 	protected final PairedList<String, W> descenders;
 	protected final ArrayList<U> types;
@@ -113,7 +113,7 @@ public abstract class AbstractLexer<T extends AbstractToken, U extends Type<?>, 
 		}
 		if (rules.size() > 0) {
 			V hit = null;
-			Matcher match = null, m = null;
+			Matcher match = null, m;
 			for (V rule : rules.getValues()) {
 				m = rule.getPattern().matcher(input);
 				if (m.find(head) && m.group().length() != 0 && (match == null || match.group().length() < m.group().length())) {
@@ -123,7 +123,7 @@ public abstract class AbstractLexer<T extends AbstractToken, U extends Type<?>, 
 			}
 			if (hit != null) {
 				head += match.group().length();
-				T result = hit(hit, m);
+				T result = hit(hit, match);
 				if (!step)
 					head -= match.group().length();
 				return result;

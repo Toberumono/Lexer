@@ -16,7 +16,7 @@ import lexer.errors.LexerException;
  * @param <V>
  *            the subclass of {@link lexer.abstractLexer.AbstractAction AbstractAction} to use.
  */
-public abstract class AbstractDescender<T extends AbstractToken, U extends Type<T>, V extends AbstractAction<T, U, T>, W extends AbstractLexer<T, ? extends Type<?>, ?, ? extends AbstractDescender<T, ? extends Type<?>, ? extends AbstractAction<T, ? extends Type<?>, ?>, W>>> {
+public abstract class AbstractDescender<T extends AbstractToken<? extends Type<?>, T>, U extends Type<T>, V extends AbstractAction<T, U, T>, W extends AbstractLexer<T, ? extends Type<?>, ?, ? extends AbstractDescender<T, ? extends Type<?>, ? extends AbstractAction<T, ? extends Type<?>, ?>, W>>> {
 	protected final String open, close;
 	protected final U type;
 	protected final V action;

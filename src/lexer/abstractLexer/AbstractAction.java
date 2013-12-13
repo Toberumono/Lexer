@@ -11,7 +11,7 @@ import lexer.errors.LexerException;
  * 
  * @author Joshua Lipstone
  */
-public interface AbstractAction<T extends AbstractToken, U extends Type<V>, V> {
+public interface AbstractAction<T extends AbstractToken<? extends Type<?>, T>, U extends Type<V>, V> {
 	
 	/**
 	 * @param match

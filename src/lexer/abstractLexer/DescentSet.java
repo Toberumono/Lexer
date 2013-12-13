@@ -1,7 +1,6 @@
 package lexer.abstractLexer;
 
-
-class DescentSet<T extends AbstractToken> {
+class DescentSet<T extends AbstractToken<?, T>> {
 	private final String input;
 	private final int head;
 	private final T output;

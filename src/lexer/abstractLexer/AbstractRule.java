@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import lexer.Type;
 import lexer.errors.LexerException;
 
-public abstract class AbstractRule<T extends AbstractToken, U extends Type<W>, V extends AbstractAction<T, U, W>, W, L extends AbstractLexer<T, ?, ?, ?>> {
+public abstract class AbstractRule<T extends AbstractToken<? extends Type<?>, T>, U extends Type<W>, V extends AbstractAction<T, U, W>, W, L extends AbstractLexer<T, ?, ?, ?>> {
 	protected final Pattern pattern;
 	protected final U type;
 	protected final V action;
