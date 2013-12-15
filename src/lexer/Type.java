@@ -25,7 +25,7 @@ public class Type<T> {
 	/**
 	 * A pre-created type that flags the <tt>Token</tt> as a descender point (e.g. parentheses)
 	 */
-	public static final Type<AbstractToken> TOKEN = new TokenType("Token", null, null);
+	public static final Type<? extends AbstractToken> TOKEN = new Type<AbstractToken>("Token", null, null);
 	
 	protected final String name;
 	protected String open, close;

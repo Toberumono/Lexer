@@ -32,4 +32,9 @@ public class Token extends AbstractToken<Type<?>, Token> {
 		clone.previous = previous;
 		return clone;
 	}
+
+	@Override
+	protected Type<?> getTokenType() {
+		return Type.TOKEN;
+	}
 }

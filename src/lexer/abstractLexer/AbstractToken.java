@@ -93,7 +93,7 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 		}
 		if (cdr instanceof AbstractToken)
 			((V) cdr).previous = null;
-		cdrType = (T) Type.TOKEN;
+		cdrType = getTokenType();
 		cdr = next;
 		next.previous = (V) this;
 		return getLastToken();
@@ -166,4 +166,9 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 		cdrType = null;
 		return next;
 	}
+	
+	/**
+	 * This should have the following code:</br> <code>return <name-of-class-for-Type>.TOKEN</code>
+	 */
+	protected abstract T getTokenType();
 }
