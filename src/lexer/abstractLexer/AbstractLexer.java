@@ -22,6 +22,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	protected String input;
 	protected int head;
 	protected T current, output;
+	private T previous;
 	
 	/**
 	 * Basic constructor for a <tt>AbstractLexer</tt>
@@ -37,6 +38,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 		head = 0;
 		current = makeNewToken();
 		output = current;
+		previous = current;
 	}
 	
 	/**
@@ -48,15 +50,17 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * @throws LexerException
 	 */
 	public final T lex(String input) throws LexerException {
-		descentStack.push(new DescentSet<T>(this.input, head, output));
+		descentStack.push(new DescentSet<T>(this.input, head, output, previous));
 		this.input = input;
 		current = makeNewToken();
 		output = current;
 		head = 0;
 		try {
 			while (head < input.length())
-				if (hasNext())
+				if (hasNext()) {
 					current = (T) current.append(getNextToken(true));
+					previous = current;
+				}
 				else
 					break;
 		}
@@ -67,6 +71,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 		T result = output;
 		this.input = descentStack.peek().getInput();
 		head = descentStack.peek().getHead();
+		previous = descentStack.peek().getPrevious();
 		output = descentStack.pop().getOutput();
 		current = (T) output.getLastToken();
 		return result;
@@ -109,6 +114,8 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 			T result = descend(d, m);
 			if (!step)
 				head = oldHead;
+			else
+				previous = result;
 			return result;
 		}
 		if (rules.size() > 0) {
@@ -126,6 +133,8 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 				T result = hit(hit, match);
 				if (!step)
 					head -= match.group().length();
+				else
+					previous = result;
 				return result;
 			}
 		}
@@ -181,7 +190,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * @return the output this lexer is currently generating.
 	 */
 	public final T getPreviousToken() {
-		return current;
+		return previous;
 	}
 	
 	/**
