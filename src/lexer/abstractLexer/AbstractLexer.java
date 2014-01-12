@@ -49,16 +49,30 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * @return the <tt>Token</tt>s in the <tt>String</tt>
 	 * @throws LexerException
 	 */
-	public final T lex(String input) throws LexerException {
-		descentStack.push(new DescentSet<T>(this.input, head, output, previous));
+	public T lex(String input) throws LexerException {
+		return lex(input, 0);
+	}
+	
+	/**
+	 * Tokenizes a <tt>String</tt>
+	 * 
+	 * @param input
+	 *            the <tt>String</tt> to tokenize
+	 * @param head
+	 *            the location at which to start lexing the input
+	 * @return the <tt>Token</tt>s in the <tt>String</tt>
+	 * @throws LexerException
+	 */
+	public T lex(String input, int head) throws LexerException {
+		descentStack.push(new DescentSet<T>(this.input, this.head, output, previous));
 		this.input = input;
 		current = makeNewToken();
 		output = current;
-		head = 0;
+		this.head = head;
 		try {
 			while (head < input.length())
 				if (hasNext()) {
-					current = (T) current.append(getNextToken(true));
+					previous = (T) current.append(getNextToken(true));
 					previous = current;
 				}
 				else
@@ -97,7 +111,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * @throws LexerException
 	 *             if no token was found
 	 */
-	public final T getNextToken(boolean step) throws LexerException {
+	public T getNextToken(boolean step) throws LexerException {
 		skipIgnores();
 		if (head >= input.length())
 			throw new EmptyInputException();
@@ -191,6 +205,18 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 */
 	public final T getPreviousToken() {
 		return previous;
+	}
+	
+	/**
+	 * Removes the last generated token and returns it.
+	 * 
+	 * @return the output this lexer is currently generating.
+	 */
+	public final T popPreviousToken() {
+		T temp = previous;
+		previous = current == previous ? (current = previous.getPreviousToken()) : previous.getPreviousToken();
+		temp.remove();
+		return temp;
 	}
 	
 	/**
