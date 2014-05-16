@@ -54,6 +54,49 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	}
 	
 	/**
+	 * Tokenizes a <tt>String</tt> that is the modified version of a previously tokenized <tt>String</tt> from a given
+	 * starting point.
+	 * 
+	 * @param input
+	 *            the <tt>String</tt> to tokenize
+	 * @param head
+	 *            the location at which to start lexing the input
+	 * @param output
+	 *            the output from the previous tokenization
+	 * @param previous
+	 *            the last token in the previous tokenization
+	 * @return the <tt>Token</tt>s in the <tt>String</tt>
+	 * @throws LexerException
+	 */
+	public T lex(String input, int head, T output, T previous) throws LexerException {
+		descentStack.push(new DescentSet<T>(this.input, this.head, this.output, this.previous));
+		this.previous = previous;
+		this.current = previous;
+		this.head = head;
+		this.output = output;
+		try {
+			while (this.head < input.length())
+				if (hasNext()) {
+					previous = (T) current.append(getNextToken(true));
+					current = previous;
+				}
+				else
+					break;
+		}
+		catch (LexerException e) {
+			descentStack.clear();
+			throw e;
+		}
+		T result = output;
+		this.input = descentStack.peek().getInput();
+		this.head = descentStack.peek().getHead();
+		previous = descentStack.peek().getPrevious();
+		output = descentStack.pop().getOutput();
+		current = output.getLastToken();
+		return result;
+	}
+	
+	/**
 	 * Tokenizes a <tt>String</tt>
 	 * 
 	 * @param input
@@ -67,13 +110,13 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 		descentStack.push(new DescentSet<T>(this.input, this.head, output, previous));
 		this.input = input;
 		current = makeNewToken();
-		output = current;
+		output = previous = current;
 		this.head = head;
 		try {
-			while (head < input.length())
+			while (this.head < input.length())
 				if (hasNext()) {
 					previous = (T) current.append(getNextToken(true));
-					previous = current;
+					current = previous;
 				}
 				else
 					break;
@@ -84,10 +127,10 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 		}
 		T result = output;
 		this.input = descentStack.peek().getInput();
-		head = descentStack.peek().getHead();
+		this.head = descentStack.peek().getHead();
 		previous = descentStack.peek().getPrevious();
 		output = descentStack.pop().getOutput();
-		current = (T) output.getLastToken();
+		current = output.getLastToken();
 		return result;
 	}
 	

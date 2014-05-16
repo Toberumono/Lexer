@@ -59,8 +59,8 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 	
 	public V getLastToken() {
 		V current = (V) this, previous = current;
-		while (!(current = current.getNextToken()).isNull())
-			previous = current;
+		while (current.cdr != null && current.cdr instanceof AbstractToken)
+			previous = (current = (V) current.cdr);
 		return previous;
 	}
 	
@@ -79,6 +79,14 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 		return car == null && carType.equals(Type.EMPTY) && cdr == null && cdrType.equals(Type.EMPTY);
 	}
 	
+	/**
+	 * This method appends the given token or tokens to this one, and, if this token is null as defined in {@link #isNull()},
+	 * overwrites this token with the first token to be appended.
+	 * 
+	 * @param next
+	 *            the token or list of tokens to append to this token
+	 * @return the token appended or the last token in the list of appended tokens
+	 */
 	public V append(V next) {
 		if (isNull()) {
 			car = next.car;
