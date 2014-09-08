@@ -36,9 +36,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 		ignoreSpace = true;
 		input = "";
 		head = 0;
-		current = makeNewToken();
-		output = current;
-		previous = current;
+		previous = output = current = makeNewToken();
 	}
 	
 	/**
@@ -69,17 +67,15 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * @throws LexerException
 	 */
 	public T lex(String input, int head, T output, T previous) throws LexerException {
-		descentStack.push(new DescentSet<T>(this.input, this.head, this.output, this.previous));
+		descentStack.push(new DescentSet<T>(this.input, this.head, this.output, this.previous, this.current));
 		this.previous = previous;
 		this.current = previous;
 		this.head = head;
 		this.output = output;
 		try {
 			while (this.head < input.length())
-				if (hasNext()) {
-					previous = (T) current.append(getNextToken(true));
-					current = previous;
-				}
+				if (hasNext())
+					current = previous = (T) current.append(getNextToken(true));
 				else
 					break;
 		}
@@ -88,11 +84,12 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 			throw e;
 		}
 		T result = output;
-		this.input = descentStack.peek().getInput();
-		this.head = descentStack.peek().getHead();
-		previous = descentStack.peek().getPrevious();
-		output = descentStack.pop().getOutput();
-		current = output.getLastToken();
+		DescentSet<T> popped = descentStack.pop();
+		this.input = popped.getInput();
+		this.head = popped.getHead();
+		previous = popped.getPrevious();
+		output = popped.getOutput();
+		current = popped.getCurrent();
 		return result;
 	}
 	
@@ -107,17 +104,15 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * @throws LexerException
 	 */
 	public T lex(String input, int head) throws LexerException {
-		descentStack.push(new DescentSet<T>(this.input, this.head, output, previous));
+		descentStack.push(new DescentSet<T>(this.input, this.head, output, previous, current));
 		this.input = input;
 		current = makeNewToken();
 		output = previous = current;
 		this.head = head;
 		try {
 			while (this.head < input.length())
-				if (hasNext()) {
-					previous = (T) current.append(getNextToken(true));
-					current = previous;
-				}
+				if (hasNext())
+					current = previous = (T) current.append(getNextToken(true));
 				else
 					break;
 		}
@@ -126,11 +121,12 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 			throw e;
 		}
 		T result = output;
-		this.input = descentStack.peek().getInput();
-		this.head = descentStack.peek().getHead();
-		previous = descentStack.peek().getPrevious();
-		output = descentStack.pop().getOutput();
-		current = output.getLastToken();
+		DescentSet<T> popped = descentStack.pop();
+		this.input = popped.getInput();
+		this.head = popped.getHead();
+		previous = popped.getPrevious();
+		output = popped.getOutput();
+		current = popped.getCurrent();
 		return result;
 	}
 	
@@ -168,7 +164,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 			m.find(head);
 			int oldHead = head;
 			head = close + d.close.length();
-			T result = descend(d, m);
+			T result = d.apply(m, (X) this);
 			if (!step)
 				head = oldHead;
 			else
@@ -187,7 +183,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 			}
 			if (hit != null) {
 				head += match.group().length();
-				T result = hit(hit, match);
+				T result = hit.apply(match, (X) this);
 				if (!step)
 					head -= match.group().length();
 				else
@@ -353,16 +349,38 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * <code>return new {@literal <}class extending <tt>Token</tt>{@literal >}();</code>
 	 */
 	public abstract T makeNewToken();
+}
+
+class DescentSet<T extends AbstractToken<?, T>> {
+	final String input;
+	final int head;
+	final T output, previous, current;
 	
-	/**
-	 * Due to how type-erasure works, this method must be initialized in subclasses with the following code:</br>
-	 * <code>return d.apply(m, this);</code>
-	 */
-	protected abstract T descend(W d, Matcher m) throws LexerException;
+	public DescentSet(String input, int head, T output, T previous, T current) {
+		this.input = input;
+		this.head = head;
+		this.output = output;
+		this.previous = previous;
+		this.current = current;
+	}
 	
-	/**
-	 * Due to how type-erasure works, this method must be initialized in subclasses with the following code:</br>
-	 * <code>return r.apply(m, this);</code>
-	 */
-	protected abstract T hit(V r, Matcher m) throws LexerException;
+	public String getInput() {
+		return input;
+	}
+	
+	public int getHead() {
+		return head;
+	}
+	
+	public T getOutput() {
+		return output;
+	}
+	
+	public T getPrevious() {
+		return previous;
+	}
+	
+	public T getCurrent() {
+		return current;
+	}
 }
