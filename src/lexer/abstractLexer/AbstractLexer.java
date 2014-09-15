@@ -22,7 +22,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	protected String input = "";
 	protected int head = 0;
 	protected T current, output, previous;
-	private final TokenConstructor<T> tokenConstructor;
+	private final TokenConstructor<U, T> tokenConstructor;
 	
 	/**
 	 * Constructs a <tt>GenericLexer</tt> with the provided token constructor
@@ -30,7 +30,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * @param tokenConstructor
 	 *            a function that takes no arguments and returns a new instance of the class extending {@link AbstractToken}.
 	 */
-	public AbstractLexer(TokenConstructor<T> tokenConstructor) {
+	public AbstractLexer(TokenConstructor<U, T> tokenConstructor) {
 		this.tokenConstructor = tokenConstructor;
 		previous = output = current = tokenConstructor.makeNewToken();
 	}
@@ -317,7 +317,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 		return types;
 	}
 	
-	public final TokenConstructor<T> getTokenConstructor() {
+	public final TokenConstructor<U, T> getTokenConstructor() {
 		return tokenConstructor;
 	}
 	

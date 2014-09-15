@@ -35,7 +35,7 @@ public abstract class AbstractDescender<T extends AbstractToken<? extends Type<?
 	 * @throws LexerException
 	 */
 	protected T apply(String match, L lexer) throws LexerException {
-		return lexer.getTokenConstructor().makeNewToken(lexer.lex(match), type);
+		return ((TokenConstructor<U, T>) lexer.getTokenConstructor()).makeNewToken(lexer.lex(match), type);
 	}
 	
 	public U getType() {

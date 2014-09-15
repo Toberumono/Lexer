@@ -49,6 +49,6 @@ public abstract class AbstractRule<T extends AbstractToken<? extends Type<?>, T>
 	 * @throws LexerException
 	 */
 	protected T apply(Matcher match, L lexer) throws LexerException {
-		return lexer.getTokenConstructor().makeNewToken((Object) match.group(), type);
+		return ((TokenConstructor<U, T>) lexer.getTokenConstructor()).makeNewToken(match.group(), type);
 	}
 }
