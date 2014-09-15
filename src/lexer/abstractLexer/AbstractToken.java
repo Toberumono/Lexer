@@ -12,6 +12,11 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 	protected Object car, cdr;
 	protected V previous;
 	
+	public AbstractToken(V source, V previous) {
+		this(source.carType.cloneValue(source.car), source.carType, source.cdrType.cloneValue(source.cdr), source.cdrType);
+		this.previous = (V) previous;
+	}
+	
 	public AbstractToken(Object car, T carType, Object cdr, T cdrType) {
 		this.carType = carType;
 		this.car = car;
@@ -179,4 +184,20 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 	 * This should have the following code:</br> <code>return <name-of-class-for-Type>.TOKEN</code>
 	 */
 	protected abstract T getTokenType();
+	
+	public String printStructure() {
+		String output = "";
+		AbstractToken<T, V> current = this;
+		do {
+			if (current.car instanceof AbstractToken)
+				output = output + current.carType.getOpen() + ((AbstractToken<?, ?>) current.car).printStructure() + current.carType.getClose() + " ";
+			else
+				output = output + current.carType.valueToString(current.car);
+			output = output + ": " + current.carType.toString() + ", ";
+			current = (AbstractToken<T, V>) current.cdr;
+		} while (current instanceof AbstractToken);
+		if (output.length() > 0)
+			output = output.substring(0, output.length() - 2);
+		return output;
+	}
 }

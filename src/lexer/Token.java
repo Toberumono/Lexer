@@ -18,7 +18,7 @@ public class Token extends AbstractToken<Type<?>, Token> {
 	
 	@Override
 	public Token singular() {
-		return new Token(carType.clone(car), carType);
+		return new Token(carType.cloneValue(car), carType);
 	}
 	
 	@Override
@@ -28,7 +28,7 @@ public class Token extends AbstractToken<Type<?>, Token> {
 	
 	@Override
 	protected Token clone(Token previous) {
-		Token clone = new Token(carType.clone(car), carType, cdrType.clone(cdr), cdrType);
+		Token clone = new Token(carType.cloneValue(car), carType, cdrType.cloneValue(cdr), cdrType);
 		clone.previous = previous;
 		return clone;
 	}

@@ -8,11 +8,6 @@ public class Lexer extends AbstractLexer<Token, Type<?>, Rule<?>, Descender, Lex
 	 * Basic constructor for a Lexer
 	 */
 	public Lexer() {
-		super();
-	}
-
-	@Override
-	public Token makeNewToken() {
-		return new Token();
+		super(Token::new);
 	}
 }

@@ -1,7 +1,5 @@
 package lexer.abstractLexer;
 
-import java.util.regex.Matcher;
-
 import lexer.Type;
 import lexer.errors.LexerException;
 
@@ -14,19 +12,17 @@ import lexer.errors.LexerException;
  * @param <U>
  *            the subclass of {@link lexer.abstractLexer.AbstractToken Token} (including {@link lexer.Type Type}) to use
  * @param <V>
- *            the subclass of {@link lexer.abstractLexer.AbstractAction AbstractAction} to use.
+ *            the subclass of {@link lexer.abstractLexer.AbstractAction AbstractAction} to use
  */
-public abstract class AbstractDescender<T extends AbstractToken<? extends Type<?>, T>, U extends Type<T>, V extends AbstractAction<T, U, T, W>, W extends AbstractLexer<T, ? extends Type<?>, ? extends AbstractRule<T, ? extends Type<?>, ? extends AbstractAction<T, ? extends Type<?>, ?, W>, ?, W>, ? extends AbstractDescender<T, ? extends Type<?>, ? extends AbstractAction<T, ? extends Type<?>, ?, W>, W>, W>> {
+public abstract class AbstractDescender<T extends AbstractToken<? extends Type<?>, T>, U extends Type<?>, L extends AbstractLexer<T, ? extends Type<?>, ? extends AbstractRule<T, ? extends Type<?>, ?, L>, ? extends AbstractDescender<T, ? extends Type<?>, L>, L>> {
 	protected final String open, close;
 	protected final U type;
-	protected final V action;
 	
-	public AbstractDescender(String open, String close, U type, V action) {
+	public AbstractDescender(String open, String close, U type) {
 		this.open = open;
 		this.close = close;
 		type.setOpenClose(open, close);
 		this.type = type;
-		this.action = action;
 	}
 	
 	/**
@@ -37,7 +33,9 @@ public abstract class AbstractDescender<T extends AbstractToken<? extends Type<?
 	 * @return the resulting value for a representative <tt>Token</tt>
 	 * @throws LexerException
 	 */
-	protected abstract T apply(Matcher match, W lexer) throws LexerException;
+	protected T apply(String match, L lexer) throws LexerException {
+		return lexer.getTokenConstructor().makeNewToken(lexer.lex(match), type);
+	}
 	
 	public U getType() {
 		return type;

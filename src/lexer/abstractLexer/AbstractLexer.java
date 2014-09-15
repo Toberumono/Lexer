@@ -12,31 +12,27 @@ import lexer.errors.UnbalancedDescenderException;
 import lexer.errors.UnrecognizedCharacterException;
 import lipstone.joshua.customStructures.lists.PairedList;
 
-public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T>, U extends Type<?>, V extends AbstractRule<T, ? extends Type<?>, ? extends AbstractAction<T, ? extends Type<?>, ?, X>, ?, X>, W extends AbstractDescender<T, ? extends Type<T>, ? extends AbstractAction<T, ? extends Type<?>, ?, X>, X>, X extends AbstractLexer<T, ? extends Type<?>, V, W, X>> {
-	protected final PairedList<String, V> rules;
-	protected final PairedList<String, W> descenders;
-	protected final ArrayList<U> types;
-	protected final ArrayList<Pattern> ignores;
-	protected final Stack<DescentSet<T>> descentStack;
-	protected boolean ignoreSpace;
-	protected String input;
-	protected int head;
-	protected T current, output;
-	private T previous;
+public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T>, U extends Type<?>, V extends AbstractRule<T, ? extends Type<?>, ?, X>, W extends AbstractDescender<T, ? extends Type<T>, X>, X extends AbstractLexer<T, ? extends Type<?>, V, W, X>> {
+	protected final PairedList<String, V> rules = new PairedList<>();
+	protected final PairedList<String, W> descenders = new PairedList<>();
+	protected final ArrayList<U> types = new ArrayList<>();
+	protected final ArrayList<Pattern> ignores = new ArrayList<>();
+	protected final Stack<DescentSet<T>> descentStack = new Stack<>();
+	protected boolean ignoreSpace = true;
+	protected String input = "";
+	protected int head = 0;
+	protected T current, output, previous;
+	private final TokenConstructor<T> tokenConstructor;
 	
 	/**
-	 * Basic constructor for a <tt>AbstractLexer</tt>
+	 * Constructs a <tt>GenericLexer</tt> with the provided token constructor
+	 * 
+	 * @param tokenConstructor
+	 *            a function that takes no arguments and returns a new instance of the class extending {@link AbstractToken}.
 	 */
-	public AbstractLexer() {
-		rules = new PairedList<>();
-		descenders = new PairedList<>();
-		types = new ArrayList<>();
-		ignores = new ArrayList<Pattern>();
-		descentStack = new Stack<>();
-		ignoreSpace = true;
-		input = "";
-		head = 0;
-		previous = output = current = makeNewToken();
+	public AbstractLexer(TokenConstructor<T> tokenConstructor) {
+		this.tokenConstructor = tokenConstructor;
+		previous = output = current = tokenConstructor.makeNewToken();
 	}
 	
 	/**
@@ -106,7 +102,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	public T lex(String input, int head) throws LexerException {
 		descentStack.push(new DescentSet<T>(this.input, this.head, output, previous, current));
 		this.input = input;
-		current = makeNewToken();
+		current = tokenConstructor.makeNewToken();
 		output = previous = current;
 		this.head = head;
 		try {
@@ -160,11 +156,9 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 				d = descender;
 		if (d != null) {
 			int close = getEndIndex(input, head, d.open, d.close);
-			Matcher m = Pattern.compile("\\Q" + input.substring(head + d.open.length(), close) + "\\E").matcher(input);
-			m.find(head);
 			int oldHead = head;
 			head = close + d.close.length();
-			T result = d.apply(m, (X) this);
+			T result = d.apply(input.substring(oldHead + d.open.length(), close), (X) this);
 			if (!step)
 				head = oldHead;
 			else
@@ -175,7 +169,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 			V hit = null;
 			Matcher match = null, m;
 			for (V rule : rules.getValues()) {
-				m = rule.getPattern().matcher(input);
+				m = rule.pattern.matcher(input);
 				if (m.find(head) && m.group().length() != 0 && (match == null || match.group().length() < m.group().length())) {
 					match = m;
 					hit = rule;
@@ -276,7 +270,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 */
 	public final void addRule(String name, V rule) {
 		if (ignoreSpace)
-			ignoreSpace = !startsWithSpace(rule.getPattern().pattern());
+			ignoreSpace = !startsWithSpace(rule.pattern.pattern());
 		rules.add(name, rule);
 	}
 	
@@ -323,6 +317,10 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 		return types;
 	}
 	
+	public final TokenConstructor<T> getTokenConstructor() {
+		return tokenConstructor;
+	}
+	
 	protected int getEndIndex(String input, int start, String startSymbol, String endSymbol) throws UnbalancedDescenderException {
 		int index = 0, parenthesis = 0;
 		for (int i = start; i < input.length() - startSymbol.length() + 1 && i < input.length() - endSymbol.length() + 1; i++) {
@@ -343,12 +341,6 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 			throw new UnbalancedDescenderException(input, start);
 		return index;
 	}
-	
-	/**
-	 * Due to how type-erasure works, this method must be initialized in subclasses with the following code:</br>
-	 * <code>return new {@literal <}class extending <tt>Token</tt>{@literal >}();</code>
-	 */
-	public abstract T makeNewToken();
 }
 
 class DescentSet<T extends AbstractToken<?, T>> {

@@ -8,7 +8,7 @@ import lexer.abstractLexer.AbstractToken;
 public class Type<T> {
 	
 	/**
-	 * A pre-created type that <i>must</i> be used to denote empty tokens (e.g. the end of a list)
+	 * A pre-created type that <i>must</i> be used to denote empty values (e.g. the end of a list)
 	 */
 	public static final Type<Object> EMPTY = new Type<Object>("Empty") {
 		@Override
@@ -23,9 +23,15 @@ public class Type<T> {
 	};
 	
 	/**
-	 * A pre-created type that flags the <tt>Token</tt> as a descender point (e.g. parentheses)
+	 * A pre-created <tt>Type</tt> that flags the value as an instance of <tt>AbstractToken</tt>
 	 */
-	public static final Type<? extends AbstractToken> TOKEN = new Type<AbstractToken>("Token", null, null);
+	public static final Type<? extends AbstractToken> TOKEN = new Type<AbstractToken>("Token") {
+		
+		@Override
+		public AbstractToken cloneValue(Object value) {
+			return ((AbstractToken) value).clone();
+		}
+	};
 	
 	protected final String name;
 	protected String open, close;
@@ -45,6 +51,14 @@ public class Type<T> {
 	public final void setOpenClose(String open, String close) {
 		this.open = open;
 		this.close = close;
+	}
+	
+	public final String getOpen() {
+		return open;
+	}
+	
+	public final String getClose() {
+		return close;
 	}
 	
 	/**
@@ -95,16 +109,7 @@ public class Type<T> {
 	 * @return the value of the implied value type's compareTo method if it implements <tt>Comparable</tt> otherwise 0.
 	 */
 	public int compareValues(Object value1, Object value2) {
-		if (value1 instanceof AbstractToken)
-			if (value2 instanceof AbstractToken)
-				return ((AbstractToken) value1).compareTo((AbstractToken) value2);
-			else
-				return 1;
-		else if (value2 instanceof AbstractToken)
-			return -1;
-		if (value1.getClass().isInstance(value2) && value1 instanceof Comparable)
-			return ((Comparable<T>) value1).compareTo((T) value2);
-		return 0;
+		return value1.getClass().isInstance(value2) && value1 instanceof Comparable ? ((Comparable<T>) value1).compareTo((T) value2) : 0;
 	}
 	
 	/**
@@ -116,41 +121,12 @@ public class Type<T> {
 	 *            the value to clone
 	 * @return a clone of the passed object
 	 */
-	public T clone(Object value) {
-		if (value instanceof AbstractToken)
-			return (T) ((AbstractToken) value).clone();
+	public T cloneValue(Object value) {
 		try {
 			return value instanceof Cloneable ? (T) value.getClass().getMethod("clone").invoke(value) : (T) value;
 		}
 		catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
 			return (T) value;
 		}
-	}
-}
-
-@SuppressWarnings("rawtypes")
-class TokenType extends Type<AbstractToken> {
-	
-	public TokenType(String name, String open, String close) {
-		super(name, open, close);
-	}
-	
-	@Override
-	public int compareValues(Object value1, Object value2) {
-		if (value1 instanceof AbstractToken)
-			if (value2 instanceof AbstractToken)
-				return ((AbstractToken) value1).compareTo((AbstractToken) value2);
-			else
-				return 1;
-		else if (value2 instanceof AbstractToken)
-			return -1;
-		return 0;
-	}
-	
-	@Override
-	public AbstractToken clone(Object value) {
-		if (value instanceof AbstractToken)
-			return ((AbstractToken) value).clone();
-		return super.clone(value);
 	}
 }

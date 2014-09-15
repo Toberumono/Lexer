@@ -6,10 +6,9 @@ import java.util.regex.Pattern;
 import lexer.Type;
 import lexer.errors.LexerException;
 
-public abstract class AbstractRule<T extends AbstractToken<? extends Type<?>, T>, U extends Type<W>, V extends AbstractAction<T, U, W, L>, W, L extends AbstractLexer<T, ? extends Type<?>, ? extends AbstractRule<T, ? extends Type<?>, ? extends AbstractAction<T, ? extends Type<?>, ?, L>, ?, L>, ? extends AbstractDescender<T, ? extends Type<?>, ? extends AbstractAction<T, ? extends Type<?>, ?, L>, L>, L>> {
-	protected final Pattern pattern;
-	protected final U type;
-	protected final V action;
+public abstract class AbstractRule<T extends AbstractToken<? extends Type<?>, T>, U extends Type<W>, W, L extends AbstractLexer<T, ? extends Type<?>, ? extends AbstractRule<T, ? extends Type<?>, ?, L>, ? extends AbstractDescender<T, ? extends Type<?>, L>, L>> {
+	public final Pattern pattern;
+	public final U type;
 	
 	/**
 	 * Constructs a new <tt>Rule</tt> with the given data
@@ -21,10 +20,9 @@ public abstract class AbstractRule<T extends AbstractToken<? extends Type<?>, T>
 	 * @param action
 	 *            the <tt>Action</tt> to take on <tt>Token</tt>s matched by this rule
 	 */
-	public AbstractRule(String pattern, U type, V action) {
+	public AbstractRule(String pattern, U type) {
 		this.pattern = pattern.startsWith("\\G") ? Pattern.compile(pattern) : Pattern.compile("\\G" + pattern);
 		this.type = type;
-		this.action = action;
 	}
 	
 	/**
@@ -39,10 +37,9 @@ public abstract class AbstractRule<T extends AbstractToken<? extends Type<?>, T>
 	 * @param action
 	 *            the <tt>Action</tt> to take on <tt>Token</tt>s matched by this rule
 	 */
-	public AbstractRule(String pattern, int flags, U type, V action) {
+	public AbstractRule(String pattern, int flags, U type) {
 		this.pattern = pattern.startsWith("\\G") ? Pattern.compile(pattern, flags) : Pattern.compile("\\G" + pattern, flags);
 		this.type = type;
-		this.action = action;
 	}
 	
 	/**
@@ -53,17 +50,7 @@ public abstract class AbstractRule<T extends AbstractToken<? extends Type<?>, T>
 	 * @return the resulting value for a representative <tt>Token</tt>
 	 * @throws LexerException
 	 */
-	protected abstract T apply(Matcher match, L lexer) throws LexerException;
-	
-	public U getType() {
-		return type;
+	protected T apply(Matcher match, L lexer) throws LexerException {
+		return lexer.getTokenConstructor().makeNewToken((Object) match.group(), type);
 	}
-	
-	/**
-	 * @return the pattern that this <tt>Rule</tt> matches
-	 */
-	public Pattern getPattern() {
-		return pattern;
-	}
-	
 }
