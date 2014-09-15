@@ -17,8 +17,6 @@ public abstract class AbstractRule<T extends AbstractToken<? extends Type<?>, T>
 	 *            a regex <tt>String</tt> that contains the <tt>Pattern</tt> for this <tt>Rule</tt> to use.
 	 * @param type
 	 *            the the type for <tt>Token</tt>s matched by this rule
-	 * @param action
-	 *            the <tt>Action</tt> to take on <tt>Token</tt>s matched by this rule
 	 */
 	public AbstractRule(String pattern, U type) {
 		this.pattern = pattern.startsWith("\\G") ? Pattern.compile(pattern) : Pattern.compile("\\G" + pattern);
@@ -34,8 +32,6 @@ public abstract class AbstractRule<T extends AbstractToken<? extends Type<?>, T>
 	 *            the regex flags defined in {@link java.util.regex.Pattern Pattern}
 	 * @param type
 	 *            the the type for <tt>Token</tt>s matched by this rule
-	 * @param action
-	 *            the <tt>Action</tt> to take on <tt>Token</tt>s matched by this rule
 	 */
 	public AbstractRule(String pattern, int flags, U type) {
 		this.pattern = pattern.startsWith("\\G") ? Pattern.compile(pattern, flags) : Pattern.compile("\\G" + pattern, flags);
@@ -46,7 +42,9 @@ public abstract class AbstractRule<T extends AbstractToken<? extends Type<?>, T>
 	 * Apply the <tt>Action</tt> associated with this <tt>Rule</tt>
 	 * 
 	 * @param match
+	 *            the {@link java.lang.String String} that was matched
 	 * @param lexer
+	 *            the <tt>Lexer</tt> that matched the provided {@link java.lang.String String}
 	 * @return the resulting value for a representative <tt>Token</tt>
 	 * @throws LexerException
 	 */

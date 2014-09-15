@@ -3,7 +3,7 @@ package lexer.abstractLexer;
 import lexer.Type;
 
 /**
- * This uses non-atomic S-expressions car & cdr
+ * This uses non-atomic S-expressions car {@literal &} cdr
  * 
  * @author Joshua Lipstone and Sean Mullan
  */
@@ -113,7 +113,8 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 	}
 	
 	/**
-	 * This will likely be:</br> <code>
+	 * This will likely be:<br>
+	 * <code>
 		return new {@literal <}class passed to V{@literal >}(carType.clone(car), carType);</code>
 	 * 
 	 * @return a new token that is functionally separate from this one, but contains the same car and carType.
@@ -139,10 +140,15 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 	}
 	
 	/**
-	 * This should be:</br><code>
-		Token clone = new Token(carType.clone(car), carType, cdrType.clone(cdr), cdrType);</br>
-		clone.previous = previous;</br>
+	 * This should be:<br>
+	 * <code>
+		Token clone = new Token(carType.clone(car), carType, cdrType.clone(cdr), cdrType);<br>
+		clone.previous = previous;<br>
 		return clone;</code>
+	 * 
+	 * @param previous
+	 *            the <tt>Token</tt> that should be set as the cloned <tt>Token</tt>'s previous value
+	 * @return a clone of this <tt>Token</tt>
 	 */
 	protected abstract V clone(V previous);
 	
@@ -157,8 +163,9 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 	}
 	
 	/**
-	 * Due to how type-erasure works, this method must be initialized in subclasses with the following code:</br>
+	 * Due to how type-erasure works, this method must be initialized in subclasses with the following code:<br>
 	 * <code>return new {@literal <}class name{@literal >}();</code>
+	 * @return a new <tt>Token</tt>
 	 */
 	public abstract V makeNewToken();
 	
@@ -181,7 +188,10 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 	}
 	
 	/**
-	 * This should have the following code:</br> <code>return <name-of-class-for-Type>.TOKEN</code>
+	 * This should have the following code:<br>
+	 * <code>return {@literal <name-of-class-for-Type>}.TOKEN</code>
+	 * 
+	 * @return the <tt>Type</tt> representing this <tt>Token</tt>
 	 */
 	protected abstract T getTokenType();
 	

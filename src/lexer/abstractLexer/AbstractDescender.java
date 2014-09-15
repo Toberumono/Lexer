@@ -8,11 +8,10 @@ import lexer.errors.LexerException;
  * 
  * @author Joshua Lipstone
  * @param <T>
- *            the subclass of {@link lexer.abstractLexer.AbstractToken Token} (including {@link lexer.abstractLexer.AbstractToken Token}) to use
+ *            the subclass of {@link lexer.abstractLexer.AbstractToken Token} (including
+ *            {@link lexer.abstractLexer.AbstractToken Token}) to use
  * @param <U>
  *            the subclass of {@link lexer.abstractLexer.AbstractToken Token} (including {@link lexer.Type Type}) to use
- * @param <V>
- *            the subclass of {@link lexer.abstractLexer.AbstractAction AbstractAction} to use
  */
 public abstract class AbstractDescender<T extends AbstractToken<? extends Type<?>, T>, U extends Type<?>, L extends AbstractLexer<T, ? extends Type<?>, ? extends AbstractRule<T, ? extends Type<?>, ?, L>, ? extends AbstractDescender<T, ? extends Type<?>, L>, L>> {
 	protected final String open, close;
@@ -29,7 +28,9 @@ public abstract class AbstractDescender<T extends AbstractToken<? extends Type<?
 	 * Apply the <tt>Action</tt> associated with this <tt>Descender</tt>
 	 * 
 	 * @param match
+	 *            the {@link java.lang.String String} that was matched
 	 * @param lexer
+	 *            the <tt>Lexer</tt> that matched the provided {@link java.lang.String String}
 	 * @return the resulting value for a representative <tt>Token</tt>
 	 * @throws LexerException
 	 */

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="create_run_jar" name="Create Runnable Jar for Project lexer">
 	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
-	<!--ANT 1.7 is required                                        -->
+	<!--ANT 1.8 is required                                        -->
 
 	<target name="javadoc">
-		<javadoc access="protected" author="true" classpath="libraries/CustomStructures.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="lexer,lexer.abstractLexer,lexer.errors" source="1.7" sourcepath="src" splitindex="true" use="true" version="true" />
+		<javadoc access="protected" author="true" classpath="libraries/CustomStructures.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="lexer,lexer.abstractLexer,lexer.errors" source="1.8" sourcepath="src" splitindex="true" use="true" version="true" />
 	</target>
 
 	<target name="create_run_jar" depends="javadoc">

@@ -80,6 +80,7 @@ public class Type<T> {
 	 * implementation-specific methods.
 	 * 
 	 * @param value
+	 *            the value to convert to a {@link java.lang.String String}
 	 * @return the value as a <tt>String</tt>
 	 */
 	public String valueToString(Object value) {
@@ -101,11 +102,13 @@ public class Type<T> {
 	}
 	
 	/**
-	 * By default this forwards to the compareTo method of whatever object this <tt>Type</tt> denotes.</br> If the value type
-	 * does not implement comparable, it returns 0.
+	 * By default this forwards to the compareTo method of whatever object this <tt>Type</tt> denotes.<br>
+	 * If the value type does not implement comparable, it returns 0.
 	 * 
 	 * @param value1
+	 *            the first value
 	 * @param value2
+	 *            the second value
 	 * @return the value of the implied value type's compareTo method if it implements <tt>Comparable</tt> otherwise 0.
 	 */
 	public int compareValues(Object value1, Object value2) {

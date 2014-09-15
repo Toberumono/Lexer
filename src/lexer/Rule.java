@@ -18,8 +18,6 @@ public class Rule<T> extends AbstractRule<Token, Type<T>, T, Lexer> {
 	 *            a regex <tt>String</tt> that contains the <tt>Pattern</tt> for this <tt>Rule</tt> to use.
 	 * @param type
 	 *            the the type for <tt>Token</tt>s matched by this rule
-	 * @param action
-	 *            the <tt>Action</tt> to take on <tt>Token</tt>s matched by this rule
 	 */
 	public Rule(String pattern, Type<T> type) {
 		super(pattern, type);
@@ -34,8 +32,6 @@ public class Rule<T> extends AbstractRule<Token, Type<T>, T, Lexer> {
 	 *            the regex flags defined in {@link java.util.regex.Pattern Pattern}
 	 * @param type
 	 *            the the type for <tt>Token</tt>s matched by this rule
-	 * @param action
-	 *            the <tt>Action</tt> to take on <tt>Token</tt>s matched by this rule
 	 */
 	public Rule(String pattern, int flags, Type<T> type) {
 		super(pattern, flags, type);
