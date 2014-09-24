@@ -12,7 +12,7 @@ import lexer.errors.UnbalancedDescenderException;
 import lexer.errors.UnrecognizedCharacterException;
 import lipstone.joshua.customStructures.lists.PairedList;
 
-public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T>, U extends Type<?>, V extends AbstractRule<T, ? extends Type<?>, ?, X>, W extends AbstractDescender<T, ? extends Type<T>, X>, X extends AbstractLexer<T, ? extends Type<?>, V, W, X>> {
+public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T>, U extends Type<?>, V extends AbstractRule<T, ? extends Type<?>, ?, L>, W extends AbstractDescender<T, ? extends Type<T>, L>, L extends AbstractLexer<T, ? extends Type<?>, V, W, L>> {
 	protected final PairedList<String, V> rules = new PairedList<>();
 	protected final PairedList<String, W> descenders = new PairedList<>();
 	protected final ArrayList<U> types = new ArrayList<>();
@@ -63,9 +63,9 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * @throws LexerException
 	 */
 	public T lex(String input, int head, T output, T previous) throws LexerException {
-		descentStack.push(new DescentSet<T>(this.input, this.head, this.output, this.previous, this.current));
+		descentStack.push(new DescentSet<T>(this.input, this.head, this.output, this.previous, current));
 		this.previous = previous;
-		this.current = previous;
+		current = previous;
 		this.head = head;
 		this.output = output;
 		try {
@@ -158,7 +158,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 			int close = getEndIndex(input, head, d.open, d.close);
 			int oldHead = head;
 			head = close + d.close.length();
-			T result = d.apply(input.substring(oldHead + d.open.length(), close), (X) this);
+			T result = d.apply(input.substring(oldHead + d.open.length(), close), (L) this);
 			if (!step)
 				head = oldHead;
 			else
@@ -177,7 +177,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 			}
 			if (hit != null) {
 				head += match.group().length();
-				T result = hit.apply(match, (X) this);
+				T result = hit.apply(match, (L) this);
 				if (!step)
 					head -= match.group().length();
 				else

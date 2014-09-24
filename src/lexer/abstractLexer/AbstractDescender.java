@@ -4,14 +4,16 @@ import lexer.Type;
 import lexer.errors.LexerException;
 
 /**
- * A Descender for the <tt>Lexer</tt>
+ * Represents the action to take upon seeing a particular descent-start token.
  * 
  * @author Joshua Lipstone
  * @param <T>
- *            the subclass of {@link lexer.abstractLexer.AbstractToken Token} (including
- *            {@link lexer.abstractLexer.AbstractToken Token}) to use
+ *            the subclass of {@link lexer.abstractLexer.AbstractToken Token}
  * @param <U>
- *            the subclass of {@link lexer.abstractLexer.AbstractToken Token} (including {@link lexer.Type Type}) to use
+ *            the subclass of {@link lexer.Type Type} (often {@link lexer.Type Type} itself) to use
+ * @param <L>
+ *            the subclass of {@link lexer.abstractLexer.AbstractLexer AbstractLexer} (including
+ *            {@link lexer.abstractLexer.AbstractLexer AbstractLexer}) to use
  */
 public abstract class AbstractDescender<T extends AbstractToken<? extends Type<?>, T>, U extends Type<?>, L extends AbstractLexer<T, ? extends Type<?>, ? extends AbstractRule<T, ? extends Type<?>, ?, L>, ? extends AbstractDescender<T, ? extends Type<?>, L>, L>> {
 	protected final String open, close;
