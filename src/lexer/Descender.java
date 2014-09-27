@@ -7,7 +7,7 @@ import lexer.abstractLexer.AbstractDescender;
  * 
  * @author Joshua Lipstone
  */
-public final class Descender extends AbstractDescender<Token, Type<Token>, Lexer> {
+public class Descender extends AbstractDescender<Token, Type<Token>, Lexer> {
 	
 	public Descender(String open, String close, Type<Token> type) {
 		super(open, close, type);
