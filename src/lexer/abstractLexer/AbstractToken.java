@@ -183,7 +183,7 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 		next.previous = previous;
 		previous = null;
 		cdr = null;
-		cdrType = null;
+		cdrType = getTokenType();
 		return next;
 	}
 	

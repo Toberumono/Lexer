@@ -71,7 +71,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 		try {
 			while (this.head < input.length())
 				if (hasNext())
-					current = previous = (T) current.append(getNextToken(true));
+					current = this.previous = (T) current.append(getNextToken(true));
 				else
 					break;
 		}
