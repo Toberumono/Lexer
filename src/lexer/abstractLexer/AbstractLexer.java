@@ -15,8 +15,8 @@ import lipstone.joshua.customStructures.lists.PairedList;
 public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T>, U extends Type<?>, V extends AbstractRule<T, ? extends Type<?>, ?, L>, W extends AbstractDescender<T, ? extends Type<T>, L>, L extends AbstractLexer<T, ? extends Type<?>, V, W, L>> {
 	protected final PairedList<String, V> rules = new PairedList<>();
 	protected final PairedList<String, W> descenders = new PairedList<>();
+	protected final PairedList<String, Pattern> ignores = new PairedList<>();
 	protected final ArrayList<U> types = new ArrayList<>();
-	protected final ArrayList<Pattern> ignores = new ArrayList<>();
 	protected final Stack<DescentSet<T>> descentStack = new Stack<>();
 	protected boolean ignoreSpace = true;
 	protected String input = "";
@@ -25,14 +25,29 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	private final TokenConstructor<U, T> tokenConstructor;
 	
 	/**
-	 * Constructs a <tt>GenericLexer</tt> with the provided token constructor
+	 * Constructs a <tt>GenericLexer</tt> with the provided token constructor that will skip over spaces in the input.
 	 * 
 	 * @param tokenConstructor
 	 *            a function that takes no arguments and returns a new instance of the class extending {@link AbstractToken}.
 	 */
 	public AbstractLexer(TokenConstructor<U, T> tokenConstructor) {
+		this(tokenConstructor, true);
+	}
+	
+	/**
+	 * Constructs a <tt>GenericLexer</tt> with the provided token constructor
+	 * 
+	 * @param tokenConstructor
+	 *            a function that takes no arguments and returns a new instance of the class extending {@link AbstractToken}.
+	 * @param ignoreSpace
+	 *            whether to ignore spaces in an input
+	 */
+	public AbstractLexer(TokenConstructor<U, T> tokenConstructor, boolean ignoreSpace) {
 		this.tokenConstructor = tokenConstructor;
 		previous = output = current = tokenConstructor.makeNewToken();
+		this.ignoreSpace = ignoreSpace;
+		if (ignoreSpace)
+			ignore("Space", " +");
 	}
 	
 	/**
@@ -147,90 +162,65 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 *             if no token was found
 	 */
 	public T getNextToken(boolean step) throws LexerException {
-		skipIgnores();
-		if (head >= input.length())
-			throw new EmptyInputException();
-		W d = null;
-		for (W descender : descenders.getValues())
-			if (input.length() - head >= descender.open.length() && input.startsWith(descender.open, head) && (d == null || descender.open.length() > d.open.length()))
-				d = descender;
-		if (d != null) {
-			int close = getEndIndex(input, head, d.open, d.close);
+		do {
+			if (head >= input.length())
+				throw new EmptyInputException();
 			int oldHead = head;
-			head = close + d.close.length();
-			T result = d.apply(input.substring(oldHead + d.open.length(), close), (L) this);
-			if (!step)
-				head = oldHead;
-			else
-				previous = result;
-			return result;
-		}
-		if (rules.size() > 0) {
+			T result = null;
+			W d = null;
 			V hit = null;
 			Matcher match = null, m;
+			//Descenders
+			for (W descender : descenders.getValues())
+				if (input.length() - head >= descender.open.length() && input.startsWith(descender.open, head) && (d == null || descender.open.length() > d.open.length()))
+					d = descender;
+			if (d != null) {
+				int close = getEndIndex(input, head, d.open, d.close);
+				head = close + d.close.length();
+				result = d.apply(input.substring(oldHead + d.open.length(), close), (L) this);
+				if (!step)
+					head = oldHead;
+				else
+					previous = result;
+				return result;
+			}
+			
+			//Rules
 			for (V rule : rules.getValues()) {
 				m = rule.pattern.matcher(input);
-				if (m.find(head) && m.group().length() != 0 && (match == null || match.group().length() < m.group().length())) {
+				if (m.find(head) && m.start() == head && m.group().length() != 0 && (match == null || match.end() < m.end())) {
 					match = m;
 					hit = rule;
 				}
 			}
 			if (hit != null) {
 				head += match.group().length();
-				T result = hit.apply(match, (L) this);
+				result = hit.apply(match, (L) this);
 				if (!step)
-					head -= match.group().length();
+					head = oldHead;
 				else
 					previous = result;
 				return result;
 			}
-		}
-		if (input.charAt(head) == ' ') {
-			head++;
-			return getNextToken(step);
-		}
+		} while (skipIgnores() > 0);
 		throw new UnrecognizedCharacterException(input, head);
 	}
 	
-	private final void skipIgnores() {
+	private final int skipIgnores() {
+		int oldHead = head;
 		while (true) {
-			if (ignoreSpace) //This is true if none of patterns start with spaces.
-				while (head < input.length() && input.charAt(head) == ' ')
-					head++;
-			Matcher m = null, check;
-			//Get the longest match from the read-head in the ignore patterns
-			for (Pattern p : ignores)
-				if ((check = p.matcher(input)).find(head) && (m == null || check.end() > m.end()))
-					m = check;
-			//If nothing matched starting at the read-head, break
-			if (m == null)
+			Matcher match = null, m;
+			for (Pattern ignore : ignores.getValues()) {
+				m = ignore.matcher(input);
+				if (m.find(head) && m.start() == head && (match == null || match.end() < m.end()))
+					match = m;
+			}
+			if (match != null)
+				head = match.end();
+			else
 				break;
-			//Otherwise, skip it
-			head = m.end();
 		}
-	}
-	
-	private final boolean startsWithSpace(String regex) {
-		if (regex.startsWith("\\G"))
-			regex = regex.substring(2);
-		if (regex.charAt(0) == ' ' || (regex.charAt(0) == '\\' && regex.length() > 1 && regex.charAt(1) == ' '))
-			return true;
-		if (regex.charAt(0) == '[') {
-			try {
-				return regex.substring(0, getEndIndex(regex, 0, "[", "]")).contains(" ");
-			}
-			catch (UnbalancedDescenderException e) {/*Cannot occur because the pattern is valid*/}
-		}
-		if (regex.charAt(0) == '(') {
-			try {
-				for (String option : regex.substring(0, getEndIndex(regex, 0, "(", ")")).split("(?<!\\\\)\\|"))
-					if (startsWithSpace(option))
-						return true;
-			}
-			catch (UnbalancedDescenderException e) {/*Cannot occur because the pattern is valid*/}
-			return false;
-		}
-		return false;
+		return head - oldHead;
 	}
 	
 	/**
@@ -269,8 +259,6 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 *            the rule
 	 */
 	public final void addRule(String name, V rule) {
-		if (ignoreSpace)
-			ignoreSpace = !startsWithSpace(rule.pattern.pattern());
 		rules.add(name, rule);
 	}
 	
@@ -283,31 +271,37 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 *            the descender
 	 */
 	public final void addDescender(String name, W descender) {
-		if (ignoreSpace)
-			ignoreSpace = !(descender.open.charAt(0) == ' ' || descender.close.charAt(0) == ' ');
 		descenders.add(name, descender);
 	}
 	
 	/**
 	 * Tells the lexer to skip over the <tt>Pattern</tt> in the given regex <tt>String</tt>.
 	 * 
+	 * @param name
+	 *            the name with which to reference this ignore pattern
 	 * @param ignore
 	 *            the <tt>Pattern</tt> to ignore as a regex <tt>String</tt>
 	 */
-	public final void ignore(String ignore) {
-		ignores.add(Pattern.compile(ignore.startsWith("\\G") ? ignore : "\\G" + ignore));
+	public final void ignore(String name, String ignore) {
+		if (ignores.containsKey(name))
+			ignores.remove(name);
+		ignores.add(name, Pattern.compile(ignore));
 	}
 	
 	/**
 	 * Tells the lexer to skip over the <tt>Pattern</tt> in the given regex <tt>String</tt>.
 	 * 
+	 * @param name
+	 *            the name with which to reference this ignore pattern
 	 * @param ignore
 	 *            the <tt>Pattern</tt> to ignore as a regex <tt>String</tt>
 	 * @param flags
 	 *            the regex flags defined in {@link java.util.regex.Pattern Pattern}
 	 */
-	public final void ignore(String ignore, int flags) {
-		ignores.add(Pattern.compile((ignore.startsWith("\\G") ? ignore : "\\G" + ignore), flags));
+	public final void ignore(String name, String ignore, int flags) {
+		if (ignores.containsKey(name))
+			ignores.remove(name);
+		ignores.add(name, Pattern.compile(ignore, flags));
 	}
 	
 	/**

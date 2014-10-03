@@ -29,7 +29,7 @@ public class TestSystem {
 		});
 		lexer.addDescender("Parentheses", new Descender("(", ")", new Type<Token>("Parentheses")));
 		lexer.addDescender("Brackets", new Descender("[", "]", new Type<Token>("Brackets")));
-		lexer.ignore("\n");
+		lexer.ignore("Newline", "\n");
 		String test = "10.0 100 (3.0 300\n) [51 5 6] ()";
 		try {
 			System.out.println(test + " -> " + lexer.lex(test).printStructure());

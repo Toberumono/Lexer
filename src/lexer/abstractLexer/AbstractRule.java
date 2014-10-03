@@ -19,7 +19,7 @@ public abstract class AbstractRule<T extends AbstractToken<? extends Type<?>, T>
 	 *            the the type for <tt>Token</tt>s matched by this rule
 	 */
 	public AbstractRule(String pattern, U type) {
-		this.pattern = pattern.startsWith("\\G") ? Pattern.compile(pattern) : Pattern.compile("\\G" + pattern);
+		this.pattern = Pattern.compile(pattern);
 		this.type = type;
 	}
 	
@@ -34,7 +34,7 @@ public abstract class AbstractRule<T extends AbstractToken<? extends Type<?>, T>
 	 *            the the type for <tt>Token</tt>s matched by this rule
 	 */
 	public AbstractRule(String pattern, int flags, U type) {
-		this.pattern = pattern.startsWith("\\G") ? Pattern.compile(pattern, flags) : Pattern.compile("\\G" + pattern, flags);
+		this.pattern = Pattern.compile(pattern, flags);
 		this.type = type;
 	}
 	
