@@ -186,15 +186,13 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 			}
 			
 			//Rules
-			for (V rule : rules.getValues()) {
-				m = rule.pattern.matcher(input);
-				if (m.find(head) && m.start() == head && m.group().length() != 0 && (match == null || match.end() < m.end())) {
+			for (V rule : rules.getValues())
+				if ((m = rule.pattern.matcher(input)).find(head) && m.start() == head && m.group().length() != 0 && (match == null || match.end() < m.end())) {
 					match = m;
 					hit = rule;
 				}
-			}
 			if (hit != null) {
-				head += match.group().length();
+				head = match.end();
 				result = hit.apply(match, (L) this);
 				if (!step)
 					head = oldHead;
@@ -210,11 +208,9 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 		int oldHead = head;
 		while (true) {
 			Matcher match = null, m;
-			for (Pattern ignore : ignores.getValues()) {
-				m = ignore.matcher(input);
-				if (m.find(head) && m.start() == head && (match == null || match.end() < m.end()))
+			for (Pattern ignore : ignores.getValues())
+				if ((m = ignore.matcher(input)).find(head) && m.start() == head && (match == null || match.end() < m.end()))
 					match = m;
-			}
 			if (match != null)
 				head = match.end();
 			else
