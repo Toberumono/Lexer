@@ -10,4 +10,14 @@ public class Lexer extends AbstractLexer<Token, Type<?>, Rule<?>, Descender, Lex
 	public Lexer() {
 		super(Token::new);
 	}
+	
+	/**
+	 * Basic constructor for a lexer
+	 * 
+	 * @param ignoreSpace
+	 *            whether to ignore spaces in an input by default
+	 */
+	public Lexer(boolean ignoreSpace) {
+		super(Token::new, ignoreSpace);
+	}
 }

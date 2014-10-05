@@ -40,7 +40,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * @param tokenConstructor
 	 *            a function that takes no arguments and returns a new instance of the class extending {@link AbstractToken}.
 	 * @param ignoreSpace
-	 *            whether to ignore spaces in an input
+	 *            whether to ignore spaces in an input by default
 	 */
 	public AbstractLexer(TokenConstructor<U, T> tokenConstructor, boolean ignoreSpace) {
 		this.tokenConstructor = tokenConstructor;
