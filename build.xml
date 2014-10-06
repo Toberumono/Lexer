@@ -4,7 +4,7 @@
 	<!--ANT 1.8 is required                                        -->
 
 	<target name="javadoc">
-		<javadoc access="protected" author="true" classpath="libraries/CustomStructures.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="lexer,lexer.abstractLexer,lexer.errors" source="1.8" sourcepath="src" splitindex="true" use="true" version="true" />
+		<javadoc access="protected" author="true" classpath="libraries/CustomStructures.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="lexer.*" source="1.8" sourcepath="src" splitindex="true" use="true" version="true" />
 	</target>
 
 	<target name="create_run_jar" depends="javadoc">

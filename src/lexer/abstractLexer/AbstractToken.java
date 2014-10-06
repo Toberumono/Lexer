@@ -30,11 +30,20 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 	}
 	
 	public AbstractToken(Object car, T carType) {
-		this(car, carType, null, (T) Type.EMPTY);
+		this.car = car;
+		this.carType = carType;
+		this.cdr = null;
+		this.cdrType = (T) getTokenType().EMPTY;
 	}
 	
+	/**
+	 * Creates an empty <tt>AbstractToken</tt>
+	 */
 	public AbstractToken() {
-		this(null, (T) Type.EMPTY, null, (T) Type.EMPTY);
+		this.car = null;
+		this.carType = (T) getTokenType().EMPTY;
+		this.cdr = null;
+		this.cdrType = (T) getTokenType().EMPTY;
 	}
 	
 	public T getCarType() {
@@ -59,14 +68,14 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 	}
 	
 	public V getNextToken() {
-		return (cdr == null || !(cdr instanceof AbstractToken)) ? makeNewToken() : (V) cdr;
+		return (cdr != null && cdr instanceof AbstractToken) ? (V) cdr : makeNewToken();
 	}
 	
 	public V getLastToken() {
-		V current = (V) this, previous = current;
-		while (current.cdr != null && current.cdr instanceof AbstractToken)
-			previous = (current = (V) current.cdr);
-		return previous;
+		V current = (V) this;
+		while (current.cdr instanceof AbstractToken)
+			current = (V) current.cdr;
+		return current;
 	}
 	
 	public V getPreviousToken() {
@@ -74,14 +83,14 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 	}
 	
 	public V getFirstToken() {
-		V current = (V) this, previous = current;
-		while ((current = current.previous) != null)
-			previous = current;
-		return previous;
+		V current = (V) this;
+		while (current.previous != null)
+			current = current.previous;
+		return current;
 	}
 	
 	public boolean isNull() {
-		return car == null && carType.equals(Type.EMPTY) && cdr == null && cdrType.equals(Type.EMPTY);
+		return car == null && carType.equals(getTokenType().EMPTY) && cdr == null && cdrType.equals(getTokenType().EMPTY);
 	}
 	
 	/**
@@ -106,7 +115,7 @@ public abstract class AbstractToken<T extends Type<?>, V extends AbstractToken<T
 		}
 		if (cdr instanceof AbstractToken)
 			((V) cdr).previous = null;
-		cdrType = getTokenType();
+		cdrType = (T) getTokenType().EMPTY;
 		cdr = next;
 		next.previous = (V) this;
 		return getLastToken();

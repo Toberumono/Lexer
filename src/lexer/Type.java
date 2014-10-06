@@ -36,16 +36,20 @@ public class Type<T> {
 	protected final String name;
 	protected String open, close;
 	
+	private final int hash;
+	
 	public Type(String name, String open, String close) {
 		this.name = name;
 		this.open = open;
 		this.close = close;
+		hash = name.hashCode();
 	}
 	
 	public Type(String name) {
 		this.name = name;
 		open = null;
 		close = null;
+		hash = name.hashCode();
 	}
 	
 	public final void setOpenClose(String open, String close) {
@@ -93,12 +97,12 @@ public class Type<T> {
 	}
 	
 	@Override
-	public final boolean equals(Object o) {
+	public boolean equals(Object o) {
 		if (o instanceof Type)
-			return ((Type<?>) o).name.equals(name);
+			return ((Type<?>) o).hash == hash;
 		if (o instanceof String)
 			return ((String) o).equals(name);
-		return false;
+		return this == o;
 	}
 	
 	/**
