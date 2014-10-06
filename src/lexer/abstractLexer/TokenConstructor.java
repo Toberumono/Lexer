@@ -7,10 +7,10 @@ public interface TokenConstructor<T extends Type<?>, V extends AbstractToken<? e
 	public V makeNewToken(Object car, T carType, Object cdr, T cdrType);
 	
 	default V makeNewToken() {
-		return makeNewToken(null, (T) Type.EMPTY, null, (T) Type.EMPTY);
+		return makeNewToken(null, (T) T.EMPTY, null, (T) T.EMPTY);
 	}
 	
 	default V makeNewToken(Object car, T carType) {
-		return makeNewToken(car, carType, null, (T) Type.EMPTY);
+		return makeNewToken(car, carType, null, (T) T.EMPTY);
 	}
 }
