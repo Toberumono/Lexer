@@ -1,60 +1,24 @@
-package lexer;
+package lipstone.joshua.lexer.abstractLexer;
 
 import java.lang.reflect.InvocationTargetException;
 
-import lexer.abstractLexer.AbstractToken;
-
-@SuppressWarnings("rawtypes")
-public class Type<T> {
-	
-	/**
-	 * A pre-created type that <i>must</i> be used to denote empty values (e.g. the end of a list)
-	 */
-	public static final Type<Object> EMPTY = new Type<Object>("Empty") {
-		@Override
-		public String valueToString(Object value) {
-			return "";
-		}
-		
-		@Override
-		public int compareValues(Object value1, Object value2) {
-			return 0;
-		}
-	};
-	
-	/**
-	 * A pre-created <tt>Type</tt> that flags the value as an instance of <tt>AbstractToken</tt>
-	 */
-	public static final Type<? extends AbstractToken> TOKEN = new Type<AbstractToken>("Token") {
-		
-		@Override
-		public AbstractToken cloneValue(Object value) {
-			return ((AbstractToken) value).clone();
-		}
-	};
-	
-	protected final String name;
-	protected String open, close;
+public abstract class AbstractType<T, Ty extends AbstractType<T, Ty>> {
+	protected final String name, open, close;
 	
 	private final int hash;
 	
-	public Type(String name, String open, String close) {
+	public AbstractType(String name, String open, String close) {
 		this.name = name;
 		this.open = open;
 		this.close = close;
 		hash = name.hashCode();
 	}
 	
-	public Type(String name) {
+	public AbstractType(String name) {
 		this.name = name;
 		open = null;
 		close = null;
 		hash = name.hashCode();
-	}
-	
-	public final void setOpenClose(String open, String close) {
-		this.open = open;
-		this.close = close;
 	}
 	
 	public final String getOpen() {
@@ -98,8 +62,8 @@ public class Type<T> {
 	
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof Type)
-			return ((Type<?>) o).hash == hash;
+		if (o instanceof AbstractType)
+			return ((AbstractType<Object, Ty>) o).hash == hash;
 		if (o instanceof String)
 			return ((String) o).equals(name);
 		return this == o;

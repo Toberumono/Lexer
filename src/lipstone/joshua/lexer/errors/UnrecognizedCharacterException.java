@@ -1,4 +1,4 @@
-package lexer.errors;
+package lipstone.joshua.lexer.errors;
 
 public class UnrecognizedCharacterException extends LexerException {
 	

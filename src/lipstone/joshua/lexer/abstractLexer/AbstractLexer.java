@@ -1,51 +1,58 @@
-package lexer.abstractLexer;
+package lipstone.joshua.lexer.abstractLexer;
 
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lexer.Type;
-import lexer.errors.EmptyInputException;
-import lexer.errors.LexerException;
-import lexer.errors.UnbalancedDescenderException;
-import lexer.errors.UnrecognizedCharacterException;
 import lipstone.joshua.customStructures.lists.PairedList;
+import lipstone.joshua.lexer.errors.EmptyInputException;
+import lipstone.joshua.lexer.errors.LexerException;
+import lipstone.joshua.lexer.errors.UnbalancedDescenderException;
+import lipstone.joshua.lexer.errors.UnrecognizedCharacterException;
 
-public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T>, U extends Type<?>, V extends AbstractRule<T, ? extends Type<?>, ?, L>, W extends AbstractDescender<T, ? extends Type<T>, L>, L extends AbstractLexer<T, ? extends Type<?>, V, W, L>> {
-	protected final PairedList<String, V> rules = new PairedList<>();
-	protected final PairedList<String, W> descenders = new PairedList<>();
+public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends AbstractType<?, Ty>, R extends AbstractRule<To, Ty, L>, D extends AbstractDescender<To, Ty, L>, L extends AbstractLexer<To, Ty, R, D, L>> {
+	protected final PairedList<String, R> rules = new PairedList<>();
+	protected final PairedList<String, D> descenders = new PairedList<>();
 	protected final PairedList<String, Pattern> ignores = new PairedList<>();
-	protected final ArrayList<U> types = new ArrayList<>();
-	protected final Stack<DescentSet<T>> descentStack = new Stack<>();
+	protected final ArrayList<Ty> types = new ArrayList<>();
+	protected final Stack<DescentSet<To>> descentStack = new Stack<>();
 	protected boolean ignoreSpace = true;
 	protected String input = "";
 	protected int head = 0;
-	protected T current, output, previous;
-	private final TokenConstructor<U, T> tokenConstructor;
+	protected To current, output, previous;
+	private final TokenConstructor<Ty, To> tokenConstructor;
+	protected final Ty emptyType;
 	
 	/**
-	 * Constructs a <tt>GenericLexer</tt> with the provided token constructor that will skip over spaces in the input.
+	 * Constructs an <tt>AbstractLexer</tt> with the provided token constructor that will skip over spaces in the input.
 	 * 
 	 * @param tokenConstructor
 	 *            a function that takes no arguments and returns a new instance of the class extending {@link AbstractToken}.
+	 * @param emptyType
+	 *            the <tt>Type</tt> that represents an empty (or null) value in the <tt>Token</tt> type that this
+	 *            <tt>Lexer</tt> uses.
 	 */
-	public AbstractLexer(TokenConstructor<U, T> tokenConstructor) {
-		this(tokenConstructor, true);
+	public AbstractLexer(TokenConstructor<Ty, To> tokenConstructor, Ty emptyType) {
+		this(tokenConstructor, emptyType, true);
 	}
 	
 	/**
-	 * Constructs a <tt>GenericLexer</tt> with the provided token constructor
+	 * Constructs an <tt>AbstractLexer</tt> with the provided token constructor
 	 * 
 	 * @param tokenConstructor
 	 *            a function that takes no arguments and returns a new instance of the class extending {@link AbstractToken}.
+	 * @param emptyType
+	 *            the <tt>Type</tt> that represents an empty (or null) value in the <tt>Token</tt> type that this
+	 *            <tt>Lexer</tt> uses.
 	 * @param ignoreSpace
 	 *            whether to ignore spaces in an input by default
 	 */
-	public AbstractLexer(TokenConstructor<U, T> tokenConstructor, boolean ignoreSpace) {
+	public AbstractLexer(TokenConstructor<Ty, To> tokenConstructor, Ty emptyType, boolean ignoreSpace) {
 		this.tokenConstructor = tokenConstructor;
-		previous = output = current = tokenConstructor.makeNewToken();
+		previous = output = current = tokenConstructor.makeNewToken(null, emptyType, null, emptyType);
 		this.ignoreSpace = ignoreSpace;
+		this.emptyType = emptyType;
 		if (ignoreSpace)
 			ignore("Space", " +");
 	}
@@ -57,8 +64,9 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 *            the <tt>String</tt> to tokenize
 	 * @return the <tt>Token</tt>s in the <tt>String</tt>
 	 * @throws LexerException
+	 *             so that lexer exceptions can be propogated back to the original caller
 	 */
-	public T lex(String input) throws LexerException {
+	public To lex(String input) throws LexerException {
 		return lex(input, 0);
 	}
 	
@@ -76,9 +84,10 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 *            the last token in the previous tokenization
 	 * @return the <tt>Token</tt>s in the <tt>String</tt>
 	 * @throws LexerException
+	 *             so that lexer exceptions can be propogated back to the original caller
 	 */
-	public T lex(String input, int head, T output, T previous) throws LexerException {
-		descentStack.push(new DescentSet<T>(this.input, this.head, this.output, this.previous, current));
+	public To lex(String input, int head, To output, To previous) throws LexerException {
+		descentStack.push(new DescentSet<To>(this.input, this.head, this.output, this.previous, current));
 		this.previous = previous;
 		current = previous;
 		this.head = head;
@@ -86,7 +95,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 		try {
 			while (this.head < input.length())
 				if (hasNext())
-					current = this.previous = (T) current.append(getNextToken(true));
+					current = this.previous = (To) current.append(getNextToken(true));
 				else
 					break;
 		}
@@ -94,8 +103,8 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 			descentStack.clear();
 			throw e;
 		}
-		T result = output;
-		DescentSet<T> popped = descentStack.pop();
+		To result = output;
+		DescentSet<To> popped = descentStack.pop();
 		this.input = popped.getInput();
 		this.head = popped.getHead();
 		previous = popped.getPrevious();
@@ -113,17 +122,18 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 *            the location at which to start lexing the input
 	 * @return the <tt>Token</tt>s in the <tt>String</tt>
 	 * @throws LexerException
+	 *             so that lexer exceptions can be propogated back to the original caller
 	 */
-	public T lex(String input, int head) throws LexerException {
-		descentStack.push(new DescentSet<T>(this.input, this.head, output, previous, current));
+	public To lex(String input, int head) throws LexerException {
+		descentStack.push(new DescentSet<To>(this.input, this.head, output, previous, current));
 		this.input = input;
-		current = tokenConstructor.makeNewToken();
+		current = tokenConstructor.makeNewToken(null, emptyType, null, emptyType);
 		output = previous = current;
 		this.head = head;
 		try {
 			while (this.head < input.length())
 				if (hasNext())
-					current = previous = (T) current.append(getNextToken(true));
+					current = previous = (To) current.append(getNextToken(true));
 				else
 					break;
 		}
@@ -131,8 +141,8 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 			descentStack.clear();
 			throw e;
 		}
-		T result = output;
-		DescentSet<T> popped = descentStack.pop();
+		To result = output;
+		DescentSet<To> popped = descentStack.pop();
 		this.input = popped.getInput();
 		this.head = popped.getHead();
 		previous = popped.getPrevious();
@@ -148,7 +158,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * @throws LexerException
 	 *             if no token was found
 	 */
-	public final T getNextToken() throws LexerException {
+	public final To getNextToken() throws LexerException {
 		return getNextToken(false);
 	}
 	
@@ -161,23 +171,23 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * @throws LexerException
 	 *             if no token was found
 	 */
-	public T getNextToken(boolean step) throws LexerException {
+	public To getNextToken(boolean step) throws LexerException {
 		do {
 			if (head >= input.length())
 				throw new EmptyInputException();
 			int oldHead = head;
-			T result = null;
-			W d = null;
-			V hit = null;
+			To result = null;
+			D d = null;
+			R hit = null;
 			Matcher match = null, m;
 			//Descenders
-			for (W descender : descenders.getValues())
+			for (D descender : descenders.getValues())
 				if (input.length() - head >= descender.open.length() && input.startsWith(descender.open, head) && (d == null || descender.open.length() > d.open.length()))
 					d = descender;
 			if (d != null) {
 				int close = getEndIndex(input, head, d.open, d.close);
 				head = close + d.close.length();
-				result = d.apply(input.substring(oldHead + d.open.length(), close), (L) this);
+				result = d.action.perform(input.substring(oldHead + d.open.length(), close), (L) this);
 				if (!step)
 					head = oldHead;
 				else
@@ -186,14 +196,14 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 			}
 			
 			//Rules
-			for (V rule : rules.getValues())
+			for (R rule : rules.getValues())
 				if ((m = rule.pattern.matcher(input)).find(head) && m.start() == head && m.group().length() != 0 && (match == null || match.end() < m.end())) {
 					match = m;
 					hit = rule;
 				}
 			if (hit != null) {
 				head = match.end();
-				result = hit.apply(match, (L) this);
+				result = hit.action.perform(match, (L) this);
 				if (!step)
 					head = oldHead;
 				else
@@ -222,7 +232,7 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	/**
 	 * @return the output this lexer is currently generating.
 	 */
-	public final T getPreviousToken() {
+	public final To getPreviousToken() {
 		return previous;
 	}
 	
@@ -231,8 +241,8 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * 
 	 * @return the output this lexer is currently generating.
 	 */
-	public final T popPreviousToken() {
-		T temp = previous;
+	public final To popPreviousToken() {
+		To temp = previous;
 		previous = current == previous ? (current = previous.getPreviousToken()) : previous.getPreviousToken();
 		temp.remove();
 		return temp;
@@ -254,8 +264,19 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * @param rule
 	 *            the rule
 	 */
-	public final void addRule(String name, V rule) {
+	public final void addRule(String name, R rule) {
 		rules.add(name, rule);
+	}
+	
+	/**
+	 * Removes a rule
+	 * 
+	 * @param name
+	 *            the name of the rule to remove
+	 * @return the removed rule if a rule of that name existed, otherwise null
+	 */
+	public final R removeRule(String name) {
+		return rules.remove(name);
 	}
 	
 	/**
@@ -266,8 +287,19 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	 * @param descender
 	 *            the descender
 	 */
-	public final void addDescender(String name, W descender) {
+	public final void addDescender(String name, D descender) {
 		descenders.add(name, descender);
+	}
+	
+	/**
+	 * Removes a descender
+	 * 
+	 * @param name
+	 *            the name of the descender to remove
+	 * @return the removed descender if a descender of that name existed, otherwise null
+	 */
+	public final D removeDescender(String name) {
+		return descenders.remove(name);
 	}
 	
 	/**
@@ -303,11 +335,11 @@ public abstract class AbstractLexer<T extends AbstractToken<? extends Type<?>, T
 	/**
 	 * @return the types that this lexer can find.
 	 */
-	public ArrayList<U> getTypes() {
+	public ArrayList<Ty> getTypes() {
 		return types;
 	}
 	
-	public final TokenConstructor<U, T> getTokenConstructor() {
+	public final TokenConstructor<Ty, To> getTokenConstructor() {
 		return tokenConstructor;
 	}
 	

@@ -4,7 +4,7 @@
 	<!--ANT 1.8 is required                                        -->
 
 	<target name="javadoc">
-		<javadoc access="protected" author="true" classpath="libraries/CustomStructures.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="lexer.*" source="1.8" sourcepath="src" splitindex="true" use="true" version="true" />
+		<javadoc access="protected" author="true" classpath="libraries/CustomStructures.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="lipstone.joshua.lexer.*" source="1.8" sourcepath="src" splitindex="true" use="true" version="true" />
 	</target>
 
 	<target name="create_run_jar" depends="javadoc">
@@ -13,9 +13,9 @@
 				<attribute name="Main-Class" value="" />
 				<attribute name="Class-Path" value="." />
 			</manifest>
-			<fileset dir="./bin/" includes="lexer/**, testCases/**" />
+			<fileset dir="./bin/" includes="lipstone/**" />
 			<fileset dir="." includes="doc/**" />
-			<fileset dir="./src/" />
+			<fileset dir="./src/" includes="lipstone/**" />
             <zipfileset excludes="META-INF/*.SF" src="libraries/CustomStructures.jar"/>
 		</jar>
 	</target>

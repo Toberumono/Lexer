@@ -1,13 +1,13 @@
 package testCases;
 
-import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import lexer.Descender;
-import lexer.Lexer;
-import lexer.Rule;
-import lexer.Token;
-import lexer.Type;
-import lexer.errors.LexerException;
+import lipstone.joshua.lexer.Descender;
+import lipstone.joshua.lexer.Lexer;
+import lipstone.joshua.lexer.Rule;
+import lipstone.joshua.lexer.Token;
+import lipstone.joshua.lexer.Type;
+import lipstone.joshua.lexer.errors.LexerException;
 
 public class TestSystem {
 	
@@ -15,18 +15,8 @@ public class TestSystem {
 		Lexer lexer = new Lexer();
 		final Type<Integer> integer = new Type<>("Integer");
 		final Type<Double> decimal = new Type<>("Decimal");
-		lexer.addRule("Integer", new Rule<Integer>("[0-9]+", integer) {
-			@Override
-			public Token apply(Matcher matcher, Lexer lexer) {
-				return new Token(new Integer(matcher.group()), type);
-			}
-		});
-		lexer.addRule("Decimal", new Rule<Double>("([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+)", decimal) {
-			@Override
-			public Token apply(Matcher matcher, Lexer lexer) {
-				return new Token(new Double(matcher.group()), type);
-			}
-		});
+		lexer.addRule("Integer", new Rule(Pattern.compile("[0-9]+"), (match, l) -> {return new Token(new Integer(match.group()), integer);}));
+		lexer.addRule("Decimal", new Rule(Pattern.compile("([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+)"), (match, l) -> {return new Token(new Double(match.group()), decimal);}));
 		lexer.addDescender("Parentheses", new Descender("(", ")", new Type<Token>("Parentheses")));
 		lexer.addDescender("Brackets", new Descender("[", "]", new Type<Token>("Brackets")));
 		lexer.ignore("Newline", "\n");
