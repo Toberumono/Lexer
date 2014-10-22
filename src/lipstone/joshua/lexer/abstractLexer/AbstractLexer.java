@@ -17,6 +17,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	protected final PairedList<String, Pattern> ignores = new PairedList<>();
 	protected final ArrayList<Ty> types = new ArrayList<>();
 	protected final Stack<DescentSet<To>> descentStack = new Stack<>();
+	protected final Stack<Integer> headStack = new Stack<>();
 	protected boolean ignoreSpace = true;
 	protected String input = "";
 	protected int head = 0;
@@ -185,7 +186,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 				if (input.length() - head >= descender.open.length() && input.startsWith(descender.open, head) && (d == null || descender.open.length() > d.open.length()))
 					d = descender;
 			if (d != null) {
-				int close = getEndIndex(input, head, d.open, d.close);
+				int close = getEndIndex(input, head + d.open.length(), d.close);
 				head = close + d.close.length();
 				result = d.action.perform(input.substring(oldHead + d.open.length(), close), (L) this);
 				if (!step)
@@ -343,25 +344,40 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 		return tokenConstructor;
 	}
 	
-	protected int getEndIndex(String input, int start, String startSymbol, String endSymbol) throws UnbalancedDescenderException {
-		int index = 0, parenthesis = 0;
-		for (int i = start; i < input.length() - startSymbol.length() + 1 && i < input.length() - endSymbol.length() + 1; i++) {
-			if (input.substring(i, i + startSymbol.length()).equals(startSymbol))
-				parenthesis++;
-			if (input.substring(i, i + endSymbol.length()).equals(endSymbol))
-				parenthesis--;
-			if (parenthesis == 0) {
-				index = i;
-				break;
-			}
-			if (input.charAt(i) == '\\') {
-				i++;
+	protected int getEndIndex(String input, int start, String endSymbol) throws UnbalancedDescenderException {
+		headStack.push(head);
+		head = start;
+		while (!input.startsWith(endSymbol, head)) {
+			D d = null;
+			Matcher match = null, m;
+			//Descenders
+			for (D descender : descenders.getValues())
+				if (input.length() - head >= descender.open.length() && input.startsWith(descender.open, head) && (d == null || descender.open.length() > d.open.length()))
+					d = descender;
+			if (d != null) {
+				try {
+					head = getEndIndex(input, head + d.open.length(), d.close) + d.close.length();
+				}
+				catch (UnbalancedDescenderException e) {
+					throw new UnbalancedDescenderException(input, start); //Propogates the exception to the appropriate starting place
+				}
 				continue;
 			}
+			
+			//Rules
+			for (R rule : rules.getValues())
+				if ((m = rule.pattern.matcher(input)).find(head) && m.start() == head && m.group().length() != 0 && (match == null || match.end() < m.end()))
+					match = m;
+			if (match != null) {
+				head = match.end();
+				continue;
+			}
+			if (skipIgnores() == 0)
+				throw new UnbalancedDescenderException(input, start);
 		}
-		if (parenthesis != 0)
-			throw new UnbalancedDescenderException(input, start);
-		return index;
+		int output = head;
+		head = headStack.pop();
+		return output;
 	}
 }
 
