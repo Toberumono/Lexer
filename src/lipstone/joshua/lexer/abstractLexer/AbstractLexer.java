@@ -18,6 +18,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	protected final ArrayList<Ty> types = new ArrayList<>();
 	protected final Stack<DescentSet<To>> descentStack = new Stack<>();
 	protected final Stack<Integer> headStack = new Stack<>();
+	protected final Stack<String> closeTokenStack = new Stack<>();
 	protected boolean ignoreSpace = true;
 	protected String input = "";
 	protected int head = 0;
@@ -93,25 +94,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 		current = previous;
 		this.head = head;
 		this.output = output;
-		try {
-			while (this.head < input.length())
-				if (hasNext())
-					current = this.previous = (To) current.append(getNextToken(true));
-				else
-					break;
-		}
-		catch (LexerException e) {
-			descentStack.clear();
-			throw e;
-		}
-		To result = output;
-		DescentSet<To> popped = descentStack.pop();
-		this.input = popped.getInput();
-		this.head = popped.getHead();
-		previous = popped.getPrevious();
-		output = popped.getOutput();
-		current = popped.getCurrent();
-		return result;
+		return lexLoop();
 	}
 	
 	/**
@@ -131,25 +114,40 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 		current = tokenConstructor.makeNewToken(null, emptyType, null, emptyType);
 		output = previous = current;
 		this.head = head;
+		return lexLoop();
+	}
+	
+	private To lexLoop() throws LexerException {
 		try {
-			while (this.head < input.length())
-				if (hasNext())
+			while (head < input.length()) {
+				skipIgnores();
+				if (closeTokenStack.size() > 0 && input.startsWith(closeTokenStack.peek(), head)) {
+					head += closeTokenStack.pop().length();
+					To result = output;
+					ascend();
+					return result;
+				}
+				else if (hasNext())
 					current = previous = (To) current.append(getNextToken(true));
 				else
 					break;
+			}
 		}
 		catch (LexerException e) {
 			descentStack.clear();
 			throw e;
 		}
 		To result = output;
+		ascend();
+		return result;
+	}
+	
+	private void ascend() {
 		DescentSet<To> popped = descentStack.pop();
-		this.input = popped.getInput();
-		this.head = popped.getHead();
+		input = popped.getInput();
 		previous = popped.getPrevious();
 		output = popped.getOutput();
 		current = popped.getCurrent();
-		return result;
 	}
 	
 	/**
@@ -186,9 +184,14 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 				if (input.length() - head >= descender.open.length() && input.startsWith(descender.open, head) && (d == null || descender.open.length() > d.open.length()))
 					d = descender;
 			if (d != null) {
-				int close = getEndIndex(input, head + d.open.length(), d.close);
-				head = close + d.close.length();
-				result = d.action.perform(input.substring(oldHead + d.open.length(), close), (L) this);
+				try {
+					closeTokenStack.push(d.close);
+					d.openAction.perform((L) this);
+					result = d.closeAction.perform(lex(input, head + d.open.length()), (L) this);
+				}
+				catch (UnbalancedDescenderException e) {
+					throw new UnbalancedDescenderException(input, head); //Corrects the exception so that it outputs the correct descender.
+				}
 				if (!step)
 					head = oldHead;
 				else
@@ -254,7 +257,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	 */
 	public final boolean hasNext() {
 		skipIgnores();
-		return head < input.length();
+		return head < input.length() && (closeTokenStack.size() == 0 || !input.startsWith(closeTokenStack.peek(), head));
 	}
 	
 	/**
@@ -355,12 +358,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 				if (input.length() - head >= descender.open.length() && input.startsWith(descender.open, head) && (d == null || descender.open.length() > d.open.length()))
 					d = descender;
 			if (d != null) {
-				try {
-					head = getEndIndex(input, head + d.open.length(), d.close) + d.close.length();
-				}
-				catch (UnbalancedDescenderException e) {
-					throw new UnbalancedDescenderException(input, start); //Propogates the exception to the appropriate starting place
-				}
+				head = getEndIndex(input, head + d.open.length(), d.close) + d.close.length();
 				continue;
 			}
 			
@@ -372,8 +370,12 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 				head = match.end();
 				continue;
 			}
-			if (skipIgnores() == 0)
+			if (skipIgnores() == 0) {
+				while (headStack.size() > 1)
+					headStack.pop();
+				head = headStack.pop();
 				throw new UnbalancedDescenderException(input, start);
+			}
 		}
 		int output = head;
 		head = headStack.pop();

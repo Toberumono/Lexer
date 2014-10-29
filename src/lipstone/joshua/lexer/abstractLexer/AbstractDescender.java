@@ -13,17 +13,19 @@ package lipstone.joshua.lexer.abstractLexer;
  */
 public abstract class AbstractDescender<To extends AbstractToken<Ty, To>, Ty extends AbstractType<?, Ty>, L extends AbstractLexer<To, Ty, ?, ?, L>> {
 	protected final String open, close;
-	protected final LexerAction<To, String, L> action;
+	protected final LexerAction<To, To, L> closeAction;
+	protected final DescenderAction<L> openAction;
 	
 	public AbstractDescender(String open, String close, Ty type) {
-		this(open, close, (match, lexer) -> {
-			return ((TokenConstructor<Ty, To>) lexer.getTokenConstructor()).makeNewToken(lexer.lex(match), type, null, lexer.emptyType);
+		this(open, close, (lexer) -> {}, (match, lexer) -> {
+			return ((TokenConstructor<Ty, To>) lexer.getTokenConstructor()).makeNewToken(match, type, null, lexer.emptyType);
 		});
 	}
 	
-	public AbstractDescender(String open, String close, LexerAction<To, String, L> action) {
+	public AbstractDescender(String open, String close, DescenderAction<L> openAction, LexerAction<To, To, L> closeAction) {
 		this.open = open;
 		this.close = close;
-		this.action = action;
+		this.openAction = openAction;
+		this.closeAction = closeAction;
 	}
 }

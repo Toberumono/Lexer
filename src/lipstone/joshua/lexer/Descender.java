@@ -1,6 +1,7 @@
 package lipstone.joshua.lexer;
 
 import lipstone.joshua.lexer.abstractLexer.AbstractDescender;
+import lipstone.joshua.lexer.abstractLexer.DescenderAction;
 import lipstone.joshua.lexer.abstractLexer.LexerAction;
 
 /**
@@ -31,10 +32,12 @@ public class Descender extends AbstractDescender<Token, Type<?>, Lexer> {
 	 *            the open symbol for this <tt>Descender</tt>
 	 * @param close
 	 *            the close symbol for this <tt>Descender</tt>
-	 * @param action
-	 *            the action to perform on the part of the input between the symbols matched by this <tt>Descender</tt>
+	 * @param openAction
+	 *            the actions to perform upon seeing the open token of this <tt>Descender</tt>
+	 * @param closeAction
+	 *            the action to be performed on the <tt>Tokens</tt> matched within the found descent set
 	 */
-	public Descender(String open, String close, LexerAction<Token, String, Lexer> action) {
-		super(open, close, action);
+	public Descender(String open, String close, DescenderAction<Lexer> openAction, LexerAction<Token, Token, Lexer> closeAction) {
+		super(open, close, openAction, closeAction);
 	}
 }
