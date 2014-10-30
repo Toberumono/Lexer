@@ -19,7 +19,7 @@ public class TestSystem {
 		lexer.addRule("Decimal", new Rule(Pattern.compile("([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+)"), (match, l) -> {return new Token(new Double(match.group()), decimal);}));
 		lexer.addDescender("Parentheses", new Descender("(", ")", new Type<Token>("Parentheses", "(", ")")));
 		lexer.addDescender("Brackets", new Descender("[", "]", new Type<Token>("Brackets", "[", "]")));
-		lexer.ignore("Newline", "\n");
+		lexer.ignore("Newline", Pattern.compile("\n+"));
 		String test = "10.0 100 ((3.0 300\n)) [51 5 6] ()";
 		try {
 			System.out.println(test + " -> " + lexer.lex(test).printStructure());
