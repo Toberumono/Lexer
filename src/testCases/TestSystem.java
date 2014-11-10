@@ -7,7 +7,6 @@ import lipstone.joshua.lexer.Lexer;
 import lipstone.joshua.lexer.Rule;
 import lipstone.joshua.lexer.Token;
 import lipstone.joshua.lexer.Type;
-import lipstone.joshua.lexer.errors.LexerException;
 
 public class TestSystem {
 	
@@ -24,7 +23,7 @@ public class TestSystem {
 		try {
 			System.out.println(test + " -> " + lexer.lex(test).printStructure());
 		}
-		catch (LexerException e) {
+		catch (Exception e) {
 			System.out.println(test + " -> " + e.getMessage());
 			e.printStackTrace();
 		}
