@@ -1,7 +1,5 @@
 package lipstone.joshua.lexer.abstractLexer;
 
-import lipstone.joshua.lexer.errors.LexerException;
-
 /**
  * Represents an action to apply to a matched part of an input.
  * 
@@ -15,5 +13,5 @@ import lipstone.joshua.lexer.errors.LexerException;
  */
 @FunctionalInterface
 public interface LexerAction<To, M, L> {
-	public To perform(M match, L lexer) throws LexerException;
+	public To perform(M match, L lexer) throws Exception;
 }

@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lipstone.joshua.lexer.errors.EmptyInputException;
-import lipstone.joshua.lexer.errors.LexerException;
 import lipstone.joshua.lexer.errors.UnbalancedDescenderException;
 import lipstone.joshua.lexer.errors.UnrecognizedCharacterException;
 
@@ -65,10 +64,10 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	 * @param input
 	 *            the <tt>String</tt> to tokenize
 	 * @return the <tt>Token</tt>s in the <tt>String</tt>
-	 * @throws LexerException
+	 * @throws Exception
 	 *             so that lexer exceptions can be propogated back to the original caller
 	 */
-	public To lex(String input) throws LexerException {
+	public To lex(String input) throws Exception {
 		return lex(input, 0);
 	}
 	
@@ -85,10 +84,10 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	 * @param previous
 	 *            the last token in the previous tokenization
 	 * @return the <tt>Token</tt>s in the <tt>String</tt>
-	 * @throws LexerException
+	 * @throws Exception
 	 *             so that lexer exceptions can be propogated back to the original caller
 	 */
-	public To lex(String input, int head, To output, To previous) throws LexerException {
+	public To lex(String input, int head, To output, To previous) throws Exception {
 		descentStack.push(new DescentSet<To>(this.input, this.head, this.output, this.previous, current));
 		this.previous = previous;
 		current = previous;
@@ -105,10 +104,10 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	 * @param head
 	 *            the location at which to start lexing the input
 	 * @return the <tt>Token</tt>s in the <tt>String</tt>
-	 * @throws LexerException
+	 * @throws Exception
 	 *             so that lexer exceptions can be propogated back to the original caller
 	 */
-	public To lex(String input, int head) throws LexerException {
+	public To lex(String input, int head) throws Exception {
 		descentStack.push(new DescentSet<To>(this.input, this.head, output, previous, current));
 		this.input = input;
 		current = tokenConstructor.makeNewToken(null, emptyType, null, emptyType);
@@ -117,7 +116,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 		return lexLoop();
 	}
 	
-	private To lexLoop() throws LexerException {
+	private To lexLoop() throws Exception {
 		try {
 			while (head < input.length()) {
 				skipIgnores();
@@ -133,7 +132,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 					break;
 			}
 		}
-		catch (LexerException e) {
+		catch (Exception e) {
 			descentStack.clear();
 			throw e;
 		}
@@ -168,10 +167,10 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	 * Gets the next token in the input without stepping this <tt>AbstractLexer</tt> forward.
 	 * 
 	 * @return the next token in this <tt>AbstractLexer</tt>'s input
-	 * @throws LexerException
+	 * @throws Exception
 	 *             so that exception handling can take place in the calling function
 	 */
-	public final To getNextToken() throws LexerException {
+	public final To getNextToken() throws Exception {
 		return getNextToken(false);
 	}
 	
@@ -181,10 +180,10 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	 * @param step
 	 *            if this is true, it steps this <tt>AbstractLexer</tt>'s read-head forward
 	 * @return the next token in this <tt>AbstractLexer</tt>'s input
-	 * @throws LexerException
+	 * @throws Exception
 	 *             so that exception handling can take place in the calling function
 	 */
-	public To getNextToken(boolean step) throws LexerException {
+	public To getNextToken(boolean step) throws Exception {
 		do {
 			if (head >= input.length())
 				throw new EmptyInputException();

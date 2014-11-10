@@ -1,7 +1,5 @@
 package lipstone.joshua.lexer.abstractLexer;
 
-import lipstone.joshua.lexer.errors.LexerException;
-
 /**
  * Represents an action to perform when the open token for a {@link AbstractDescender} is found.
  * 
@@ -11,5 +9,5 @@ import lipstone.joshua.lexer.errors.LexerException;
  */
 @FunctionalInterface
 public interface DescenderAction<L> {
-	public void perform(L lexer) throws LexerException;
+	public void perform(L lexer) throws Exception;
 }
