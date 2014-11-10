@@ -101,7 +101,16 @@ public abstract class AbstractToken<T extends AbstractType<?, T>, V extends Abst
 	}
 	
 	/**
-	 * @return the last {@link AbstractToken} in this {@link AbstractToken}'s tree structure. If this {@link AbstractToken}
+	 * Determines if this {@link AbstractToken} is the last one in its tree structure.
+	 * 
+	 * @return <tt>true</tt> if this {@link AbstractToken}'s cdr is not on instance of {@link AbstractToken}.
+	 */
+	public boolean isLastToken() {
+		return !(cdr instanceof AbstractToken);
+	}
+	
+	/**
+	 * @return the last {@link AbstractToken} in its tree structure. If this {@link AbstractToken}
 	 *         is the last one, it returns itself.
 	 * @see #getNextToken()
 	 */
@@ -123,7 +132,16 @@ public abstract class AbstractToken<T extends AbstractType<?, T>, V extends Abst
 	}
 	
 	/**
-	 * @return the first {@link AbstractToken} in this {@link AbstractToken}'s tree structure. If this {@link AbstractToken}
+	 * Determines if this {@link AbstractToken} is the first one in its tree structure.
+	 * 
+	 * @return <tt>true</tt> if this {@link AbstractToken}'s previous token field is null.
+	 */
+	public boolean isFirstToken() {
+		return previous == null;
+	}
+	
+	/**
+	 * @return the first {@link AbstractToken} in its tree structure. If this {@link AbstractToken}
 	 *         is the first one, it returns itself.
 	 * @see #getPreviousToken()
 	 */
