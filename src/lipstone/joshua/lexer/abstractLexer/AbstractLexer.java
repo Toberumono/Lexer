@@ -253,6 +253,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	
 	/**
 	 * In order to remove any <tt>Token</tt> from the output, use {@link #popPreviousToken()}
+	 * 
 	 * @return the last <tt>Token</tt> in the output this <tt>Lexer</tt> is currently generating.
 	 * @see #popPreviousToken()
 	 */
@@ -299,7 +300,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	 * @param rule
 	 *            the rule
 	 */
-	public final void addRule(String name, R rule) {
+	public void addRule(String name, R rule) {
 		rules.put(name, rule);
 	}
 	
@@ -310,8 +311,19 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	 *            the name of the rule to remove
 	 * @return the removed rule if a rule of that name existed, otherwise null
 	 */
-	public final R removeRule(String name) {
+	public R removeRule(String name) {
 		return rules.remove(name);
+	}
+	
+	/**
+	 * Gets a rule by name
+	 * 
+	 * @param name
+	 *            the name of the rule to get
+	 * @return the rule if a rule corresponding to that name is loaded, otherwise null
+	 */
+	public R getRule(String name) {
+		return rules.get(name);
 	}
 	
 	/**
@@ -322,7 +334,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	 * @param descender
 	 *            the descender
 	 */
-	public final void addDescender(String name, D descender) {
+	public void addDescender(String name, D descender) {
 		descenders.put(name, descender);
 	}
 	
@@ -333,8 +345,19 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	 *            the name of the descender to remove
 	 * @return the removed descender if a descender of that name existed, otherwise null
 	 */
-	public final D removeDescender(String name) {
+	public D removeDescender(String name) {
 		return descenders.remove(name);
+	}
+	
+	/**
+	 * Gets a descender by name
+	 * 
+	 * @param name
+	 *            the name of the descender to get
+	 * @return the descender if a descender corresponding to that name is loaded, otherwise null
+	 */
+	public D getDescender(String name) {
+		return descenders.get(name);
 	}
 	
 	/**

@@ -183,7 +183,7 @@ public abstract class AbstractToken<T extends AbstractType<?, T>, V extends Abst
 		}
 		if (cdr instanceof AbstractToken)
 			((V) cdr).previous = null;
-		cdrType = emptyType;
+		cdrType = tokenType;
 		cdr = next;
 		next.previous = (V) this;
 		return getLastToken();
