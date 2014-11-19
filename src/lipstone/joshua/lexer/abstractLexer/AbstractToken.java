@@ -110,8 +110,8 @@ public abstract class AbstractToken<T extends AbstractType<?, T>, V extends Abst
 	}
 	
 	/**
-	 * @return the last {@link AbstractToken} in its tree structure. If this {@link AbstractToken}
-	 *         is the last one, it returns itself.
+	 * @return the last {@link AbstractToken} in its tree structure. If this {@link AbstractToken} is the last one, it
+	 *         returns itself.
 	 * @see #getNextToken()
 	 */
 	public V getLastToken() {
@@ -141,8 +141,8 @@ public abstract class AbstractToken<T extends AbstractType<?, T>, V extends Abst
 	}
 	
 	/**
-	 * @return the first {@link AbstractToken} in its tree structure. If this {@link AbstractToken}
-	 *         is the first one, it returns itself.
+	 * @return the first {@link AbstractToken} in its tree structure. If this {@link AbstractToken} is the first one, it
+	 *         returns itself.
 	 * @see #getPreviousToken()
 	 */
 	public V getFirstToken() {
@@ -269,12 +269,18 @@ public abstract class AbstractToken<T extends AbstractType<?, T>, V extends Abst
 		return next;
 	}
 	
-	public String printStructure() {
+	/**
+	 * Generates a {@link String} that shows the structure of this {@link AbstractToken}'s entire tree.<br>
+	 * This is primarily a debugging function.
+	 * 
+	 * @return a {@link String} describing this {@link AbstractToken} tree's structure
+	 */
+	public String structureString() {
 		String output = "";
 		AbstractToken<T, V> current = this;
 		do {
 			if (current.car instanceof AbstractToken)
-				output = output + current.carType.getOpen() + ((AbstractToken<?, ?>) current.car).printStructure() + current.carType.getClose() + " ";
+				output = output + current.carType.getOpen() + ((AbstractToken<?, ?>) current.car).structureString() + current.carType.getClose() + " ";
 			else
 				output = output + current.carType.valueToString(current.car);
 			output = output + ": " + current.carType.toString() + ", ";

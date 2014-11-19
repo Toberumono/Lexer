@@ -21,7 +21,7 @@ public class TestSystem {
 		lexer.ignore("Newline", Pattern.compile("\n+"));
 		String test = "10.0 100 ((3.0 300\n)) [51 5 6] ()";
 		try {
-			System.out.println(test + " -> " + lexer.lex(test).printStructure());
+			System.out.println(test + " -> " + lexer.lex(test).structureString());
 		}
 		catch (Exception e) {
 			System.out.println(test + " -> " + e.getMessage());
