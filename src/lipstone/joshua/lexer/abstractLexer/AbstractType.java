@@ -2,6 +2,21 @@ package lipstone.joshua.lexer.abstractLexer;
 
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * Base class for type flags used in {@link AbstractToken} and its subclasses.<br>
+ * Commonly overridden methods are:
+ * <ul>
+ * <li>{@link #valueToString(Object)}</li>
+ * <li>{@link #cloneValue(Object)}</li>
+ * <li>{@link #compareValues(Object, Object)}</li>
+ * </ul>
+ * 
+ * @author Joshua Lipstone
+ * @param <T>
+ *            the type that the associated car or cdr value in an {@link AbstractToken} should have.
+ * @param <Ty>
+ *            the class that is extending {@link AbstractType}
+ */
 public abstract class AbstractType<T, Ty extends AbstractType<T, Ty>> {
 	protected final String name, open, close;
 	
@@ -44,15 +59,15 @@ public abstract class AbstractType<T, Ty extends AbstractType<T, Ty>> {
 	}
 	
 	/**
-	 * By default this simply forwards to the value's toString() method. However, this can be overridden for
-	 * implementation-specific methods.
+	 * By default this simply forwards to the value's {@link Object#toString()} method and, if this is a descender type,
+	 * places the open and close symbols appropriately.
 	 * 
 	 * @param value
 	 *            the value to convert to a {@link java.lang.String String}
 	 * @return the value as a <tt>String</tt>
 	 */
 	public String valueToString(Object value) {
-		return (open != null ? open + ((T) value).toString() + close : ((T) value).toString()) + " ";
+		return (open != null ? open + ((T) value).toString() + close : ((T) value).toString());
 	}
 	
 	@Override

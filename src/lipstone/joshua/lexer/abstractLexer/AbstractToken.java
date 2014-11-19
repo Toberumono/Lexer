@@ -87,7 +87,7 @@ public abstract class AbstractToken<T extends AbstractType<?, T>, V extends Abst
 	
 	@Override
 	public String toString() {
-		return ((car != null ? carType.valueToString(car) : "") + (cdr != null ? cdrType.valueToString(cdr) : "")).trim();
+		return ((car != null ? carType.valueToString(car) + " " : "") + (cdr != null ? cdrType.valueToString(cdr) + " " : "")).trim();
 	}
 	
 	/**
