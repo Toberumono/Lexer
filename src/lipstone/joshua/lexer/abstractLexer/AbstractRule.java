@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * @param <L>
  *            the subclass of {@link AbstractLexer} to use
  */
-public abstract class AbstractRule<To extends AbstractToken<Ty, To>, Ty extends AbstractType<?, Ty>, L extends AbstractLexer<To, Ty, ?, ?, L>> {
+public abstract class AbstractRule<To extends AbstractToken<Ty, To>, Ty extends AbstractType, L extends AbstractLexer<To, Ty, ?, ?, L>> {
 	protected final Pattern pattern;
 	protected final LexerAction<To, Matcher, L> action;
 	

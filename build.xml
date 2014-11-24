@@ -3,11 +3,20 @@
 	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
 	<!--ANT 1.8 is required                                        -->
 
+	<property name="src" location="./src" />
+	<property name="bin" location="./bin" />
+		
 	<target name="javadoc">
-		<javadoc access="protected" author="true" classpath="" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="lipstone.joshua.lexer.*" source="1.8" sourcepath="src" splitindex="true" use="true" version="true" />
+		<javadoc access="protected" author="true" classpath="" destdir="doc" packagenames="lipstone.joshua.lexer.*" source="1.8" sourcepath="src" splitindex="true" use="true" version="true" />
 	</target>
 
-	<target name="create_run_jar" depends="javadoc">
+	<target name="build">
+		<javac srcdir="${src}" destdir="${bin}" includeAntRuntime="false">
+			<exclude name="**/*.DS_Store" />
+		</javac>
+	</target>
+
+	<target name="create_run_jar" depends="javadoc,build">
 		<jar destfile="../lexer.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
 				<attribute name="Main-Class" value="" />

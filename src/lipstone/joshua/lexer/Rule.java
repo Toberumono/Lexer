@@ -7,11 +7,11 @@ import lipstone.joshua.lexer.abstractLexer.AbstractRule;
 import lipstone.joshua.lexer.abstractLexer.LexerAction;
 
 /**
- * A Rule for the lexer
+ * A Rule for the Lexer
  * 
  * @author Joshua Lipstone
  */
-public class Rule extends AbstractRule<Token, Type<?>, Lexer> {
+public class Rule extends AbstractRule<Token, Type, Lexer> {
 	
 	/**
 	 * Constructs a new <tt>Rule</tt> with the given data
@@ -21,7 +21,7 @@ public class Rule extends AbstractRule<Token, Type<?>, Lexer> {
 	 * @param type
 	 *            the type for <tt>Token</tt>s matched by this rule
 	 */
-	public Rule(Pattern pattern, Type<?> type) {
+	public Rule(Pattern pattern, Type type) {
 		super(pattern, type);
 	}
 	

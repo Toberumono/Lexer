@@ -11,7 +11,7 @@ package lipstone.joshua.lexer.abstractLexer;
  * @param <L>
  *            the subclass of {@link AbstractLexer} to use
  */
-public abstract class AbstractDescender<To extends AbstractToken<Ty, To>, Ty extends AbstractType<?, Ty>, L extends AbstractLexer<To, Ty, ?, ?, L>> {
+public abstract class AbstractDescender<To extends AbstractToken<Ty, To>, Ty extends AbstractType, L extends AbstractLexer<To, Ty, ?, ?, L>> {
 	protected final String open, close;
 	protected final LexerAction<To, To, L> closeAction;
 	protected final DescenderAction<L> openAction;

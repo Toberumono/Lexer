@@ -2,7 +2,7 @@ package lipstone.joshua.lexer.abstractLexer;
 
 import lipstone.joshua.lexer.Type;
 
-public abstract class AbstractToken<T extends AbstractType<?, T>, V extends AbstractToken<T, V>> implements Comparable<V>, Cloneable {
+public abstract class AbstractToken<T extends AbstractType, V extends AbstractToken<T, V>> implements Comparable<V>, Cloneable {
 	protected T carType, cdrType;
 	protected Object car, cdr;
 	protected V previous;

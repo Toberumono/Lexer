@@ -9,7 +9,7 @@ import lipstone.joshua.lexer.abstractLexer.LexerAction;
  * 
  * @author Joshua Lipstone
  */
-public class Descender extends AbstractDescender<Token, Type<?>, Lexer> {
+public class Descender extends AbstractDescender<Token, Type, Lexer> {
 	
 	/**
 	 * Constructs a new <tt>Descender</tt> with the given data
@@ -21,7 +21,7 @@ public class Descender extends AbstractDescender<Token, Type<?>, Lexer> {
 	 * @param type
 	 *            the <tt>Type</tt> for the Token returned by this <tt>Descender</tt>
 	 */
-	public Descender(String open, String close, Type<Token> type) {
+	public Descender(String open, String close, Type type) {
 		super(open, close, type);
 	}
 	

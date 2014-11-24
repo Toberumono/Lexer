@@ -12,12 +12,8 @@ import java.lang.reflect.InvocationTargetException;
  * </ul>
  * 
  * @author Joshua Lipstone
- * @param <T>
- *            the type that the associated car or cdr value in an {@link AbstractToken} should have.
- * @param <Ty>
- *            the class that is extending {@link AbstractType}
  */
-public abstract class AbstractType<T, Ty extends AbstractType<T, Ty>> {
+public abstract class AbstractType {
 	protected final String name, open, close;
 	
 	private final int hash;
@@ -67,7 +63,7 @@ public abstract class AbstractType<T, Ty extends AbstractType<T, Ty>> {
 	 * @return the value as a <tt>String</tt>
 	 */
 	public String valueToString(Object value) {
-		return (open != null ? open + ((T) value).toString() + close : ((T) value).toString());
+		return (open != null ? open + value.toString() + close : value.toString());
 	}
 	
 	@Override
@@ -78,7 +74,7 @@ public abstract class AbstractType<T, Ty extends AbstractType<T, Ty>> {
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof AbstractType)
-			return ((AbstractType<Object, Ty>) o).hash == hash;
+			return ((AbstractType) o).hash == hash;
 		if (o instanceof String)
 			return ((String) o).equals(name);
 		return this == o;
@@ -95,7 +91,7 @@ public abstract class AbstractType<T, Ty extends AbstractType<T, Ty>> {
 	 * @return the value of the implied value type's compareTo method if it implements <tt>Comparable</tt> otherwise 0.
 	 */
 	public int compareValues(Object value1, Object value2) {
-		return value1.getClass().isInstance(value2) && value1 instanceof Comparable ? ((Comparable<T>) value1).compareTo((T) value2) : 0;
+		return value1.getClass().isInstance(value2) && value1 instanceof Comparable ? ((Comparable<Object>) value1).compareTo(value2) : 0;
 	}
 	
 	/**
@@ -107,12 +103,12 @@ public abstract class AbstractType<T, Ty extends AbstractType<T, Ty>> {
 	 *            the value to clone
 	 * @return a clone of the passed object
 	 */
-	public T cloneValue(Object value) {
+	public Object cloneValue(Object value) {
 		try {
-			return value instanceof Cloneable ? (T) value.getClass().getMethod("clone").invoke(value) : (T) value;
+			return value instanceof Cloneable ? value.getClass().getMethod("clone").invoke(value) : value;
 		}
 		catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-			return (T) value;
+			return value;
 		}
 	}
 }

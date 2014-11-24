@@ -10,7 +10,7 @@ import lipstone.joshua.lexer.errors.EmptyInputException;
 import lipstone.joshua.lexer.errors.UnbalancedDescenderException;
 import lipstone.joshua.lexer.errors.UnrecognizedCharacterException;
 
-public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends AbstractType<?, Ty>, R extends AbstractRule<To, Ty, L>, D extends AbstractDescender<To, Ty, L>, L extends AbstractLexer<To, Ty, R, D, L>> {
+public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends AbstractType, R extends AbstractRule<To, Ty, L>, D extends AbstractDescender<To, Ty, L>, L extends AbstractLexer<To, Ty, R, D, L>> {
 	protected final LinkedHashMap<String, R> rules = new LinkedHashMap<>();
 	protected final LinkedHashMap<String, D> descenders = new LinkedHashMap<>();
 	protected final LinkedHashMap<String, Pattern> ignores = new LinkedHashMap<>();
