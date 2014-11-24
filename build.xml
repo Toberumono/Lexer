@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project lexer">
+<project default="create jar" name="Create Runnable Jar for Project lexer">
 	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
 	<!--ANT 1.8 is required                                        -->
 
@@ -11,12 +11,13 @@
 	</target>
 
 	<target name="build">
+		<mkdir dir="${bin}" />
 		<javac srcdir="${src}" destdir="${bin}" includeAntRuntime="false">
 			<exclude name="**/*.DS_Store" />
 		</javac>
 	</target>
 
-	<target name="create_run_jar" depends="javadoc,build">
+	<target name="create jar" depends="javadoc,build">
 		<jar destfile="../lexer.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
 				<attribute name="Main-Class" value="" />
