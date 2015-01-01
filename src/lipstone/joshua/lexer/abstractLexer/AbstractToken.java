@@ -1,7 +1,5 @@
 package lipstone.joshua.lexer.abstractLexer;
 
-import lipstone.joshua.lexer.Type;
-
 public abstract class AbstractToken<T extends AbstractType, V extends AbstractToken<T, V>> implements Comparable<V>, Cloneable {
 	protected T carType, cdrType;
 	protected Object car, cdr;
@@ -11,9 +9,10 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	
 	public AbstractToken(V source, V previous, TokenConstructor<T, V> constructor, T tokenType, T emptyType) {
 		this(source.car, source.carType, source.cdr, source.cdrType, constructor, tokenType, emptyType);
-		this.previous = (V) previous;
+		this.previous = previous;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public AbstractToken(Object car, T carType, Object cdr, T cdrType, TokenConstructor<T, V> constructor, T tokenType, T emptyType) {
 		this.carType = carType;
 		this.car = car;
@@ -40,7 +39,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	}
 	
 	/**
-	 * Creates an empty <tt>AbstractToken</tt>
+	 * Creates an empty {@link AbstractToken}
 	 * 
 	 * @param constructor
 	 *            the constructor for the <tt>Token</tt> type that extends this one
@@ -62,7 +61,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	}
 	
 	/**
-	 * @return the {@link Type} of the car value of this {@link AbstractToken}
+	 * @return the {@link AbstractType} of the car value of this {@link AbstractToken}
 	 * @see #getCar()
 	 */
 	public T getCarType() {
@@ -78,7 +77,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	}
 	
 	/**
-	 * @return the {@link Type} of the cdr value of this {@link AbstractToken}
+	 * @return the {@link AbstractType} of the cdr value of this {@link AbstractToken}
 	 * @see #getCdr()
 	 */
 	public T getCdrType() {
@@ -96,6 +95,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 * @see #getPreviousToken()
 	 * @see #getLastToken()
 	 */
+	@SuppressWarnings("unchecked")
 	public V getNextToken() {
 		return cdr instanceof AbstractToken ? (V) cdr : constructor.makeNewToken(null, emptyType, null, emptyType);
 	}
@@ -114,6 +114,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 *         returns itself.
 	 * @see #getNextToken()
 	 */
+	@SuppressWarnings("unchecked")
 	public V getLastToken() {
 		V current = (V) this;
 		while (current.cdr instanceof AbstractToken)
@@ -145,6 +146,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 *         returns itself.
 	 * @see #getPreviousToken()
 	 */
+	@SuppressWarnings("unchecked")
 	public V getFirstToken() {
 		V current = (V) this;
 		while (current.previous != null)
@@ -169,6 +171,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 *            the token or list of tokens to append to this token
 	 * @return the token appended or the last token in the list of appended tokens
 	 */
+	@SuppressWarnings("unchecked")
 	public V append(V next) {
 		if (isNull()) {
 			car = next.car;
@@ -190,11 +193,11 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	}
 	
 	/**
-	 * Returns a shallow copy of this <tt>AbstractToken</tt> with only the car and carType.<br>
-	 * This effectively creates a <tt>AbstractToken</tt> with a pointer to the same car value of this <tt>Token</tt> but
+	 * Returns a shallow copy of this {@link AbstractToken} with only the car and carType.<br>
+	 * This effectively creates a {@link AbstractToken} with a pointer to the same car value of this <tt>Token</tt> but
 	 * separate from the list.
 	 * 
-	 * @return a shallow copy of this <tt>AbstractToken</tt> that is separate from the list
+	 * @return a shallow copy of this {@link AbstractToken} that is separate from the list
 	 */
 	public V singular() {
 		return constructor.makeNewToken(car, carType, null, emptyType);
@@ -214,9 +217,9 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	}
 	
 	/**
-	 * Creates a clone of this <tt>AbstractToken's</tt> tree structure, where non-token values are not cloned.
+	 * Creates a clone of this {@link AbstractToken AbstractToken's} tree structure, where non-token values are not cloned.
 	 * 
-	 * @return a clone of this <tt>AbstractToken</tt>
+	 * @return a clone of this {@link AbstractToken}
 	 */
 	@Override
 	public V clone() {
@@ -224,12 +227,13 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	}
 	
 	/**
-	 * Creates a clone of this <tt>AbstractToken's</tt> tree structure, where non-token values are not cloned.
+	 * Creates a clone of this {@link AbstractToken AbstractToken's} tree structure, where non-token values are not cloned.
 	 * 
 	 * @param previous
-	 *            the <tt>AbstractToken</tt> that should be set as the cloned <tt>Token</tt>'s previous value
-	 * @return a clone of this <tt>AbstractToken</tt>
+	 *            the {@link AbstractToken} that should be set as the cloned <tt>Token</tt>'s previous value
+	 * @return a clone of this {@link AbstractToken}
 	 */
+	@SuppressWarnings("unchecked")
 	protected V clone(V previous) {
 		V clone = constructor.makeNewToken(car instanceof AbstractToken ? ((V) car).clone((V) this) : car, carType, cdr instanceof AbstractToken ? ((V) cdr).clone((V) this) : cdr, cdrType);
 		clone.previous = previous;
@@ -243,7 +247,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	public int length() {
 		if (isNull())
 			return 0;
-		V token = (V) this;
+		AbstractToken<T, V> token = this;
 		int length = 1;
 		while (!(token = token.getNextToken()).isNull())
 			length++;
@@ -275,6 +279,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 * 
 	 * @return a {@link String} describing this {@link AbstractToken} tree's structure
 	 */
+	@SuppressWarnings("unchecked")
 	public String structureString() {
 		String output = "";
 		AbstractToken<T, V> current = this;

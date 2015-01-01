@@ -183,6 +183,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	 * @throws Exception
 	 *             so that exception handling can take place in the calling function
 	 */
+	@SuppressWarnings("unchecked")
 	public To getNextToken(boolean step) throws Exception {
 		do {
 			if (head >= input.length())

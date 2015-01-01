@@ -90,6 +90,7 @@ public abstract class AbstractType {
 	 *            the second value
 	 * @return the value of the implied value type's compareTo method if it implements <tt>Comparable</tt> otherwise 0.
 	 */
+	@SuppressWarnings("unchecked")
 	public int compareValues(Object value1, Object value2) {
 		return value1.getClass().isInstance(value2) && value1 instanceof Comparable ? ((Comparable<Object>) value1).compareTo(value2) : 0;
 	}
