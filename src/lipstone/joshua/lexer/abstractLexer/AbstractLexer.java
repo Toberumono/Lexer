@@ -26,7 +26,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	protected final Ty emptyType;
 	
 	/**
-	 * Constructs an <tt>AbstractLexer</tt> with the provided token constructor that will skip over spaces in the input.
+	 * Constructs an {@link AbstractLexer} with the provided token constructor that will skip over spaces in the input.
 	 * 
 	 * @param tokenConstructor
 	 *            a function that takes no arguments and returns a new instance of the class extending {@link AbstractToken}.
@@ -39,7 +39,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	}
 	
 	/**
-	 * Constructs an <tt>AbstractLexer</tt> with the provided token constructor
+	 * Constructs an {@link AbstractLexer} with the provided token constructor
 	 * 
 	 * @param tokenConstructor
 	 *            a function that takes no arguments and returns a new instance of the class extending {@link AbstractToken}.
@@ -65,7 +65,7 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	 *            the <tt>String</tt> to tokenize
 	 * @return the <tt>Token</tt>s in the <tt>String</tt>
 	 * @throws Exception
-	 *             so that lexer exceptions can be propogated back to the original caller
+	 *             so that lexer exceptions can be propagated back to the original caller
 	 */
 	public To lex(String input) throws Exception {
 		return lex(input, 0);
@@ -85,10 +85,10 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	 *            the last token in the previous tokenization
 	 * @return the <tt>Token</tt>s in the <tt>String</tt>
 	 * @throws Exception
-	 *             so that lexer exceptions can be propogated back to the original caller
+	 *             so that lexer exceptions can be propagated back to the original caller
 	 */
 	public To lex(String input, int head, To output, To previous) throws Exception {
-		descentStack.push(new DescentSet<To>(this.input, this.head, this.output, this.previous, current));
+		descentStack.push(new DescentSet<>(this.input, this.head, this.output, this.previous, current));
 		this.previous = previous;
 		current = previous;
 		this.head = head;
@@ -105,10 +105,10 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	 *            the location at which to start lexing the input
 	 * @return the <tt>Token</tt>s in the <tt>String</tt>
 	 * @throws Exception
-	 *             so that lexer exceptions can be propogated back to the original caller
+	 *             so that lexer exceptions can be propagated back to the original caller
 	 */
 	public To lex(String input, int head) throws Exception {
-		descentStack.push(new DescentSet<To>(this.input, this.head, output, previous, current));
+		descentStack.push(new DescentSet<>(this.input, this.head, output, previous, current));
 		this.input = input;
 		current = tokenConstructor.makeNewToken(null, emptyType, null, emptyType);
 		output = previous = current;
@@ -157,16 +157,16 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	}
 	
 	/**
-	 * @return the index that this <tt>AbstractLexer</tt> has reached in the input.
+	 * @return the index that this {@link AbstractLexer} has reached in the input.
 	 */
 	public final int getHeadIndex() {
 		return head;
 	}
 	
 	/**
-	 * Gets the next token in the input without stepping this <tt>AbstractLexer</tt> forward.
+	 * Gets the next token in the input without stepping this {@link AbstractLexer} forward.
 	 * 
-	 * @return the next token in this <tt>AbstractLexer</tt>'s input
+	 * @return the next token in this {@link AbstractLexer AbstractLexer's} input
 	 * @throws Exception
 	 *             so that exception handling can take place in the calling function
 	 */
@@ -175,11 +175,11 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	}
 	
 	/**
-	 * Finds the next token in this <tt>AbstractLexer</tt>
+	 * Finds the next token in this {@link AbstractLexer}
 	 * 
 	 * @param step
-	 *            if this is true, it steps this <tt>AbstractLexer</tt>'s read-head forward
-	 * @return the next token in this <tt>AbstractLexer</tt>'s input
+	 *            if this is true, it steps this {@link AbstractLexer AbstractLexer's} read-head forward
+	 * @return the next token in this {@link AbstractLexer AbstractLexer's} input
 	 * @throws Exception
 	 *             so that exception handling can take place in the calling function
 	 */
