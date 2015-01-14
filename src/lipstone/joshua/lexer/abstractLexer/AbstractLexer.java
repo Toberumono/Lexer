@@ -1,6 +1,5 @@
 package lipstone.joshua.lexer.abstractLexer;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -14,7 +13,6 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 	protected final LinkedHashMap<String, R> rules = new LinkedHashMap<>();
 	protected final LinkedHashMap<String, D> descenders = new LinkedHashMap<>();
 	protected final LinkedHashMap<String, Pattern> ignores = new LinkedHashMap<>();
-	protected final ArrayList<Ty> types = new ArrayList<>();
 	protected final Stack<DescentSet<To>> descentStack = new Stack<>();
 	protected final Stack<Integer> headStack = new Stack<>();
 	protected final Stack<String> closeTokenStack = new Stack<>();
@@ -373,13 +371,6 @@ public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends
 		if (ignores.containsKey(name))
 			ignores.remove(name);
 		ignores.put(name, ignore);
-	}
-	
-	/**
-	 * @return the types that this lexer can find.
-	 */
-	public ArrayList<Ty> getTypes() {
-		return types;
 	}
 	
 	public final TokenConstructor<Ty, To> getTokenConstructor() {
