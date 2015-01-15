@@ -12,7 +12,7 @@
 
 	<target name="build">
 		<mkdir dir="${bin}" />
-		<javac srcdir="${src}" destdir="${bin}" includeAntRuntime="false" />
+		<javac srcdir="${src}" destdir="${bin}" includeAntRuntime="false" debug="true" debuglevel="lines,vars,source" />
 	</target>
 
 	<target name="create jar" depends="clean,javadoc,build">
