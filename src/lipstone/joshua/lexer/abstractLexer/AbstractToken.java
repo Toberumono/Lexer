@@ -1,5 +1,7 @@
 package lipstone.joshua.lexer.abstractLexer;
 
+import java.util.Objects;
+
 public abstract class AbstractToken<T extends AbstractType, V extends AbstractToken<T, V>> implements Comparable<V>, Cloneable {
 	protected T carType, cdrType;
 	protected Object car, cdr;
@@ -294,5 +296,15 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 		if (output.length() > 0)
 			output = output.substring(0, output.length() - 2);
 		return output;
+	}
+	
+	/**
+	 * Generates the hash by calling {@link java.util.Objects#hash(Object...) Objects.hash(Object...)} on the car, carType,
+	 * cdr, and cdrType of this {@link AbstractToken}.<br>
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int hashCode() {
+		return Objects.hash(car, carType, cdr, cdrType);
 	}
 }

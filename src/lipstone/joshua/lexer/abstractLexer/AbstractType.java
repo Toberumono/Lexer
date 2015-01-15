@@ -26,10 +26,7 @@ public abstract class AbstractType {
 	}
 	
 	public AbstractType(String name) {
-		this.name = name;
-		open = null;
-		close = null;
-		hash = name.hashCode();
+		this(name, null, null);
 	}
 	
 	public final String getOpen() {
@@ -111,5 +108,13 @@ public abstract class AbstractType {
 		catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
 			return value;
 		}
+	}
+	
+	/**
+	 * Uses the hashCode of the name of this <tt>type</tt>
+	 */
+	@Override
+	public int hashCode() {
+		return hash;
 	}
 }
