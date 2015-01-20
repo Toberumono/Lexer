@@ -1,8 +1,8 @@
 package lipstone.joshua.lexer;
 
-import lipstone.joshua.lexer.abstractLexer.AbstractToken;
+import lipstone.joshua.lexer.genericBase.GenericToken;
 
-public class Token extends AbstractToken<Type, Token> {
+public class Token extends GenericToken<Type, Token> {
 	
 	public Token(Object car, Type carType, Object cdr, Type cdrType) {
 		super(car, carType, cdr, cdrType, Token::new, Type.TOKEN, Type.EMPTY);

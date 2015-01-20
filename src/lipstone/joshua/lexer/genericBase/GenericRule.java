@@ -1,4 +1,4 @@
-package lipstone.joshua.lexer.abstractLexer;
+package lipstone.joshua.lexer.genericBase;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8,15 +8,15 @@ import java.util.regex.Pattern;
  * 
  * @author Joshua Lipstone
  * @param <To>
- *            the subclass of {@link AbstractToken} to use
+ *            the implementation of {@link GenericToken} to use
  * @param <Ty>
- *            the subclass of {@link AbstractType} to use
+ *            the implementation of {@link GenericType} to use
  * @param <L>
- *            the subclass of {@link AbstractLexer} to use
+ *            the implementation of {@link GenericLexer} to use
  */
-public abstract class AbstractRule<To extends AbstractToken<Ty, To>, Ty extends GenericType, L extends AbstractLexer<To, Ty, ?, ?, L>> {
+public abstract class GenericRule<To extends GenericToken<Ty, To>, Ty extends GenericType, L extends GenericLexer<To, Ty, ?, ?, L>> {
 	protected final Pattern pattern;
-	protected final LexerAction<To, Matcher, L> action;
+	protected final GenericAction<To, Matcher, L> action;
 	
 	/**
 	 * Constructs a new <tt>Rule</tt> with the given data
@@ -26,7 +26,7 @@ public abstract class AbstractRule<To extends AbstractToken<Ty, To>, Ty extends 
 	 * @param type
 	 *            the type for <tt>Token</tt>s matched by this rule
 	 */
-	public AbstractRule(Pattern pattern, Ty type) {
+	public GenericRule(Pattern pattern, Ty type) {
 		this(pattern, (match, lexer) -> ((TokenConstructor<Ty, To>) lexer.getTokenConstructor()).makeNewToken(match.group(), type, null, lexer.emptyType));
 	}
 	
@@ -38,7 +38,7 @@ public abstract class AbstractRule<To extends AbstractToken<Ty, To>, Ty extends 
 	 * @param action
 	 *            the action to perform on the part of the input matched by this <tt>Rule</tt>
 	 */
-	public AbstractRule(Pattern pattern, LexerAction<To, Matcher, L> action) {
+	public GenericRule(Pattern pattern, GenericAction<To, Matcher, L> action) {
 		this.pattern = pattern;
 		this.action = action;
 	}

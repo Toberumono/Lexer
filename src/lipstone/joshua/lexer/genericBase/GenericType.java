@@ -1,7 +1,9 @@
-package lipstone.joshua.lexer.abstractLexer;
+package lipstone.joshua.lexer.genericBase;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
- * Base interface for type flags used in {@link AbstractToken} and its subclasses.<br>
+ * Base interface for type flags used in {@link GenericToken} and its subclasses.<br>
  * Commonly overridden methods are:
  * <ul>
  * <li>{@link #valueToString(Object)}</li>
@@ -29,7 +31,7 @@ public interface GenericType {
 	public String getName();
 	
 	/**
-	 * @return whether this <tt>Type</tt> indicates a descender (its associated field is a subclass of {@link AbstractToken})
+	 * @return whether this <tt>Type</tt> indicates a descender (its associated field is a subclass of {@link GenericToken})
 	 */
 	public boolean marksDescender();
 	
@@ -57,7 +59,7 @@ public interface GenericType {
 	 */
 	@SuppressWarnings("unchecked")
 	public default int compareValues(Object value1, Object value2) {
-		return value1.getClass().isInstance(value2) && value1 instanceof Comparable ? ((Comparable<Object>) value1).compareTo(value2) : 0;
+		return value1.getClass().isInstance(value2) && (value1 instanceof Comparable && value2 instanceof Comparable) ? ((Comparable<Object>) value1).compareTo(value2) : 0;
 	}
 	
 	/**
@@ -69,7 +71,14 @@ public interface GenericType {
 	 *            the value to clone
 	 * @return a clone of the passed object
 	 */
-	public Object cloneValue(Object value);
+	public default Object cloneValue(Object value) {
+		try {
+			return value instanceof Cloneable ? value.getClass().getMethod("clone").invoke(value) : value;
+		}
+		catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+			return value;
+		}
+	}
 	
 	/**
 	 * Uses the hashCode of the name of this <tt>type</tt>.<br>

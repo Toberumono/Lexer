@@ -1,15 +1,15 @@
 package lipstone.joshua.lexer;
 
-import lipstone.joshua.lexer.abstractLexer.AbstractDescender;
-import lipstone.joshua.lexer.abstractLexer.DescenderAction;
-import lipstone.joshua.lexer.abstractLexer.LexerAction;
+import lipstone.joshua.lexer.genericBase.DescenderAction;
+import lipstone.joshua.lexer.genericBase.GenericDescender;
+import lipstone.joshua.lexer.genericBase.GenericAction;
 
 /**
  * A Descender for the <tt>Lexer</tt> that uses the provided <tt>Token</tt> class
  * 
  * @author Joshua Lipstone
  */
-public class Descender extends AbstractDescender<Token, Type, Lexer> {
+public class Descender extends GenericDescender<Token, Type, Lexer> {
 	
 	/**
 	 * Constructs a new <tt>Descender</tt> with the given data
@@ -37,7 +37,7 @@ public class Descender extends AbstractDescender<Token, Type, Lexer> {
 	 * @param closeAction
 	 *            the action to be performed on the <tt>Tokens</tt> matched within the found descent set
 	 */
-	public Descender(String open, String close, DescenderAction<Lexer> openAction, LexerAction<Token, Token, Lexer> closeAction) {
+	public Descender(String open, String close, DescenderAction<Lexer> openAction, GenericAction<Token, Token, Lexer> closeAction) {
 		super(open, close, openAction, closeAction);
 	}
 }

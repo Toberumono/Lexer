@@ -1,6 +1,4 @@
-package lipstone.joshua.lexer.abstractLexer;
-
-import java.lang.reflect.InvocationTargetException;
+package lipstone.joshua.lexer.genericBase;
 
 /**
  * A class implementation of {@link GenericType}.<br>
@@ -60,16 +58,6 @@ public class AbstractType implements GenericType {
 		if (o instanceof String)
 			return ((String) o).equals(name);
 		return this == o;
-	}
-	
-	@Override
-	public Object cloneValue(Object value) {
-		try {
-			return value instanceof Cloneable ? value.getClass().getMethod("clone").invoke(value) : value;
-		}
-		catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-			return value;
-		}
 	}
 	
 	@Override

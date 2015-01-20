@@ -1,6 +1,6 @@
 package lipstone.joshua.lexer;
 
-import lipstone.joshua.lexer.abstractLexer.AbstractType;
+import lipstone.joshua.lexer.genericBase.AbstractType;
 
 public class Type extends AbstractType {
 	

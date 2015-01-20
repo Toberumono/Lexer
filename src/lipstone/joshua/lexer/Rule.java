@@ -3,15 +3,15 @@ package lipstone.joshua.lexer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lipstone.joshua.lexer.abstractLexer.AbstractRule;
-import lipstone.joshua.lexer.abstractLexer.LexerAction;
+import lipstone.joshua.lexer.genericBase.GenericRule;
+import lipstone.joshua.lexer.genericBase.GenericAction;
 
 /**
  * A Rule for the Lexer
  * 
  * @author Joshua Lipstone
  */
-public class Rule extends AbstractRule<Token, Type, Lexer> {
+public class Rule extends GenericRule<Token, Type, Lexer> {
 	
 	/**
 	 * Constructs a new <tt>Rule</tt> with the given data
@@ -33,7 +33,7 @@ public class Rule extends AbstractRule<Token, Type, Lexer> {
 	 * @param action
 	 *            the action to perform on the part of the input matched by this <tt>Rule</tt>
 	 */
-	public Rule(Pattern pattern, LexerAction<Token, Matcher, Lexer> action) {
+	public Rule(Pattern pattern, GenericAction<Token, Matcher, Lexer> action) {
 		super(pattern, action);
 	}
 }

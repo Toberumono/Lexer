@@ -1,4 +1,4 @@
-package lipstone.joshua.lexer.abstractLexer;
+package lipstone.joshua.lexer.genericBase;
 
 import java.util.LinkedHashMap;
 import java.util.Stack;
@@ -11,22 +11,22 @@ import lipstone.joshua.lexer.errors.UnrecognizedCharacterException;
 
 /**
  * This represents a generic tokenizer that uses a set of user-defined rules to a {@link String} input.<br>
- * While this implementation is designed to work with cons-cell-esque tokens (e.g. those from Lisp), it can theoretically be
+ * While this implementation is designed to work with cons-cell esque tokens (e.g. those from Lisp), it can theoretically be
  * modified to work with other structures.
  * 
  * @author Joshua Lipstone
  * @param <To>
- *            the implementation of {@link AbstractToken} to be used
+ *            the implementation of {@link GenericToken} to be used
  * @param <Ty>
- *            the implementation of {@link AbstractType} to be used
+ *            the implementation of {@link GenericType} to be used
  * @param <R>
- *            the implementation of {@link AbstractRule} to be used
+ *            the implementation of {@link GenericRule} to be used
  * @param <D>
- *            the implementation of {@link AbstractDescender} to be used
+ *            the implementation of {@link GenericDescender} to be used
  * @param <L>
- *            the implementation of {@link AbstractLexer} to be used
+ *            the implementation of {@link GenericLexer} to be used
  */
-public class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends GenericType, R extends AbstractRule<To, Ty, L>, D extends AbstractDescender<To, Ty, L>, L extends AbstractLexer<To, Ty, R, D, L>> {
+public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericType, R extends GenericRule<To, Ty, L>, D extends GenericDescender<To, Ty, L>, L extends GenericLexer<To, Ty, R, D, L>> {
 	protected final LinkedHashMap<String, R> rules = new LinkedHashMap<>();
 	protected final LinkedHashMap<String, D> descenders = new LinkedHashMap<>();
 	protected final LinkedHashMap<String, Pattern> ignores = new LinkedHashMap<>();
@@ -41,30 +41,30 @@ public class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends GenericT
 	protected final Ty emptyType;
 	
 	/**
-	 * Constructs an {@link AbstractLexer} with the provided token constructor that will skip over spaces in the input.
+	 * Constructs an {@link GenericLexer} with the provided token constructor that will skip over spaces in the input.
 	 * 
 	 * @param tokenConstructor
-	 *            a function that takes no arguments and returns a new instance of the class extending {@link AbstractToken}.
+	 *            a function that takes no arguments and returns a new instance of the class extending {@link GenericToken}.
 	 * @param emptyType
 	 *            the <tt>Type</tt> that represents an empty (or null) value in the <tt>Token</tt> type that this
 	 *            <tt>Lexer</tt> uses.
 	 */
-	public AbstractLexer(TokenConstructor<Ty, To> tokenConstructor, Ty emptyType) {
+	public GenericLexer(TokenConstructor<Ty, To> tokenConstructor, Ty emptyType) {
 		this(tokenConstructor, emptyType, true);
 	}
 	
 	/**
-	 * Constructs an {@link AbstractLexer} with the provided token constructor
+	 * Constructs an {@link GenericLexer} with the provided token constructor
 	 * 
 	 * @param tokenConstructor
-	 *            a function that takes no arguments and returns a new instance of the class extending {@link AbstractToken}.
+	 *            a function that takes no arguments and returns a new instance of the class extending {@link GenericToken}.
 	 * @param emptyType
 	 *            the <tt>Type</tt> that represents an empty (or null) value in the <tt>Token</tt> type that this
 	 *            <tt>Lexer</tt> uses.
 	 * @param ignoreSpace
 	 *            whether to ignore spaces in an input by default
 	 */
-	public AbstractLexer(TokenConstructor<Ty, To> tokenConstructor, Ty emptyType, boolean ignoreSpace) {
+	public GenericLexer(TokenConstructor<Ty, To> tokenConstructor, Ty emptyType, boolean ignoreSpace) {
 		this.tokenConstructor = tokenConstructor;
 		previous = output = current = tokenConstructor.makeNewToken(null, emptyType, null, emptyType);
 		this.ignoreSpace = ignoreSpace;
@@ -172,16 +172,16 @@ public class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends GenericT
 	}
 	
 	/**
-	 * @return the index that this {@link AbstractLexer} has reached in the input.
+	 * @return the index that this {@link GenericLexer} has reached in the input.
 	 */
 	public final int getHeadIndex() {
 		return head;
 	}
 	
 	/**
-	 * Gets the next token in the input without stepping this {@link AbstractLexer} forward.
+	 * Gets the next token in the input without stepping this {@link GenericLexer} forward.
 	 * 
-	 * @return the next token in this {@link AbstractLexer AbstractLexer's} input
+	 * @return the next token in this {@link GenericLexer AbstractLexer's} input
 	 * @throws Exception
 	 *             so that exception handling can take place in the calling function
 	 */
@@ -190,11 +190,11 @@ public class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends GenericT
 	}
 	
 	/**
-	 * Finds the next token in this {@link AbstractLexer}
+	 * Finds the next token in this {@link GenericLexer}
 	 * 
 	 * @param step
-	 *            if this is true, it steps this {@link AbstractLexer AbstractLexer's} read-head forward
-	 * @return the next token in this {@link AbstractLexer AbstractLexer's} input
+	 *            if this is true, it steps this {@link GenericLexer AbstractLexer's} read-head forward
+	 * @return the next token in this {@link GenericLexer AbstractLexer's} input
 	 * @throws Exception
 	 *             so that exception handling can take place in the calling function
 	 */
@@ -395,7 +395,7 @@ public class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends GenericT
 	}
 }
 
-class DescentSet<T extends AbstractToken<?, T>> {
+class DescentSet<T extends GenericToken<?, T>> {
 	final String input;
 	final int head;
 	final T output, previous, current;

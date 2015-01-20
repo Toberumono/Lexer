@@ -1,8 +1,8 @@
 package lipstone.joshua.lexer;
 
-import lipstone.joshua.lexer.abstractLexer.AbstractLexer;
+import lipstone.joshua.lexer.genericBase.GenericLexer;
 
-public class Lexer extends AbstractLexer<Token, Type, Rule, Descender, Lexer> {
+public class Lexer extends GenericLexer<Token, Type, Rule, Descender, Lexer> {
 	
 	/**
 	 * Basic constructor for a Lexer
