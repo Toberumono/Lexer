@@ -1,43 +1,49 @@
 package lipstone.joshua.lexer.abstractLexer;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public abstract class AbstractToken<T extends AbstractType, V extends AbstractToken<T, V>> implements Comparable<V>, Cloneable {
-	protected T carType, cdrType;
+/**
+ * Generic implementation of a doubly-linked list, using a structure based on cons cells from Lisp.<br>
+ * Each entry in the list contains two pointers and two types to allow for easier type checking.
+ * 
+ * @author Joshua Lipstone
+ * @param <Ty>
+ *            the implementation of {@link AbstractType} used by the extending implementation.
+ * @param <To>
+ *            the extending implementation
+ */
+public abstract class AbstractToken<Ty extends GenericType, To extends AbstractToken<Ty, To>> implements Comparable<To>, Cloneable, Iterable<To> {
+	protected Ty carType, cdrType;
 	protected Object car, cdr;
-	protected V previous;
-	protected final TokenConstructor<T, V> constructor;
-	protected final T tokenType, emptyType;
+	protected To previous;
+	protected final TokenConstructor<Ty, To> constructor;
+	protected final Ty tokenType, emptyType;
 	
-	public AbstractToken(V source, V previous, TokenConstructor<T, V> constructor, T tokenType, T emptyType) {
+	public AbstractToken(To source, To previous, TokenConstructor<Ty, To> constructor, Ty tokenType, Ty emptyType) {
 		this(source.car, source.carType, source.cdr, source.cdrType, constructor, tokenType, emptyType);
 		this.previous = previous;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public AbstractToken(Object car, T carType, Object cdr, T cdrType, TokenConstructor<T, V> constructor, T tokenType, T emptyType) {
+	public AbstractToken(Object car, Ty carType, Object cdr, Ty cdrType, TokenConstructor<Ty, To> constructor, Ty tokenType, Ty emptyType) {
 		this.carType = carType;
 		this.car = car;
 		if (car instanceof AbstractToken)
-			((V) car).previous = null;
+			((To) car).previous = null;
 		this.cdrType = cdrType;
 		this.cdr = cdr;
 		if (cdr instanceof AbstractToken)
-			((V) cdr).previous = (V) this;
+			((To) cdr).previous = (To) this;
 		previous = null;
 		this.constructor = constructor;
 		this.tokenType = tokenType;
 		this.emptyType = emptyType;
 	}
 	
-	public AbstractToken(Object car, T carType, TokenConstructor<T, V> constructor, T tokenType, T emptyType) {
-		this.car = car;
-		this.carType = carType;
-		this.cdr = null;
-		this.cdrType = emptyType;
-		this.constructor = constructor;
-		this.tokenType = tokenType;
-		this.emptyType = emptyType;
+	public AbstractToken(Object car, Ty carType, TokenConstructor<Ty, To> constructor, Ty tokenType, Ty emptyType) {
+		this(car, carType, null, emptyType, constructor, tokenType, emptyType);
 	}
 	
 	/**
@@ -50,7 +56,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 * @param emptyType
 	 *            the <tt>Type</tt> that represents an empty (or null) value in the <tt>Token</tt> type that extends this one
 	 */
-	public AbstractToken(TokenConstructor<T, V> constructor, T tokenType, T emptyType) {
+	public AbstractToken(TokenConstructor<Ty, To> constructor, Ty tokenType, Ty emptyType) {
 		this(null, emptyType, constructor, tokenType, emptyType);
 	}
 	
@@ -66,7 +72,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 * @return the {@link AbstractType} of the car value of this {@link AbstractToken}
 	 * @see #getCar()
 	 */
-	public T getCarType() {
+	public Ty getCarType() {
 		return carType;
 	}
 	
@@ -82,7 +88,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 * @return the {@link AbstractType} of the cdr value of this {@link AbstractToken}
 	 * @see #getCdr()
 	 */
-	public T getCdrType() {
+	public Ty getCdrType() {
 		return cdrType;
 	}
 	
@@ -98,8 +104,8 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 * @see #getLastToken()
 	 */
 	@SuppressWarnings("unchecked")
-	public V getNextToken() {
-		return cdr instanceof AbstractToken ? (V) cdr : constructor.makeNewToken(null, emptyType, null, emptyType);
+	public To getNextToken() {
+		return cdr instanceof AbstractToken ? (To) cdr : constructor.makeNewToken(null, emptyType, null, emptyType);
 	}
 	
 	/**
@@ -117,10 +123,10 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 * @see #getNextToken()
 	 */
 	@SuppressWarnings("unchecked")
-	public V getLastToken() {
-		V current = (V) this;
+	public To getLastToken() {
+		To current = (To) this;
 		while (current.cdr instanceof AbstractToken)
-			current = (V) current.cdr;
+			current = (To) current.cdr;
 		return current;
 	}
 	
@@ -130,7 +136,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 * @see #getNextToken()
 	 * @see #getFirstToken()
 	 */
-	public V getPreviousToken() {
+	public To getPreviousToken() {
 		return previous == null ? constructor.makeNewToken(null, emptyType, null, emptyType) : previous;
 	}
 	
@@ -148,9 +154,9 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 *         returns itself.
 	 * @see #getPreviousToken()
 	 */
-	@SuppressWarnings("unchecked")
-	public V getFirstToken() {
-		V current = (V) this;
+	public To getFirstToken() {
+		@SuppressWarnings("unchecked")
+		To current = (To) this;
 		while (current.previous != null)
 			current = current.previous;
 		return current;
@@ -174,23 +180,23 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 * @return the token appended or the last token in the list of appended tokens
 	 */
 	@SuppressWarnings("unchecked")
-	public V append(V next) {
+	public To append(To next) {
 		if (isNull()) {
 			car = next.car;
 			carType = next.carType;
 			if (car instanceof AbstractToken)
-				((V) car).previous = null;
+				((To) car).previous = null;
 			cdr = next.cdr;
 			cdrType = next.cdrType;
 			if (cdr instanceof AbstractToken)
-				((V) cdr).previous = (V) this;
+				((To) cdr).previous = (To) this;
 			return getLastToken();
 		}
 		if (cdr instanceof AbstractToken)
-			((V) cdr).previous = null;
+			((To) cdr).previous = null;
 		cdrType = tokenType;
 		cdr = next;
-		next.previous = (V) this;
+		next.previous = (To) this;
 		return getLastToken();
 	}
 	
@@ -201,17 +207,17 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 * 
 	 * @return a shallow copy of this {@link AbstractToken} that is separate from the list
 	 */
-	public V singular() {
+	public To singular() {
 		return constructor.makeNewToken(car, carType, null, emptyType);
 	}
 	
-	public void replaceCar(V token) {
+	public void replaceCar(To token) {
 		car = token.car;
 		carType = token.carType;
 	}
 	
 	@Override
-	public int compareTo(V o) {
+	public int compareTo(To o) {
 		int result = carType.compareValues(car, o.car);
 		if (result != 0)
 			return result;
@@ -224,7 +230,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 * @return a clone of this {@link AbstractToken}
 	 */
 	@Override
-	public V clone() {
+	public To clone() {
 		return clone(null);
 	}
 	
@@ -236,8 +242,8 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 * @return a clone of this {@link AbstractToken}
 	 */
 	@SuppressWarnings("unchecked")
-	protected V clone(V previous) {
-		V clone = constructor.makeNewToken(car instanceof AbstractToken ? ((V) car).clone((V) this) : car, carType, cdr instanceof AbstractToken ? ((V) cdr).clone((V) this) : cdr, cdrType);
+	protected To clone(To previous) {
+		To clone = constructor.makeNewToken(car instanceof AbstractToken ? ((To) car).clone((To) this) : car, carType, cdr instanceof AbstractToken ? ((To) cdr).clone((To) this) : cdr, cdrType);
 		clone.previous = previous;
 		return clone;
 	}
@@ -249,7 +255,7 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	public int length() {
 		if (isNull())
 			return 0;
-		AbstractToken<T, V> token = this;
+		AbstractToken<Ty, To> token = this;
 		int length = 1;
 		while (!(token = token.getNextToken()).isNull())
 			length++;
@@ -262,12 +268,12 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	 * @return the next token in the list as determined by {@link #getNextToken()}
 	 * @see #getNextToken()
 	 */
-	public V remove() {
+	public To remove() {
 		if (this.previous != null) {
 			previous.cdr = cdr;
 			previous.cdrType = cdrType;
 		}
-		V next = getNextToken();
+		To next = getNextToken();
 		next.previous = previous;
 		previous = null;
 		cdr = null;
@@ -284,14 +290,14 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	@SuppressWarnings("unchecked")
 	public String structureString() {
 		String output = "";
-		AbstractToken<T, V> current = this;
+		AbstractToken<Ty, To> current = this;
 		do {
 			if (current.car instanceof AbstractToken)
 				output = output + current.carType.getOpen() + ((AbstractToken<?, ?>) current.car).structureString() + current.carType.getClose() + " ";
 			else
 				output = output + current.carType.valueToString(current.car);
 			output = output + ": " + current.carType.toString() + ", ";
-			current = (AbstractToken<T, V>) current.cdr;
+			current = (AbstractToken<Ty, To>) current.cdr;
 		} while (current instanceof AbstractToken);
 		if (output.length() > 0)
 			output = output.substring(0, output.length() - 2);
@@ -306,5 +312,33 @@ public abstract class AbstractToken<T extends AbstractType, V extends AbstractTo
 	@Override
 	public int hashCode() {
 		return Objects.hash(car, carType, cdr, cdrType);
+	}
+	
+	/**
+	 * {@inheritDoc}<br>
+	 * <i>The first call to {@link java.util.Iterator#next() next()} returns this {@link AbstractToken token}</i>
+	 * 
+	 * @return an {@link java.util.Iterator#next() next()} that iterates through the {@link AbstractToken token} tree at the
+	 *         level of the {@link AbstractToken token} that it was created on.
+	 */
+	@Override
+	public Iterator<To> iterator() {
+		return new Iterator<To>() {
+			private To last = constructor.makeNewToken(null, emptyType, AbstractToken.this, tokenType);
+			
+			@Override
+			public boolean hasNext() {
+				return last.cdr instanceof AbstractToken;
+			}
+			
+			@Override
+			@SuppressWarnings("unchecked")
+			public To next() {
+				if (!(last.cdr instanceof AbstractToken))
+					throw new NoSuchElementException();
+				return (last = (To) last.cdr).singular();
+			}
+			
+		};
 	}
 }

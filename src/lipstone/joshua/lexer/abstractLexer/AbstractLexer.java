@@ -9,7 +9,24 @@ import lipstone.joshua.lexer.errors.EmptyInputException;
 import lipstone.joshua.lexer.errors.UnbalancedDescenderException;
 import lipstone.joshua.lexer.errors.UnrecognizedCharacterException;
 
-public abstract class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends AbstractType, R extends AbstractRule<To, Ty, L>, D extends AbstractDescender<To, Ty, L>, L extends AbstractLexer<To, Ty, R, D, L>> {
+/**
+ * This represents a generic tokenizer that uses a set of user-defined rules to a {@link String} input.<br>
+ * While this implementation is designed to work with cons-cell-esque tokens (e.g. those from Lisp), it can theoretically be
+ * modified to work with other structures.
+ * 
+ * @author Joshua Lipstone
+ * @param <To>
+ *            the implementation of {@link AbstractToken} to be used
+ * @param <Ty>
+ *            the implementation of {@link AbstractType} to be used
+ * @param <R>
+ *            the implementation of {@link AbstractRule} to be used
+ * @param <D>
+ *            the implementation of {@link AbstractDescender} to be used
+ * @param <L>
+ *            the implementation of {@link AbstractLexer} to be used
+ */
+public class AbstractLexer<To extends AbstractToken<Ty, To>, Ty extends GenericType, R extends AbstractRule<To, Ty, L>, D extends AbstractDescender<To, Ty, L>, L extends AbstractLexer<To, Ty, R, D, L>> {
 	protected final LinkedHashMap<String, R> rules = new LinkedHashMap<>();
 	protected final LinkedHashMap<String, D> descenders = new LinkedHashMap<>();
 	protected final LinkedHashMap<String, Pattern> ignores = new LinkedHashMap<>();

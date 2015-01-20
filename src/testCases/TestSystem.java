@@ -24,6 +24,8 @@ public class TestSystem {
 			Token token = lexer.lex(test);
 			System.out.println(test + " -> " + token.structureString());
 			System.out.println("length: " + token.length());
+			for (Token t : token)
+				System.out.println(t);
 		}
 		catch (Exception e) {
 			System.out.println(test + " -> " + e.getMessage());
