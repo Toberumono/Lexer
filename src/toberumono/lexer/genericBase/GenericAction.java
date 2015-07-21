@@ -1,9 +1,9 @@
-package lipstone.joshua.lexer.genericBase;
+package toberumono.lexer.genericBase;
 
 /**
  * Represents an action to apply to a matched part of an input.
  * 
- * @author Joshua Lipstone
+ * @author Toberumono
  * @param <To>
  *            the subclass of {@link GenericToken} to use
  * @param <M>

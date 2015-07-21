@@ -2,11 +2,11 @@ package testCases;
 
 import java.util.regex.Pattern;
 
-import lipstone.joshua.lexer.Descender;
-import lipstone.joshua.lexer.Lexer;
-import lipstone.joshua.lexer.Rule;
-import lipstone.joshua.lexer.Token;
-import lipstone.joshua.lexer.Type;
+import toberumono.lexer.Descender;
+import toberumono.lexer.Lexer;
+import toberumono.lexer.Rule;
+import toberumono.lexer.Token;
+import toberumono.lexer.Type;
 
 public class TestSystem {
 	

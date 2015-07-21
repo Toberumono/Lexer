@@ -1,4 +1,4 @@
-package lipstone.joshua.lexer.errors;
+package toberumono.lexer.errors;
 
 public class UnbalancedDescenderException extends LexerException {
 

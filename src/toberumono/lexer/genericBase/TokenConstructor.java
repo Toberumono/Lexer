@@ -1,9 +1,9 @@
-package lipstone.joshua.lexer.genericBase;
+package toberumono.lexer.genericBase;
 
 /**
  * Represents the basic constructor for an implementation of {@link GenericToken}.
  * 
- * @author Joshua Lipstone
+ * @author Toberumono
  * @param <Ty>
  *            the implementation of {@link GenericType} in use
  * @param <To>

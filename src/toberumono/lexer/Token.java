@@ -1,6 +1,6 @@
-package lipstone.joshua.lexer;
+package toberumono.lexer;
 
-import lipstone.joshua.lexer.genericBase.GenericToken;
+import toberumono.lexer.genericBase.GenericToken;
 
 public class Token extends GenericToken<Type, Token> {
 	

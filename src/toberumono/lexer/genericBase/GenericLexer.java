@@ -1,20 +1,22 @@
-package lipstone.joshua.lexer.genericBase;
+package toberumono.lexer.genericBase;
 
 import java.util.LinkedHashMap;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lipstone.joshua.lexer.errors.EmptyInputException;
-import lipstone.joshua.lexer.errors.UnbalancedDescenderException;
-import lipstone.joshua.lexer.errors.UnrecognizedCharacterException;
+import toberumono.lexer.DefaultIgnorePattern;
+import toberumono.lexer.IgnorePattern;
+import toberumono.lexer.errors.EmptyInputException;
+import toberumono.lexer.errors.UnbalancedDescenderException;
+import toberumono.lexer.errors.UnrecognizedCharacterException;
 
 /**
  * This represents a generic tokenizer that uses a set of user-defined rules to a {@link String} input.<br>
  * While this implementation is designed to work with cons-cell esque tokens (e.g. those from Lisp), it can theoretically be
  * modified to work with other structures.
  * 
- * @author Joshua Lipstone
+ * @author Toberumono
  * @param <To>
  *            the implementation of {@link GenericToken} to be used
  * @param <Ty>
@@ -33,7 +35,6 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	protected final Stack<DescentSet<To>> descentStack = new Stack<>();
 	protected final Stack<Integer> headStack = new Stack<>();
 	protected final Stack<String> closeTokenStack = new Stack<>();
-	protected boolean ignoreSpace = true;
 	protected String input = "";
 	protected int head = 0;
 	protected To current, output, previous;
@@ -41,36 +42,24 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	protected final Ty emptyType;
 	
 	/**
-	 * Constructs an {@link GenericLexer} with the provided token constructor that will skip over spaces in the input.
+	 * Constructs an {@link GenericLexer} with the provided token constructor.
 	 * 
 	 * @param tokenConstructor
 	 *            a function that takes no arguments and returns a new instance of the class extending {@link GenericToken}.
 	 * @param emptyType
 	 *            the <tt>Type</tt> that represents an empty (or null) value in the <tt>Token</tt> type that this
 	 *            <tt>Lexer</tt> uses.
+	 * @param ignore
+	 *            A list of patterns to ignore. The {@link DefaultIgnorePattern} enum has a few common patterns.
+	 * @see DefaultIgnorePattern
 	 */
-	public GenericLexer(TokenConstructor<Ty, To> tokenConstructor, Ty emptyType) {
-		this(tokenConstructor, emptyType, true);
-	}
-	
-	/**
-	 * Constructs an {@link GenericLexer} with the provided token constructor
-	 * 
-	 * @param tokenConstructor
-	 *            a function that takes no arguments and returns a new instance of the class extending {@link GenericToken}.
-	 * @param emptyType
-	 *            the <tt>Type</tt> that represents an empty (or null) value in the <tt>Token</tt> type that this
-	 *            <tt>Lexer</tt> uses.
-	 * @param ignoreSpace
-	 *            whether to ignore spaces in an input by default
-	 */
-	public GenericLexer(TokenConstructor<Ty, To> tokenConstructor, Ty emptyType, boolean ignoreSpace) {
+	public GenericLexer(TokenConstructor<Ty, To> tokenConstructor, Ty emptyType, IgnorePattern... ignore) {
 		this.tokenConstructor = tokenConstructor;
 		previous = output = current = tokenConstructor.makeNewToken(null, emptyType, null, emptyType);
-		this.ignoreSpace = ignoreSpace;
 		this.emptyType = emptyType;
-		if (ignoreSpace)
-			ignore("Space", Pattern.compile(" +"));
+		for (IgnorePattern p : ignore) {
+			this.ignore(p.getName(), p.getPattern());
+		}
 	}
 	
 	/**
@@ -385,8 +374,6 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 *            the <tt>Pattern</tt> to ignore
 	 */
 	public final void ignore(String name, Pattern ignore) {
-		if (ignores.containsKey(name))
-			ignores.remove(name);
 		ignores.put(name, ignore);
 	}
 	

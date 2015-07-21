@@ -1,8 +1,8 @@
-package lipstone.joshua.lexer;
+package toberumono.lexer;
 
-import lipstone.joshua.lexer.genericBase.DescenderAction;
-import lipstone.joshua.lexer.genericBase.GenericDescender;
-import lipstone.joshua.lexer.genericBase.GenericAction;
+import toberumono.lexer.genericBase.DescenderAction;
+import toberumono.lexer.genericBase.GenericAction;
+import toberumono.lexer.genericBase.GenericDescender;
 
 /**
  * A Descender for the <tt>Lexer</tt> that uses the provided <tt>Token</tt> class

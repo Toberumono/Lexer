@@ -1,9 +1,9 @@
-package lipstone.joshua.lexer.genericBase;
+package toberumono.lexer.genericBase;
 
 /**
  * Represents the action to take upon seeing a particular descent-start token.
  * 
- * @author Joshua Lipstone
+ * @author Toberumono
  * @param <To>
  *            the implementation of {@link GenericToken} to use
  * @param <Ty>

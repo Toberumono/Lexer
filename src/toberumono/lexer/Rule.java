@@ -1,10 +1,10 @@
-package lipstone.joshua.lexer;
+package toberumono.lexer;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lipstone.joshua.lexer.genericBase.GenericRule;
-import lipstone.joshua.lexer.genericBase.GenericAction;
+import toberumono.lexer.genericBase.GenericAction;
+import toberumono.lexer.genericBase.GenericRule;
 
 /**
  * A Rule for the Lexer

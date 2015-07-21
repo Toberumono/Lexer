@@ -1,4 +1,4 @@
-package lipstone.joshua.lexer.genericBase;
+package toberumono.lexer.genericBase;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Represents the action to take upon seeing input that matches a particular {@link java.util.regex.Pattern Pattern}.
  * 
- * @author Joshua Lipstone
+ * @author Toberumono
  * @param <To>
  *            the implementation of {@link GenericToken} to use
  * @param <Ty>

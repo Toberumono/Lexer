@@ -1,4 +1,4 @@
-package lipstone.joshua.lexer.genericBase;
+package toberumono.lexer.genericBase;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
  * <li>{@link #compareValues(Object, Object)}</li>
  * </ul>
  * 
- * @author Joshua Lipstone
+ * @author Toberumono
  */
 public interface GenericType {
 	

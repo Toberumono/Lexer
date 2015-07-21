@@ -1,6 +1,6 @@
-package lipstone.joshua.lexer;
+package toberumono.lexer;
 
-import lipstone.joshua.lexer.genericBase.AbstractType;
+import toberumono.lexer.genericBase.AbstractType;
 
 public class Type extends AbstractType {
 	

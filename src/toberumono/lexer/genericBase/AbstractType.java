@@ -1,10 +1,10 @@
-package lipstone.joshua.lexer.genericBase;
+package toberumono.lexer.genericBase;
 
 /**
  * A class implementation of {@link GenericType}.<br>
  * This is included for uses of this library that do not use enums for types.
  * 
- * @author Joshua Lipstone
+ * @author Toberumono
  */
 public class AbstractType implements GenericType {
 	protected final String name, open, close;

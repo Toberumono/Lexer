@@ -1,9 +1,9 @@
-package lipstone.joshua.lexer.errors;
+package toberumono.lexer.errors;
 
 /**
  * Root class for all exceptions thrown by this library.
  * 
- * @author Joshua Lipstone
+ * @author Toberumono
  */
 public class LexerException extends Exception {
 	
@@ -24,6 +24,17 @@ public class LexerException extends Exception {
 	 */
 	public LexerException(String message) {
 		super(message);
+	}
+	
+	/**
+	 * Constructs a new message with the specified <tt>cause</tt> and its detail message (if {@code cause != null}).<br>
+	 * This is mostly useful for re-throwing exceptions as {@link LexerException LexerExceptions}.
+	 * 
+	 * @param cause
+	 *            the reason that this exception is being thrown
+	 */
+	public LexerException(Throwable cause) {
+		super(cause);
 	}
 	
 	/**

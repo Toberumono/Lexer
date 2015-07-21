@@ -1,4 +1,4 @@
-package lipstone.joshua.lexer.genericBase;
+package toberumono.lexer.genericBase;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -8,7 +8,7 @@ import java.util.Objects;
  * Generic implementation of a doubly-linked list, using a structure based on cons cells from Lisp.<br>
  * Each entry in the list contains two pointers and two types to allow for easier type checking.
  * 
- * @author Joshua Lipstone
+ * @author Toberumono
  * @param <Ty>
  *            the implementation of {@link GenericType} used by the extending implementation.
  * @param <To>

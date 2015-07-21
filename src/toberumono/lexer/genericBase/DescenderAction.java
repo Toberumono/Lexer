@@ -1,9 +1,9 @@
-package lipstone.joshua.lexer.genericBase;
+package toberumono.lexer.genericBase;
 
 /**
  * Represents an action to perform when the open token for a {@link GenericDescender} is found.
  * 
- * @author Joshua Lipstone
+ * @author Toberumono
  * @param <L>
  *            the subclass of {@link GenericLexer} to use
  */
