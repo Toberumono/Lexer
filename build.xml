@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create jar" name="Create Runnable Jar for Project lexer">
-	<!--ANT 1.8.3 is required                                        -->
+<project default="create jar" name="Create Runnable Jar for Project lexer" xmlns:if="ant:if" xmlns:unless="ant:unless">
+	<!--ANT 1.9.4 is required                                        -->
 
 	<property name="src" location="src" />
 	<property name="bin" location="bin" />
 	<property name="doc" value="doc" />
-	<property name="prefix" value="../" />
+	<property unless:set="prefix" name="prefix" value="../" />
 	<property name="jar" location="${prefix}lexer.jar" />
 
 	<!--Files that should be excluded from the build go here-->
