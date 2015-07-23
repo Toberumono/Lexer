@@ -5,7 +5,8 @@
 	<property name="src" location="src" />
 	<property name="bin" location="bin" />
 	<property name="doc" value="doc" />
-	<property name="jar" location="../lexer.jar" />
+	<property name="prefix" value="../" />
+	<property name="jar" location="${prefix}lexer.jar" />
 
 	<!--Files that should be excluded from the build go here-->
 	<patternset id="Build Excludes">
