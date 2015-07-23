@@ -5,6 +5,7 @@
 	<property name="src" location="src" />
 	<property name="bin" location="bin" />
 	<property name="doc" value="doc" />
+	<echo>${prefix}</echo>
 	<property unless:set="prefix" name="prefix" value="../" />
 	<property name="jar" location="${prefix}lexer.jar" />
 
