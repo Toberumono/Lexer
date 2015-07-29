@@ -1,5 +1,7 @@
 package toberumono.lexer.genericBase;
 
+import toberumono.lexer.errors.LexerException;
+
 /**
  * Represents an action to apply to a matched part of an input.
  * 
@@ -13,5 +15,13 @@ package toberumono.lexer.genericBase;
  */
 @FunctionalInterface
 public interface GenericAction<To, M, L> {
-	public To perform(M match, L lexer) throws Exception;
+	/**
+	 * Performs the action
+	 * @param match the value that was matched
+	 * @param lexer the lexer that matched the value
+	 * @return an instance of {@link GenericToken}
+	 * @throws LexerException
+	 *             if an error occurs
+	 */
+	public To perform(M match, L lexer) throws LexerException;
 }

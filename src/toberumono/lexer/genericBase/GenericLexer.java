@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import toberumono.lexer.DefaultIgnorePattern;
 import toberumono.lexer.IgnorePattern;
 import toberumono.lexer.errors.EmptyInputException;
+import toberumono.lexer.errors.LexerException;
 import toberumono.lexer.errors.UnbalancedDescenderException;
 import toberumono.lexer.errors.UnrecognizedCharacterException;
 
@@ -68,10 +69,10 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 * @param input
 	 *            the <tt>String</tt> to tokenize
 	 * @return the <tt>Token</tt>s in the <tt>String</tt>
-	 * @throws Exception
+	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
 	 */
-	public To lex(String input) throws Exception {
+	public To lex(String input) throws LexerException {
 		return lex(input, 0);
 	}
 	
@@ -88,10 +89,10 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 * @param previous
 	 *            the last token in the previous tokenization
 	 * @return the <tt>Token</tt>s in the <tt>String</tt>
-	 * @throws Exception
+	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
 	 */
-	public To lex(String input, int head, To output, To previous) throws Exception {
+	public To lex(String input, int head, To output, To previous) throws LexerException {
 		descentStack.push(new DescentSet<>(this.input, this.head, this.output, this.previous, current));
 		this.previous = previous;
 		current = previous;
@@ -108,10 +109,10 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 * @param head
 	 *            the location at which to start lexing the input
 	 * @return the <tt>Token</tt>s in the <tt>String</tt>
-	 * @throws Exception
+	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
 	 */
-	public To lex(String input, int head) throws Exception {
+	public To lex(String input, int head) throws LexerException {
 		descentStack.push(new DescentSet<>(this.input, this.head, output, previous, current));
 		this.input = input;
 		current = tokenConstructor.makeNewToken(null, emptyType, null, emptyType);
@@ -120,7 +121,7 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 		return lexLoop();
 	}
 	
-	private To lexLoop() throws Exception {
+	private To lexLoop() throws LexerException {
 		try {
 			while (head < input.length()) {
 				skipIgnores();
@@ -136,7 +137,7 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 					break;
 			}
 		}
-		catch (Exception e) {
+		catch (LexerException e) {
 			descentStack.clear();
 			throw e;
 		}
@@ -171,10 +172,10 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 * Gets the next token in the input without stepping this {@link GenericLexer} forward.
 	 * 
 	 * @return the next token in this {@link GenericLexer AbstractLexer's} input
-	 * @throws Exception
+	 * @throws LexerException
 	 *             so that exception handling can take place in the calling function
 	 */
-	public final To getNextToken() throws Exception {
+	public final To getNextToken() throws LexerException {
 		return getNextToken(false);
 	}
 	
@@ -184,11 +185,11 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 * @param step
 	 *            if this is true, it steps this {@link GenericLexer AbstractLexer's} read-head forward
 	 * @return the next token in this {@link GenericLexer AbstractLexer's} input
-	 * @throws Exception
+	 * @throws LexerException
 	 *             so that exception handling can take place in the calling function
 	 */
 	@SuppressWarnings("unchecked")
-	public To getNextToken(boolean step) throws Exception {
+	public To getNextToken(boolean step) throws LexerException {
 		do {
 			if (head >= input.length())
 				throw new EmptyInputException();
@@ -377,6 +378,9 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 		ignores.put(name, ignore);
 	}
 	
+	/**
+	 * @return the token constructor being used by this {@link GenericLexer}
+	 */
 	public final TokenConstructor<Ty, To> getTokenConstructor() {
 		return tokenConstructor;
 	}

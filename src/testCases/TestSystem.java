@@ -8,14 +8,25 @@ import toberumono.lexer.Rule;
 import toberumono.lexer.Token;
 import toberumono.lexer.Type;
 
+/**
+ * A simple testing class.
+ * 
+ * @author Toberumono
+ */
 public class TestSystem {
 	
+	/**
+	 * The main method.
+	 * 
+	 * @param args
+	 *            this is ignored
+	 */
 	public static void main(String[] args) {
 		Lexer lexer = new Lexer();
 		final Type integer = new Type("Integer");
 		final Type decimal = new Type("Decimal");
-		lexer.addRule("Integer", new Rule(Pattern.compile("[0-9]+"), (match, l) -> {return new Token(new Integer(match.group()), integer);}));
-		lexer.addRule("Decimal", new Rule(Pattern.compile("([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+)"), (match, l) -> {return new Token(new Double(match.group()), decimal);}));
+		lexer.addRule("Integer", new Rule(Pattern.compile("[0-9]+"), (match, l) -> new Token(new Integer(match.group()), integer)));
+		lexer.addRule("Decimal", new Rule(Pattern.compile("([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+)"), (match, l) -> new Token(new Double(match.group()), decimal)));
 		lexer.addDescender("Parentheses", new Descender("(", ")", new Type("Parentheses", "(", ")")));
 		lexer.addDescender("Brackets", new Descender("[", "]", new Type("Brackets", "[", "]")));
 		lexer.ignore("Newline", Pattern.compile("\n+"));

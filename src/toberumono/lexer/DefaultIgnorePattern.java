@@ -14,8 +14,17 @@ import toberumono.lexer.genericBase.TokenConstructor;
  * @see GenericLexer#GenericLexer(TokenConstructor, GenericType, IgnorePattern...)
  */
 public enum DefaultIgnorePattern implements IgnorePattern {
+	/**
+	 * Ignores spaces {@code Pattern.compile(" +")}
+	 */
 	SPACES(Pattern.compile(" +")),
+	/**
+	 * Ignores newlines {@code Pattern.compile(System.lineSeparator(), Pattern.LITERAL)}
+	 */
 	NEW_LINES(Pattern.compile(System.lineSeparator(), Pattern.LITERAL)),
+	/**
+	 * Ignores all whitespace characters {@code Pattern.compile("\\s+")}
+	 */
 	WHITESPACE(Pattern.compile("\\s+"));
 	
 	private Pattern pattern;

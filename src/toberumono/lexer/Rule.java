@@ -9,7 +9,7 @@ import toberumono.lexer.genericBase.GenericRule;
 /**
  * A Rule for the Lexer
  * 
- * @author Joshua Lipstone
+ * @author Toberumono
  */
 public class Rule extends GenericRule<Token, Type, Lexer> {
 	

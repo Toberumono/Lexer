@@ -21,11 +21,43 @@ public abstract class GenericToken<Ty extends GenericType, To extends GenericTok
 	protected final TokenConstructor<Ty, To> constructor;
 	protected final Ty tokenType, emptyType;
 	
+	/**
+	 * Constructs a {@link GenericToken} based on the given source.
+	 * 
+	 * @param source
+	 *            the source of the car/cdr values
+	 * @param previous
+	 *            the new {@link GenericToken GenericToken's} previous token
+	 * @param constructor
+	 *            the constructor to use
+	 * @param tokenType
+	 *            the type that indicates a token
+	 * @param emptyType
+	 *            the type that indicates an empty car/cdr field.
+	 */
 	public GenericToken(To source, To previous, TokenConstructor<Ty, To> constructor, Ty tokenType, Ty emptyType) {
 		this(source.car, source.carType, source.cdr, source.cdrType, constructor, tokenType, emptyType);
 		this.previous = previous;
 	}
 	
+	/**
+	 * Constructs a {@link GenericToken} with the given car and cdr values.
+	 * 
+	 * @param car
+	 *            the car value
+	 * @param carType
+	 *            the car type
+	 * @param cdr
+	 *            the cdr value
+	 * @param cdrType
+	 *            the cdr type
+	 * @param constructor
+	 *            the constructor to use
+	 * @param tokenType
+	 *            the type that indicates a token
+	 * @param emptyType
+	 *            the type that indicates an empty car/cdr field.
+	 */
 	@SuppressWarnings("unchecked")
 	public GenericToken(Object car, Ty carType, Object cdr, Ty cdrType, TokenConstructor<Ty, To> constructor, Ty tokenType, Ty emptyType) {
 		this.carType = carType;
@@ -42,6 +74,20 @@ public abstract class GenericToken<Ty extends GenericType, To extends GenericTok
 		this.emptyType = emptyType;
 	}
 	
+	/**
+	 * Constructs a {@link GenericToken} with the given car value and an empty cdr value.
+	 * 
+	 * @param car
+	 *            the car value
+	 * @param carType
+	 *            the car type
+	 * @param constructor
+	 *            the constructor to use
+	 * @param tokenType
+	 *            the type that indicates a token
+	 * @param emptyType
+	 *            the type that indicates an empty car/cdr field.
+	 */
 	public GenericToken(Object car, Ty carType, TokenConstructor<Ty, To> constructor, Ty tokenType, Ty emptyType) {
 		this(car, carType, null, emptyType, constructor, tokenType, emptyType);
 	}
@@ -211,6 +257,12 @@ public abstract class GenericToken<Ty extends GenericType, To extends GenericTok
 		return constructor.makeNewToken(car, carType, null, emptyType);
 	}
 	
+	/**
+	 * Replaces the car value of this {@link GenericToken} with that of the given token.
+	 * 
+	 * @param token
+	 *            the token whose car value is to be written to this {@link GenericToken}
+	 */
 	public void replaceCar(To token) {
 		car = token.car;
 		carType = token.carType;

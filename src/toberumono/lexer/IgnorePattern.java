@@ -9,7 +9,13 @@ import java.util.regex.Pattern;
  */
 public interface IgnorePattern {
 	
+	/**
+	 * @return the name of the {@link IgnorePattern}
+	 */
 	public String getName();
 	
+	/**
+	 * @return the {@link Pattern} that the {@link IgnorePattern} represents
+	 */
 	public Pattern getPattern();
 }

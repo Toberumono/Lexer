@@ -10,6 +10,16 @@ public class AbstractType implements GenericType {
 	protected final String name, open, close;
 	protected final int hash;
 	
+	/**
+	 * Constructs an {@link AbstractType} with the given name and descender tokens.
+	 * 
+	 * @param name
+	 *            the name of the type
+	 * @param open
+	 *            the open token
+	 * @param close
+	 *            the close token
+	 */
 	public AbstractType(String name, String open, String close) {
 		this.name = name;
 		this.open = open;
@@ -17,6 +27,12 @@ public class AbstractType implements GenericType {
 		hash = name.hashCode();
 	}
 	
+	/**
+	 * Constructs an {@link AbstractType} with the given name and no descender tokens.
+	 * 
+	 * @param name
+	 *            the name of the type
+	 */
 	public AbstractType(String name) {
 		this(name, null, null);
 	}

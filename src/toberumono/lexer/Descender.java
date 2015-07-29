@@ -7,7 +7,7 @@ import toberumono.lexer.genericBase.GenericDescender;
 /**
  * A Descender for the <tt>Lexer</tt> that uses the provided <tt>Token</tt> class
  * 
- * @author Joshua Lipstone
+ * @author Toberumono
  */
 public class Descender extends GenericDescender<Token, Type, Lexer> {
 	
