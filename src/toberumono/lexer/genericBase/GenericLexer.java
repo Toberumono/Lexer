@@ -224,7 +224,6 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 		patterns.put(descender.close, ((AscentBlock<To, Ty, R, D, L>) (lexer, state, match) -> {
 			if (state.getDescender() != descender)
 				throw new UnbalancedDescenderException(state.getInput(), state.getHead());
-			System.out.println("Root:" + state.getRoot());
 			To root = state.getRoot();
 			return descender.closeAction.perform(lexer, state, root == null ? tokenConstructor.construct() : root);
 		}));
