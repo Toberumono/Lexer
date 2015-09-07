@@ -25,7 +25,27 @@ public enum DefaultIgnorePattern implements IgnorePattern {
 	/**
 	 * Ignores all whitespace characters {@code Pattern.compile("\\s+")}
 	 */
-	WHITESPACE(Pattern.compile("\\s+"));
+	WHITESPACE(Pattern.compile("\\s+")),
+	/**
+	 * Ignores the contents of C-style comments.
+	 * 
+	 * @see #SINGLELINE_COMMENT
+	 * @see #MULTILINE_COMMENT
+	 */
+	COMMENT(Pattern.compile("(//.*?" + System.lineSeparator() + "|/\\*.*?\\*/)", Pattern.DOTALL)),
+	/**
+	 * Ignores the contents of C-style single-line comments.
+	 * @see #COMMENT
+	 * @see #MULTILINE_COMMENT
+	 */
+	SINGLELINE_COMMENT(Pattern.compile("//.*?" + System.lineSeparator())),
+	/**
+	 * Ignores the contents of C-style multi-line comments.
+	 * 
+	 * @see #COMMENT
+	 * @see #SINGLELINE_COMMENT
+	 */
+	MULTILINE_COMMENT(Pattern.compile("/\\*.*?\\*/", Pattern.DOTALL));
 	
 	private Pattern pattern;
 	
