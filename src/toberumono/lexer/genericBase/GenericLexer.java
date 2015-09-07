@@ -114,6 +114,7 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	
 	/**
 	 * Gets the next {@link GenericToken Token} using the given {@link LexerState State}.<br>
+	 * This will throw an {@link EmptyInputException} if it encounters a close token.<br>
 	 * If <tt>advance</tt> is {@code true}, then this <i>will</i> modify <tt>state's</tt> head position.
 	 * 
 	 * @param state
@@ -125,6 +126,8 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 *             so that lexer exceptions can be propagated back to the original caller
 	 */
 	public To getNextToken(LexerState<To, Ty, R, D, L> state, boolean advance) throws LexerException {
+		if (state.getHead() >= state.getInput().length())
+			throw new EmptyInputException();
 		int initial = state.getHead();
 		try {
 			if (state.getHead() >= state.getInput().length())
@@ -144,10 +147,10 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 				state.advance(longest);
 				if (match == null) //Handle ignores
 					continue;
+				if (match instanceof AscentBlock)
+					throw new EmptyInputException();
 				@SuppressWarnings("unchecked")
 				To token = match.handle((L) this, state, longest);
-				if (!advance)
-					state.setHead(initial);
 				return token;
 			}
 			To out = state.getRoot();

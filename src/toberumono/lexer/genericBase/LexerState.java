@@ -1,6 +1,8 @@
 package toberumono.lexer.genericBase;
 
 import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A container that stores the state information of a lexing operation.<br>
@@ -34,25 +36,39 @@ public class LexerState<To extends GenericToken<Ty, To>, Ty extends GenericType,
 		last = root = null;
 	}
 	
+	/**
+	 * @return the input {@link String} being lexed
+	 */
 	public String getInput() {
 		return input;
 	}
 	
+	/**
+	 * @return the index from which the next token will be matched
+	 */
 	public int getHead() {
 		return head;
 	}
 	
+	/**
+	 * @return the {@link GenericDescender Descender} that created this {@link LexerState}. This is <i>often</i> {@code null}
+	 */
 	public D getDescender() {
 		return descender;
 	}
 	
-	public LexerState<To, Ty, R, D, L> advance(MatchResult result) {
-		head = result.end();
-		return this;
+	/**
+	 * Sets the head position to the value of {@link MatchResult#end()} for the given <tt>match</tt>
+	 * 
+	 * @param match
+	 *            the match with which to update the head position
+	 */
+	public void advance(MatchResult match) {
+		head = match.end();
 	}
 	
 	/**
-	 * Increases the stored index by <tt>n</tt>
+	 * Increases the stored head position by <tt>n</tt>
 	 * 
 	 * @param n
 	 *            the amount by which to increase the stored index
@@ -61,9 +77,16 @@ public class LexerState<To extends GenericToken<Ty, To>, Ty extends GenericType,
 		head += n;
 	}
 	
-	public int setHead(int index) {
+	/**
+	 * Sets the position of the head.
+	 * 
+	 * @param pos
+	 *            the new position of the head
+	 * @return the previous position of the head
+	 */
+	public int setHead(int pos) {
 		int oldIndex = this.head;
-		this.head = index;
+		this.head = pos;
 		return oldIndex;
 	}
 	
@@ -122,17 +145,38 @@ public class LexerState<To extends GenericToken<Ty, To>, Ty extends GenericType,
 		return ret;
 	}
 	
+	/**
+	 * Constructs a new {@link LexerState} with the same fields but null tokens and the descender set to <tt>descender</tt>.
+	 * 
+	 * @param descender
+	 *            the {@link GenericDescender Descender} that was encountered
+	 * @return a separate {@link LexerState} that is used to watch for the correct close token
+	 */
 	public LexerState<To, Ty, R, D, L> descend(D descender) {
 		return new LexerState<>(input, head, descender, lexer);
 	}
 	
-	//TODO Test for ascent token
 	/**
-	 * This method returns true if there any untokenized input remains after skipping over tokens that are set to be ignored.
+	 * This method returns true if there any untokenized input remains after skipping over tokens that are set to be ignored
+	 * and the next matched token would not be an ascent token.<br>
+	 * <b><i>Note</i></b>: This is <i>slow</i> - the {@link GenericLexer Lexer} already performs these checks before getting
+	 * the next token, so if you are calling this regularly, consider re-working the logic behind your rules.
 	 * 
 	 * @return true if there is still untokenized input at the current descent level, otherwise false.
 	 */
 	public boolean hasNext() {
-		return head + lexer.skipIgnores(this) < input.length();
+		if (head + lexer.skipIgnores(this) < input.length()) {
+			if (descender != null) {
+				Matcher longest = null;
+				for (Pattern p : lexer.patterns.keySet()) {
+					Matcher m = p.matcher(input);
+					if (m.find(head) && m.start() == head && (longest == null || m.end() > longest.end()))
+						longest = m;
+				}
+				return longest.pattern() == descender.close;
+			}
+			return true;
+		}
+		return false;
 	}
 }
