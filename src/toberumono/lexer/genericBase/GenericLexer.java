@@ -66,12 +66,24 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 * @return the <tt>Token</tt>s in the <tt>String</tt>
 	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
+	 * @see #lex(LexerState)
 	 */
 	public To lex(String input) throws LexerException {
 		return lex(new LexerState<>(input, 0, null, this));
 	}
 	
-	private To lex(LexerState<To, Ty, R, D, L> state) throws LexerException {
+	/**
+	 * Processes the given {@link LexerState State}.<br>
+	 * Use {@link #lex(String)} to tokenize an input from the beginning.
+	 * 
+	 * @param state
+	 *            the {@link LexerState} to process
+	 * @return the <tt>Token</tt>s in the <tt>String</tt>
+	 * @throws LexerException
+	 *             so that lexer exceptions can be propagated back to the original caller
+	 * @see #lex(String)
+	 */
+	public To lex(LexerState<To, Ty, R, D, L> state) throws LexerException {
 		if (state.getHead() >= state.getInput().length())
 			throw new EmptyInputException();
 		for (int lim = state.getInput().length(); state.getHead() < lim;) {
@@ -100,6 +112,18 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 		return out == null ? tokenConstructor.construct() : out;
 	}
 	
+	/**
+	 * Gets the next {@link GenericToken Token} using the given {@link LexerState State}.<br>
+	 * If <tt>advance</tt> is {@code true}, then this <i>will</i> modify <tt>state's</tt> head position.
+	 * 
+	 * @param state
+	 *            the {@link LexerState} to use
+	 * @param advance
+	 *            whether to advance <tt>state's</tt> head position
+	 * @return the next {@link GenericToken Token} in the input
+	 * @throws LexerException
+	 *             so that lexer exceptions can be propagated back to the original caller
+	 */
 	public To getNextToken(LexerState<To, Ty, R, D, L> state, boolean advance) throws LexerException {
 		int initial = state.getHead();
 		try {

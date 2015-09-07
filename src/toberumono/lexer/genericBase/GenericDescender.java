@@ -7,11 +7,15 @@ import java.util.regex.Pattern;
  * 
  * @author Toberumono
  * @param <To>
- *            the implementation of {@link GenericToken} to use
+ *            the implementation of {@link GenericToken} to be used
  * @param <Ty>
- *            the implementation of {@link GenericType} to use
+ *            the implementation of {@link GenericType} to be used
+ * @param <R>
+ *            the implementation of {@link GenericRule} to be used
+ * @param <D>
+ *            the implementation of {@link GenericDescender} to be used
  * @param <L>
- *            the implementation of {@link GenericLexer} to use
+ *            the implementation of {@link GenericLexer} to be used
  */
 public class GenericDescender<To extends GenericToken<Ty, To>, Ty extends GenericType, R extends GenericRule<To, Ty, R, D, L>, D extends GenericDescender<To, Ty, R, D, L>, L extends GenericLexer<To, Ty, R, D, L>> {
 	protected final Pattern open, close;

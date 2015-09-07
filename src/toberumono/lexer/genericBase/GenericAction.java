@@ -7,11 +7,15 @@ import toberumono.lexer.errors.LexerException;
  * 
  * @author Toberumono
  * @param <To>
- *            the subclass of {@link GenericToken} to use
+ *            the implementation of {@link GenericToken} to be used
  * @param <Ty>
- *            the subclass of {@link GenericType} to use
+ *            the implementation of {@link GenericType} to be used
+ * @param <R>
+ *            the implementation of {@link GenericRule} to be used
+ * @param <D>
+ *            the implementation of {@link GenericDescender} to be used
  * @param <L>
- *            the subclass of {@link GenericLexer} to use
+ *            the implementation of {@link GenericLexer} to be used
  * @param <T>
  *            the type of the matched data
  */

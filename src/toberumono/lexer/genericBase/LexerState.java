@@ -2,6 +2,22 @@ package toberumono.lexer.genericBase;
 
 import java.util.regex.MatchResult;
 
+/**
+ * A container that stores the state information of a lexing operation.<br>
+ * These are usually created during a call to {@link GenericLexer#lex(String)}.
+ * 
+ * @author Toberumono
+ * @param <To>
+ *            the implementation of {@link GenericToken} to be used
+ * @param <Ty>
+ *            the implementation of {@link GenericType} to be used
+ * @param <R>
+ *            the implementation of {@link GenericRule} to be used
+ * @param <D>
+ *            the implementation of {@link GenericDescender} to be used
+ * @param <L>
+ *            the implementation of {@link GenericLexer} to be used
+ */
 public class LexerState<To extends GenericToken<Ty, To>, Ty extends GenericType, R extends GenericRule<To, Ty, R, D, L>, D extends GenericDescender<To, Ty, R, D, L>, L extends GenericLexer<To, Ty, R, D, L>> {
 	private final String input;
 	private final D descender;
