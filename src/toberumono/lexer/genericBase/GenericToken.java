@@ -60,11 +60,11 @@ public abstract class GenericToken<Ty extends GenericType, To extends GenericTok
 	 */
 	@SuppressWarnings("unchecked")
 	public GenericToken(Object car, Ty carType, Object cdr, Ty cdrType, TokenConstructor<Ty, To> constructor, Ty tokenType, Ty emptyType) {
-		this.carType = carType;
+		this.carType = carType == null ? emptyType : carType;
 		this.car = car;
 		if (car instanceof GenericToken)
 			((To) car).previous = null;
-		this.cdrType = cdrType;
+		this.cdrType = cdrType == null ? emptyType : cdrType;
 		this.cdr = cdr;
 		if (cdr instanceof GenericToken)
 			((To) cdr).previous = (To) this;
@@ -151,7 +151,7 @@ public abstract class GenericToken<Ty extends GenericType, To extends GenericTok
 	 */
 	@SuppressWarnings("unchecked")
 	public To getNextToken() {
-		return cdr instanceof GenericToken ? (To) cdr : constructor.makeNewToken(null, emptyType, null, emptyType);
+		return cdr instanceof GenericToken ? (To) cdr : constructor.construct(null, emptyType, null, emptyType);
 	}
 	
 	/**
@@ -183,7 +183,7 @@ public abstract class GenericToken<Ty extends GenericType, To extends GenericTok
 	 * @see #getFirstToken()
 	 */
 	public To getPreviousToken() {
-		return previous == null ? constructor.makeNewToken(null, emptyType, null, emptyType) : previous;
+		return previous == null ? constructor.construct(null, emptyType, null, emptyType) : previous;
 	}
 	
 	/**
@@ -254,7 +254,7 @@ public abstract class GenericToken<Ty extends GenericType, To extends GenericTok
 	 * @return a shallow copy of this {@link GenericToken} that is separate from the list
 	 */
 	public To singular() {
-		return constructor.makeNewToken(car, carType, null, emptyType);
+		return constructor.construct(car, carType, null, emptyType);
 	}
 	
 	/**
@@ -295,7 +295,7 @@ public abstract class GenericToken<Ty extends GenericType, To extends GenericTok
 	 */
 	@SuppressWarnings("unchecked")
 	protected To clone(To previous) {
-		To clone = constructor.makeNewToken(car instanceof GenericToken ? ((To) car).clone((To) this) : car, carType, cdr instanceof GenericToken ? ((To) cdr).clone((To) this) : cdr, cdrType);
+		To clone = constructor.construct(car instanceof GenericToken ? ((To) car).clone((To) this) : car, carType, cdr instanceof GenericToken ? ((To) cdr).clone((To) this) : cdr, cdrType);
 		clone.previous = previous;
 		return clone;
 	}
@@ -376,7 +376,7 @@ public abstract class GenericToken<Ty extends GenericType, To extends GenericTok
 	@Override
 	public Iterator<To> iterator() {
 		return new Iterator<To>() {
-			private To last = constructor.makeNewToken(null, emptyType, GenericToken.this, tokenType);
+			private To last = constructor.construct(null, emptyType, GenericToken.this, tokenType);
 			
 			@Override
 			public boolean hasNext() {

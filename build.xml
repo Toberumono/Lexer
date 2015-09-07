@@ -11,7 +11,7 @@
 
 	<!--Change this value to true if the project uses external libraries.-->
 	<!--This cannot be changed from the command line.-->
-	<property name="use.libs" value="false" />
+	<property name="use.libs" value="true" />
 
 	<!--Change this value to true if the project is assuming Homebrew was used to install its libraries.-->
 	<property unless:set="use.hombrew" name="use.homebrew" value="false" />
@@ -40,10 +40,15 @@
 
 	<patternset id="libraries">
 		<!--Add the names of the libraries to be included here.-->
+		<include name="Utils.jar" />
 	</patternset>
 
 	<patternset id="Build Excludes">
 		<!--Add the names of files to exclude from the src directory here.-->
+	</patternset>
+
+	<patternset id="Debug">
+		<!--Add the names of debug classes that should be excluded from the packaged jar here.-->
 		<exclude name="testCases/**" />
 	</patternset>
 
@@ -51,6 +56,7 @@
 		<javadoc access="protected" author="true" destdir="${doc}" packagenames="*" source="1.8" splitindex="true" use="true" version="true">
 			<fileset dir="${src}">
 				<patternset refid="Build Excludes" />
+				<patternset refid="Debug" />
 			</fileset>
 			<classpath if:true="${use.libs}" refid="build.classpath" />
 		</javadoc>
@@ -101,7 +107,10 @@
 				<attribute if:true="${use.libs}" name="Class-Path" value="${manifest.classpath}" />
 				<attribute unless:true="${use.libs}" name="Class-Path" value="." />
 			</manifest>
-			<fileset dir="${bin}" />
+			<fileset dir="${bin}">
+				<patternset refid="Build Excludes" />
+				<patternset refid="Debug" />
+			</fileset>
 			<fileset if:true="${package.doc}" dir="." includes="${doc}/**" />
 			<fileset if:true="${package.src}" dir="${src}" />
 			<restrict if:true="${package.libs}">

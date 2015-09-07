@@ -1,6 +1,6 @@
 package toberumono.lexer;
 
-import java.util.regex.Matcher;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import toberumono.lexer.genericBase.GenericAction;
@@ -11,7 +11,7 @@ import toberumono.lexer.genericBase.GenericRule;
  * 
  * @author Toberumono
  */
-public class Rule extends GenericRule<Token, Type, Lexer> {
+public class Rule extends GenericRule<Token, Type, Rule, Descender, Lexer> {
 	
 	/**
 	 * Constructs a new <tt>Rule</tt> with the given data
@@ -33,7 +33,7 @@ public class Rule extends GenericRule<Token, Type, Lexer> {
 	 * @param action
 	 *            the action to perform on the part of the input matched by this <tt>Rule</tt>
 	 */
-	public Rule(Pattern pattern, GenericAction<Token, Matcher, Lexer> action) {
+	public Rule(Pattern pattern, GenericAction<Token, Type, Rule, Descender, Lexer, MatchResult> action) {
 		super(pattern, action);
 	}
 }

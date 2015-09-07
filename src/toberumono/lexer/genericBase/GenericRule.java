@@ -1,6 +1,6 @@
 package toberumono.lexer.genericBase;
 
-import java.util.regex.Matcher;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 /**
@@ -14,9 +14,9 @@ import java.util.regex.Pattern;
  * @param <L>
  *            the implementation of {@link GenericLexer} to use
  */
-public abstract class GenericRule<To extends GenericToken<Ty, To>, Ty extends GenericType, L extends GenericLexer<To, Ty, ?, ?, L>> {
+public class GenericRule<To extends GenericToken<Ty, To>, Ty extends GenericType, R extends GenericRule<To, Ty, R, D, L>, D extends GenericDescender<To, Ty, R, D, L>, L extends GenericLexer<To, Ty, R, D, L>> {
 	protected final Pattern pattern;
-	protected final GenericAction<To, Matcher, L> action;
+	protected final GenericAction<To, Ty, R, D, L, MatchResult> action;
 	
 	/**
 	 * Constructs a new <tt>Rule</tt> with the given data
@@ -27,7 +27,7 @@ public abstract class GenericRule<To extends GenericToken<Ty, To>, Ty extends Ge
 	 *            the type for <tt>Token</tt>s matched by this rule
 	 */
 	public GenericRule(Pattern pattern, Ty type) {
-		this(pattern, (match, lexer) -> ((TokenConstructor<Ty, To>) lexer.getTokenConstructor()).makeNewToken(match.group(), type, null, lexer.emptyType));
+		this(pattern, (lexer, state, match) -> ((TokenConstructor<Ty, To>) lexer.getTokenConstructor()).construct(match.group(), type, null, lexer.emptyType));
 	}
 	
 	/**
@@ -38,7 +38,7 @@ public abstract class GenericRule<To extends GenericToken<Ty, To>, Ty extends Ge
 	 * @param action
 	 *            the action to perform on the part of the input matched by this <tt>Rule</tt>
 	 */
-	public GenericRule(Pattern pattern, GenericAction<To, Matcher, L> action) {
+	public GenericRule(Pattern pattern, GenericAction<To, Ty, R, D, L, MatchResult> action) {
 		this.pattern = pattern;
 		this.action = action;
 	}

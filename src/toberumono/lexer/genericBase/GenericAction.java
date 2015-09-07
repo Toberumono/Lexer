@@ -8,20 +8,27 @@ import toberumono.lexer.errors.LexerException;
  * @author Toberumono
  * @param <To>
  *            the subclass of {@link GenericToken} to use
- * @param <M>
- *            the type appropriate for the match data
+ * @param <Ty>
+ *            the subclass of {@link GenericType} to use
  * @param <L>
  *            the subclass of {@link GenericLexer} to use
+ * @param <T>
+ *            the type of the matched data
  */
 @FunctionalInterface
-public interface GenericAction<To, M, L> {
+public interface GenericAction<To extends GenericToken<Ty, To>, Ty extends GenericType, R extends GenericRule<To, Ty, R, D, L>, D extends GenericDescender<To, Ty, R, D, L>, L extends GenericLexer<To, Ty, R, D, L>, T> {
 	/**
 	 * Performs the action
-	 * @param match the value that was matched
-	 * @param lexer the lexer that matched the value
+	 * 
+	 * @param lexer
+	 *            the lexer that matched the value
+	 * @param state
+	 *            the lexer's state
+	 * @param match
+	 *            the value that was matched
 	 * @return an instance of {@link GenericToken}
 	 * @throws LexerException
 	 *             if an error occurs
 	 */
-	public To perform(M match, L lexer) throws LexerException;
+	public To perform(L lexer, LexerState<To, Ty, R, D, L> state, T match) throws LexerException;
 }

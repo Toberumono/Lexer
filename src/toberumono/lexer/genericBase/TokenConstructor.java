@@ -24,5 +24,12 @@ public interface TokenConstructor<Ty extends GenericType, To extends GenericToke
 	 *            the cdr type
 	 * @return the new token
 	 */
-	public To makeNewToken(Object car, Ty carType, Object cdr, Ty cdrType);
+	public To construct(Object car, Ty carType, Object cdr, Ty cdrType);
+	
+	/**
+	 * @return an empty token
+	 */
+	public default To construct() {
+		return construct(null, null, null, null);
+	}
 }

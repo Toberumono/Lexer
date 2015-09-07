@@ -1,7 +1,7 @@
 package toberumono.lexer.genericBase;
 
 import java.util.LinkedHashMap;
-import java.util.Stack;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,16 +29,11 @@ import toberumono.lexer.errors.UnrecognizedCharacterException;
  * @param <L>
  *            the implementation of {@link GenericLexer} to be used
  */
-public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericType, R extends GenericRule<To, Ty, L>, D extends GenericDescender<To, Ty, L>, L extends GenericLexer<To, Ty, R, D, L>> {
-	protected final LinkedHashMap<String, R> rules = new LinkedHashMap<>();
-	protected final LinkedHashMap<String, D> descenders = new LinkedHashMap<>();
-	protected final LinkedHashMap<String, Pattern> ignores = new LinkedHashMap<>();
-	protected final Stack<DescentSet<To>> descentStack = new Stack<>();
-	protected final Stack<Integer> headStack = new Stack<>();
-	protected final Stack<String> closeTokenStack = new Stack<>();
-	protected String input = "";
-	protected int head = 0;
-	protected To current, output, previous;
+public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericType, R extends GenericRule<To, Ty, R, D, L>, D extends GenericDescender<To, Ty, R, D, L>, L extends GenericLexer<To, Ty, R, D, L>> {
+	protected final Map<String, R> rules = new LinkedHashMap<>();
+	protected final Map<String, D> descenders = new LinkedHashMap<>();
+	protected final Map<Pattern, LogicBlock<To, Ty, R, D, L>> patterns = new LinkedHashMap<>();
+	protected final Map<String, Pattern> ignores = new LinkedHashMap<>();
 	private final TokenConstructor<Ty, To> tokenConstructor;
 	protected final Ty emptyType;
 	
@@ -56,10 +51,10 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 */
 	public GenericLexer(TokenConstructor<Ty, To> tokenConstructor, Ty emptyType, IgnorePattern... ignore) {
 		this.tokenConstructor = tokenConstructor;
-		previous = output = current = tokenConstructor.makeNewToken(null, emptyType, null, emptyType);
 		this.emptyType = emptyType;
 		for (IgnorePattern p : ignore) {
 			this.ignore(p.getName(), p.getPattern());
+			this.patterns.put(p.getPattern(), null);
 		}
 	}
 	
@@ -73,229 +68,101 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 *             so that lexer exceptions can be propagated back to the original caller
 	 */
 	public To lex(String input) throws LexerException {
-		return lex(input, 0);
+		return lex(new LexerState<>(input, 0, null, this));
 	}
 	
-	/**
-	 * Tokenizes a <tt>String</tt> that is the modified version of a previously tokenized <tt>String</tt> from a given
-	 * starting point.
-	 * 
-	 * @param input
-	 *            the <tt>String</tt> to tokenize
-	 * @param head
-	 *            the location at which to start lexing the input
-	 * @param output
-	 *            the output from the previous tokenization
-	 * @param previous
-	 *            the last token in the previous tokenization
-	 * @return the <tt>Token</tt>s in the <tt>String</tt>
-	 * @throws LexerException
-	 *             so that lexer exceptions can be propagated back to the original caller
-	 */
-	public To lex(String input, int head, To output, To previous) throws LexerException {
-		descentStack.push(new DescentSet<>(this.input, this.head, this.output, this.previous, current));
-		this.previous = previous;
-		current = previous;
-		this.head = head;
-		this.output = output;
-		return lexLoop();
+	private To lex(LexerState<To, Ty, R, D, L> state) throws LexerException {
+		if (state.getHead() >= state.getInput().length())
+			throw new EmptyInputException();
+		for (int lim = state.getInput().length(); state.getHead() < lim;) {
+			Matcher longest = null;
+			LogicBlock<To, Ty, R, D, L> match = null;
+			for (Pattern p : patterns.keySet()) {
+				Matcher m = p.matcher(state.getInput());
+				if (m.find(state.getHead()) && m.start() == state.getHead() && (longest == null || m.end() > longest.end())) {
+					longest = m;
+					match = patterns.get(p);
+				}
+			}
+			if (longest == null)
+				throw new UnrecognizedCharacterException(state.getInput(), state.getHead());
+			state.advance(longest);
+			if (match == null) //Handle ignores
+				continue;
+			@SuppressWarnings("unchecked")
+			To token = match.handle((L) this, state, longest);
+			if (match instanceof AscentBlock)
+				return token;
+			if (token != null)
+				state.appendMatch(token);
+		}
+		To out = state.getRoot();
+		return out == null ? tokenConstructor.construct() : out;
 	}
 	
-	/**
-	 * Tokenizes a <tt>String</tt>
-	 * 
-	 * @param input
-	 *            the <tt>String</tt> to tokenize
-	 * @param head
-	 *            the location at which to start lexing the input
-	 * @return the <tt>Token</tt>s in the <tt>String</tt>
-	 * @throws LexerException
-	 *             so that lexer exceptions can be propagated back to the original caller
-	 */
-	public To lex(String input, int head) throws LexerException {
-		descentStack.push(new DescentSet<>(this.input, this.head, output, previous, current));
-		this.input = input;
-		current = tokenConstructor.makeNewToken(null, emptyType, null, emptyType);
-		output = previous = current;
-		this.head = head;
-		return lexLoop();
-	}
-	
-	private To lexLoop() throws LexerException {
+	public To getNextToken(LexerState<To, Ty, R, D, L> state, boolean advance) throws LexerException {
+		int initial = state.getHead();
 		try {
-			while (head < input.length()) {
-				skipIgnores();
-				if (closeTokenStack.size() > 0 && input.startsWith(closeTokenStack.peek(), head)) {
-					head += closeTokenStack.pop().length();
-					return ascend();
-				}
-				else if (hasNext()) {
-					To t = getNextToken(true);
-					current = previous = (To) current.append(t);
-				}
-				else
-					break;
-			}
-		}
-		catch (LexerException e) {
-			descentStack.clear();
-			throw e;
-		}
-		To result = output;
-		ascend();
-		return result;
-	}
-	
-	/**
-	 * Moves the append head up one level in the tree and returns the result of parsing the level that was just left.
-	 * 
-	 * @return the result of parsing the level that was just left.
-	 */
-	private final To ascend() {
-		To result = output;
-		DescentSet<To> popped = descentStack.pop();
-		input = popped.getInput();
-		previous = popped.getPrevious();
-		output = popped.getOutput();
-		current = popped.getCurrent();
-		return result;
-	}
-	
-	/**
-	 * @return the index that this {@link GenericLexer} has reached in the input.
-	 */
-	public final int getHeadIndex() {
-		return head;
-	}
-	
-	/**
-	 * Gets the next token in the input without stepping this {@link GenericLexer} forward.
-	 * 
-	 * @return the next token in this {@link GenericLexer AbstractLexer's} input
-	 * @throws LexerException
-	 *             so that exception handling can take place in the calling function
-	 */
-	public final To getNextToken() throws LexerException {
-		return getNextToken(false);
-	}
-	
-	/**
-	 * Finds the next token in this {@link GenericLexer}
-	 * 
-	 * @param step
-	 *            if this is true, it steps this {@link GenericLexer AbstractLexer's} read-head forward
-	 * @return the next token in this {@link GenericLexer AbstractLexer's} input
-	 * @throws LexerException
-	 *             so that exception handling can take place in the calling function
-	 */
-	@SuppressWarnings("unchecked")
-	public To getNextToken(boolean step) throws LexerException {
-		do {
-			if (head >= input.length())
+			if (state.getHead() >= state.getInput().length())
 				throw new EmptyInputException();
-			int oldHead = head;
-			To result = null;
-			D d = null;
-			R hit = null;
-			Matcher match = null, m;
-			//Descenders
-			for (D descender : descenders.values())
-				if (input.length() - head >= descender.open.length() && input.startsWith(descender.open, head) && (d == null || descender.open.length() > d.open.length()))
-					d = descender;
-			if (d != null) {
-				try {
-					closeTokenStack.push(d.close);
-					d.openAction.perform((L) this);
-					result = d.closeAction.perform(lex(input, head + d.open.length()), (L) this);
+			for (int lim = state.getInput().length(); state.getHead() < lim;) {
+				Matcher longest = null;
+				LogicBlock<To, Ty, R, D, L> match = null;
+				for (Pattern p : patterns.keySet()) {
+					Matcher m = p.matcher(state.getInput());
+					if (m.find(state.getHead()) && m.start() == state.getHead() && (longest == null || m.end() > longest.end())) {
+						longest = m;
+						match = patterns.get(p);
+					}
 				}
-				catch (UnbalancedDescenderException e) {
-					throw new UnbalancedDescenderException(input, head); //Corrects the exception so that it outputs the correct descender.
-				}
-				if (!step)
-					head = oldHead;
-				else
-					previous = result;
-				return result;
+				if (longest == null)
+					throw new UnrecognizedCharacterException(state.getInput(), state.getHead());
+				state.advance(longest);
+				if (match == null) //Handle ignores
+					continue;
+				@SuppressWarnings("unchecked")
+				To token = match.handle((L) this, state, longest);
+				if (!advance)
+					state.setHead(initial);
+				return token;
 			}
-			
-			//Rules
-			for (R rule : rules.values())
-				if ((m = rule.pattern.matcher(input)).find(head) && m.start() == head && m.group().length() != 0 && (match == null || match.end() < m.end())) {
-					match = m;
-					hit = rule;
-				}
-			if (hit != null) {
-				head = match.end();
-				result = hit.action.perform(match, (L) this);
-				if (!step)
-					head = oldHead;
-				else
-					previous = result;
-				return result;
-			}
-		} while (skipIgnores() > 0);
-		throw new UnrecognizedCharacterException(input, head);
+			To out = state.getRoot();
+			return out == null ? tokenConstructor.construct() : out;
+		}
+		finally {
+			if (!advance)
+				state.setHead(initial);
+		}
 	}
 	
 	/**
-	 * Skips over tokens that are set to be ignored.
+	 * Skips over tokens that are set to be ignored.<br>
+	 * This <i>does</i> modify the passed {@link LexerState}.
 	 * 
-	 * @return the number of characters that was skipped
+	 * @return the number of characters that were skipped
 	 */
-	private final int skipIgnores() {
-		int oldHead = head;
+	final int skipIgnores(LexerState<To, Ty, R, D, L> state) {
+		Matcher longest = null;
+		LogicBlock<To, Ty, R, D, L> match = null;
+		int pos = state.getHead();
 		while (true) {
-			Matcher match = null, m;
-			for (Pattern ignore : ignores.values())
-				if ((m = ignore.matcher(input)).find(head) && m.start() == head && (match == null || match.end() < m.end()))
-					match = m;
-			if (match != null)
-				head = match.end();
+			longest = null;
+			match = null;
+			for (Pattern p : patterns.keySet()) {
+				Matcher m = p.matcher(state.getInput());
+				if (m.find(pos) && m.start() == pos && (longest == null || m.end() > longest.end())) {
+					longest = m;
+					match = patterns.get(p);
+				}
+			}
+			if (longest != null && match == null)
+				pos = longest.end();
 			else
 				break;
 		}
-		return head - oldHead;
-	}
-	
-	/**
-	 * In order to remove any <tt>Token</tt> from the output, use {@link #popPreviousToken()}
-	 * 
-	 * @return the last <tt>Token</tt> in the output this <tt>Lexer</tt> is currently generating.
-	 * @see #popPreviousToken()
-	 */
-	public final To getPreviousToken() {
-		return previous;
-	}
-	
-	/**
-	 * Removes the most recently appended <tt>Token</tt> from the output and returns it.<br>
-	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> <tt>Token</tt>, just the last <tt>Token</tt> that was
-	 * appended to the output.<br>
-	 * Use {@link #getPreviousToken()} to get this <tt>Token</tt> without removing it.
-	 * 
-	 * @return the most recently appended <tt>Token</tt>.
-	 * @see #getPreviousToken()
-	 */
-	public final To popPreviousToken() {
-		To temp = previous;
-		if (current == output)
-			output = previous = (current == previous ? (current = previous.getPreviousToken()) : (current = previous).getPreviousToken());
-		else
-			previous = (current == previous ? (current = previous.getPreviousToken()) : (current = previous).getPreviousToken());
-		temp.remove();
-		return temp;
-	}
-	
-	/**
-	 * This method returns true if there any untokenized input remains in the lexer after skipping over tokens that are set
-	 * to be ignored. This method will return <tt>false</tt> if the input starting at the head index is an appropriate ascent
-	 * token for the current tree level.
-	 * 
-	 * @return true if there is still untokenized input at the current descent level, otherwise false.
-	 */
-	public final boolean hasNext() {
-		skipIgnores();
-		return head < input.length() && (closeTokenStack.size() == 0 || !input.startsWith(closeTokenStack.peek(), head));
+		int oldHead = state.getHead();
+		state.setHead(pos);
+		return pos - oldHead;
 	}
 	
 	/**
@@ -308,6 +175,7 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 */
 	public void addRule(String name, R rule) {
 		rules.put(name, rule);
+		patterns.put(rule.pattern, (lexer, state, match) -> rule.action.perform(lexer, state, match));
 	}
 	
 	/**
@@ -318,7 +186,9 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 * @return the removed rule if a rule of that name existed, otherwise null
 	 */
 	public R removeRule(String name) {
-		return rules.remove(name);
+		R out = rules.remove(name);
+		patterns.remove(out.pattern);
+		return out;
 	}
 	
 	/**
@@ -333,30 +203,50 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	}
 	
 	/**
-	 * Adds a new descender
+	 * Adds a new {@link GenericDescender Descender}.
 	 * 
 	 * @param name
-	 *            the name of the descender
+	 *            the name of the {@link GenericDescender Descender}
 	 * @param descender
-	 *            the descender
+	 *            the {@link GenericDescender Descender}
 	 */
 	public void addDescender(String name, D descender) {
 		descenders.put(name, descender);
+		patterns.put(descender.open, (lexer, state, match) -> {
+			if (descender.close.matcher(match.group()).matches() && state.getDescender() == descender) //This allows descenders with the same open and close patterns to work.
+				return descender.closeAction.perform(lexer, state, state.getRoot());
+			descender.openAction.apply(lexer, state);
+			LexerState<To, Ty, R, D, L> descended = state.descend(descender);
+			To out = ((GenericLexer<To, Ty, R, D, L>) lexer).lex(descended);
+			state.setHead(descended.getHead());
+			return out;
+		});
+		patterns.put(descender.close, ((AscentBlock<To, Ty, R, D, L>) (lexer, state, match) -> {
+			if (state.getDescender() != descender)
+				throw new UnbalancedDescenderException(state.getInput(), state.getHead());
+			System.out.println("Root:" + state.getRoot());
+			To root = state.getRoot();
+			return descender.closeAction.perform(lexer, state, root == null ? tokenConstructor.construct() : root);
+		}));
 	}
 	
 	/**
-	 * Removes a descender
+	 * Removes a {@link GenericDescender Descender}
 	 * 
 	 * @param name
-	 *            the name of the descender to remove
-	 * @return the removed descender if a descender of that name existed, otherwise null
+	 *            the name of the {@link GenericDescender Descender} to remove
+	 * @return the removed {@link GenericDescender Descender} if a {@link GenericDescender Descender} of that name existed,
+	 *         otherwise {@code null}
 	 */
 	public D removeDescender(String name) {
-		return descenders.remove(name);
+		D out = descenders.get(name);
+		patterns.remove(out.open);
+		patterns.remove(out.close);
+		return out;
 	}
 	
 	/**
-	 * Gets a descender by name
+	 * Gets a descender by name.
 	 * 
 	 * @param name
 	 *            the name of the descender to get
@@ -376,6 +266,7 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 */
 	public final void ignore(String name, Pattern ignore) {
 		ignores.put(name, ignore);
+		patterns.put(ignore, null);
 	}
 	
 	/**
@@ -383,39 +274,5 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 */
 	public final TokenConstructor<Ty, To> getTokenConstructor() {
 		return tokenConstructor;
-	}
-}
-
-class DescentSet<T extends GenericToken<?, T>> {
-	final String input;
-	final int head;
-	final T output, previous, current;
-	
-	public DescentSet(String input, int head, T output, T previous, T current) {
-		this.input = input;
-		this.head = head;
-		this.output = output;
-		this.previous = previous;
-		this.current = current;
-	}
-	
-	public String getInput() {
-		return input;
-	}
-	
-	public int getHead() {
-		return head;
-	}
-	
-	public T getOutput() {
-		return output;
-	}
-	
-	public T getPrevious() {
-		return previous;
-	}
-	
-	public T getCurrent() {
-		return current;
 	}
 }

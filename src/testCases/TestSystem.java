@@ -2,6 +2,7 @@ package testCases;
 
 import java.util.regex.Pattern;
 
+import toberumono.lexer.DefaultIgnorePattern;
 import toberumono.lexer.Descender;
 import toberumono.lexer.Lexer;
 import toberumono.lexer.Rule;
@@ -22,11 +23,11 @@ public class TestSystem {
 	 *            this is ignored
 	 */
 	public static void main(String[] args) {
-		Lexer lexer = new Lexer();
+		Lexer lexer = new Lexer(DefaultIgnorePattern.SPACES);
 		final Type integer = new Type("Integer");
 		final Type decimal = new Type("Decimal");
-		lexer.addRule("Integer", new Rule(Pattern.compile("[0-9]+"), (match, l) -> new Token(new Integer(match.group()), integer)));
-		lexer.addRule("Decimal", new Rule(Pattern.compile("([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+)"), (match, l) -> new Token(new Double(match.group()), decimal)));
+		lexer.addRule("Integer", new Rule(Pattern.compile("[0-9]+"), (l, s, match) -> new Token(new Integer(match.group()), integer)));
+		lexer.addRule("Decimal", new Rule(Pattern.compile("([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+)"), (l, s, match) -> new Token(new Double(match.group()), decimal)));
 		lexer.addDescender("Parentheses", new Descender("(", ")", new Type("Parentheses", "(", ")")));
 		lexer.addDescender("Brackets", new Descender("[", "]", new Type("Brackets", "[", "]")));
 		lexer.ignore("Newline", Pattern.compile("\n+"));
