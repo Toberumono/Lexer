@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import toberumono.lexer.DefaultIgnorePattern;
+import toberumono.lexer.DefaultIgnorePatterns;
 import toberumono.lexer.IgnorePattern;
 import toberumono.lexer.errors.EmptyInputException;
 import toberumono.lexer.errors.LexerException;
@@ -46,8 +46,8 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 *            the <tt>Type</tt> that represents an empty (or null) value in the <tt>Token</tt> type that this
 	 *            <tt>Lexer</tt> uses.
 	 * @param ignore
-	 *            A list of patterns to ignore. The {@link DefaultIgnorePattern} enum has a few common patterns.
-	 * @see DefaultIgnorePattern
+	 *            A list of patterns to ignore. The {@link DefaultIgnorePatterns} enum has a few common patterns.
+	 * @see DefaultIgnorePatterns
 	 */
 	public GenericLexer(TokenConstructor<Ty, To> tokenConstructor, Ty emptyType, IgnorePattern... ignore) {
 		this.tokenConstructor = tokenConstructor;

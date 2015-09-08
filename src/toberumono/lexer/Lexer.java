@@ -14,7 +14,7 @@ public class Lexer extends GenericLexer<Token, Type, Rule, Descender, Lexer> {
 	 * Basic constructor for a {@link Lexer}
 	 * 
 	 * @param ignore
-	 *            A list of patterns to ignore. The {@link DefaultIgnorePattern} enum has a few common patterns.
+	 *            A list of patterns to ignore. The {@link DefaultIgnorePatterns} enum has a few common patterns.
 	 */
 	public Lexer(IgnorePattern... ignore) {
 		super(Token::new, Type.EMPTY, ignore);

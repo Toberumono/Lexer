@@ -12,8 +12,9 @@ import toberumono.lexer.genericBase.TokenConstructor;
  * 
  * @author Toberumono
  * @see GenericLexer#GenericLexer(TokenConstructor, GenericType, IgnorePattern...)
+ * @see CommentPatterns
  */
-public enum DefaultIgnorePattern implements IgnorePattern {
+public enum DefaultIgnorePatterns implements IgnorePattern {
 	/**
 	 * Ignores spaces {@code Pattern.compile(" +")}
 	 */
@@ -25,31 +26,11 @@ public enum DefaultIgnorePattern implements IgnorePattern {
 	/**
 	 * Ignores all whitespace characters {@code Pattern.compile("\\s+")}
 	 */
-	WHITESPACE(Pattern.compile("\\s+")),
-	/**
-	 * Ignores the contents of C-style comments.
-	 * 
-	 * @see #SINGLELINE_COMMENT
-	 * @see #MULTILINE_COMMENT
-	 */
-	COMMENT(Pattern.compile("(//.*?" + System.lineSeparator() + "|/\\*.*?\\*/)", Pattern.DOTALL)),
-	/**
-	 * Ignores the contents of C-style single-line comments.
-	 * @see #COMMENT
-	 * @see #MULTILINE_COMMENT
-	 */
-	SINGLELINE_COMMENT(Pattern.compile("//.*?" + System.lineSeparator())),
-	/**
-	 * Ignores the contents of C-style multi-line comments.
-	 * 
-	 * @see #COMMENT
-	 * @see #SINGLELINE_COMMENT
-	 */
-	MULTILINE_COMMENT(Pattern.compile("/\\*.*?\\*/", Pattern.DOTALL));
+	WHITESPACE(Pattern.compile("\\s+"));
 	
 	private Pattern pattern;
 	
-	private DefaultIgnorePattern(Pattern pattern) {
+	private DefaultIgnorePatterns(Pattern pattern) {
 		this.pattern = pattern;
 	}
 	

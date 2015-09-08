@@ -2,7 +2,7 @@ package testCases;
 
 import java.util.regex.Pattern;
 
-import toberumono.lexer.DefaultIgnorePattern;
+import toberumono.lexer.DefaultIgnorePatterns;
 import toberumono.lexer.Descender;
 import toberumono.lexer.Lexer;
 import toberumono.lexer.Rule;
@@ -23,7 +23,7 @@ public class TestSystem {
 	 *            this is ignored
 	 */
 	public static void main(String[] args) {
-		Lexer lexer = new Lexer(DefaultIgnorePattern.SPACES);
+		Lexer lexer = new Lexer(DefaultIgnorePatterns.SPACES);
 		final Type integer = new Type("Integer");
 		final Type decimal = new Type("Decimal");
 		lexer.addRule("Integer", new Rule(Pattern.compile("[0-9]+"), (l, s, match) -> new Token(new Integer(match.group()), integer)));
