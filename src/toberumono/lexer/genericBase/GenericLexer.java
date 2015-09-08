@@ -1,6 +1,7 @@
 package toberumono.lexer.genericBase;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -10,6 +11,7 @@ import toberumono.lexer.DefaultIgnorePatterns;
 import toberumono.lexer.IgnorePattern;
 import toberumono.lexer.errors.EmptyInputException;
 import toberumono.lexer.errors.LexerException;
+import toberumono.lexer.errors.PatternCollisionException;
 import toberumono.lexer.errors.UnbalancedDescenderException;
 import toberumono.lexer.errors.UnrecognizedCharacterException;
 
@@ -34,6 +36,7 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	private final Map<String, R> rules, unmodifiableRules;
 	private final Map<String, D> descenders, unmodifiableDescenders;
 	private final Map<String, Pattern> ignores, unmodifiableIgnores;
+	private final Map<Pattern, String> names = new HashMap<>();
 	private final Map<Pattern, LogicBlock<To, Ty, R, D, L>> patterns = new LinkedHashMap<>(), unmodifiablePatterns = Collections.unmodifiableMap(patterns);
 	private final TokenConstructor<Ty, To> tokenConstructor;
 	protected final Ty emptyType;
@@ -226,9 +229,14 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 *            the name of the rule
 	 * @param rule
 	 *            the rule
+	 * @throws PatternCollisionException
+	 *             if a {@link Pattern} being added is already loaded
 	 */
-	public void addRule(String name, R rule) {
+	public synchronized void addRule(String name, R rule) {
+		if (names.containsKey(rule.pattern))
+			throw new PatternCollisionException(rule.pattern, names.get(rule.pattern));
 		rules.put(name, rule);
+		names.put(rule.pattern, name + "::rule");
 		patterns.put(rule.pattern, (lexer, state, match) -> rule.action.perform(lexer, state, match));
 	}
 	
@@ -239,11 +247,12 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 *            the name of the rule to remove
 	 * @return the removed rule if a rule of that name existed, otherwise null
 	 */
-	public R removeRule(String name) {
+	public synchronized R removeRule(String name) {
 		R out = rules.remove(name);
 		if (out == null)
 			return out;
 		patterns.remove(out.pattern);
+		names.remove(out.pattern);
 		return out;
 	}
 	
@@ -273,9 +282,17 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 *            the name of the {@link GenericDescender Descender}
 	 * @param descender
 	 *            the {@link GenericDescender Descender}
+	 * @throws PatternCollisionException
+	 *             if a {@link Pattern} being added is already loaded
 	 */
-	public void addDescender(String name, D descender) {
+	public synchronized void addDescender(String name, D descender) {
+		if (names.containsKey(descender.open))
+			throw new PatternCollisionException(descender.open, names.get(descender.open));
+		if (names.containsKey(descender.close))
+			throw new PatternCollisionException(descender.close, names.get(descender.close));
 		descenders.put(name, descender);
+		names.put(descender.open, name + "::descender.open");
+		names.put(descender.close, name + "::descender.close");
 		patterns.put(descender.open, (lexer, state, match) -> {
 			if (descender.close.matcher(match.group()).matches() && state.getDescender() == descender) //This allows descenders with the same open and close patterns to work.
 				return descender.closeAction.perform(lexer, state, state.getRoot());
@@ -301,12 +318,14 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 * @return the removed {@link GenericDescender Descender} if a {@link GenericDescender Descender} of that name existed,
 	 *         otherwise {@code null}
 	 */
-	public D removeDescender(String name) {
-		D out = descenders.get(name);
+	public synchronized D removeDescender(String name) {
+		D out = descenders.remove(name);
 		if (out == null)
 			return out;
 		patterns.remove(out.open);
 		patterns.remove(out.close);
+		names.remove(out.open);
+		names.remove(out.close);
 		return out;
 	}
 	
@@ -336,9 +355,14 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 *            the name with which to reference this ignore {@link Pattern}
 	 * @param pattern
 	 *            the {@link Pattern} to ignore
+	 * @throws PatternCollisionException
+	 *             if a {@link Pattern} being added is already loaded
 	 */
-	public void addIgnore(String name, Pattern pattern) {
+	public synchronized void addIgnore(String name, Pattern pattern) {
+		if (names.containsKey(pattern))
+			throw new PatternCollisionException(pattern, names.get(pattern));
 		ignores.put(name, pattern);
+		names.put(pattern, name + "::ignore");
 		patterns.put(pattern, null);
 	}
 	
@@ -347,6 +371,8 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 * 
 	 * @param ignore
 	 *            the {@link IgnorePattern} to add
+	 * @throws PatternCollisionException
+	 *             if a {@link Pattern} being added is already loaded
 	 */
 	public void addIgnore(IgnorePattern ignore) {
 		addIgnore(ignore.getName(), ignore.getPattern());
@@ -359,9 +385,12 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 *            the name of the ignored {@link Pattern} to remove
 	 * @return the removed {@link Pattern} if a {@link Pattern} of that name existed, otherwise null
 	 */
-	public Pattern removeIgnore(String name) {
+	public synchronized Pattern removeIgnore(String name) {
 		Pattern out = ignores.remove(name);
+		if (out == null)
+			return out;
 		patterns.remove(out);
+		names.remove(out);
 		return out;
 	}
 	
