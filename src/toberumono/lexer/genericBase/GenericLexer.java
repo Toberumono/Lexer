@@ -214,6 +214,8 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 */
 	public R removeRule(String name) {
 		R out = rules.remove(name);
+		if (out == null)
+			return out;
 		patterns.remove(out.pattern);
 		return out;
 	}
@@ -266,6 +268,8 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 */
 	public D removeDescender(String name) {
 		D out = descenders.get(name);
+		if (out == null)
+			return out;
 		patterns.remove(out.open);
 		patterns.remove(out.close);
 		return out;
@@ -283,16 +287,75 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	}
 	
 	/**
-	 * Tells the lexer to skip over the <tt>Pattern</tt> in the given regex <tt>String</tt>.
+	 * Adds a new {@link Pattern} that the lexer should recognize but not do anything with (in other words, ignore).
+	 * 
+	 * @param name
+	 *            the name with which to reference this ignore {@link Pattern}
+	 * @param pattern
+	 *            the {@link Pattern} to ignore
+	 */
+	public void addIgnore(String name, Pattern pattern) {
+		ignores.put(name, pattern);
+		patterns.put(pattern, null);
+	}
+	
+	/**
+	 * Adds the {@link IgnorePattern} to the lexer.
+	 * 
+	 * @param ignore
+	 *            the {@link IgnorePattern} to add
+	 */
+	public void addIgnore(IgnorePattern ignore) {
+		addIgnore(ignore.getName(), ignore.getPattern());
+	}
+	
+	/**
+	 * Removes an ignored {@link Pattern}
+	 * 
+	 * @param name
+	 *            the name of the ignored {@link Pattern} to remove
+	 * @return the removed {@link Pattern} if a {@link Pattern} of that name existed, otherwise null
+	 */
+	public Pattern removeIgnore(String name) {
+		Pattern out = ignores.remove(name);
+		patterns.remove(out);
+		return out;
+	}
+	
+	/**
+	 * Removes the {@link IgnorePattern} from the lexer.
+	 * 
+	 * @param ignore
+	 *            the {@link IgnorePattern} to remove
+	 * @return the {@link Pattern} that was being ignored if it was loaded in the lexer, otherwise null
+	 */
+	public Pattern removeIgnore(IgnorePattern ignore) {
+		return removeIgnore(ignore.getName());
+	}
+	
+	/**
+	 * Gets an ignored {@link Pattern} by name
+	 * 
+	 * @param name
+	 *            the name of the ignored {@link Pattern} to get
+	 * @return the ignored {@link Pattern} if one corresponding to that name is loaded, otherwise null
+	 */
+	public Pattern getIgnore(String name) {
+		return ignores.get(name);
+	}
+	
+	/**
+	 * Tells the lexer to skip over the <tt>Pattern</tt> in the given regex <tt>String</tt>.<br>
+	 * This now just forwards to {@link #addIgnore(String, Pattern)}. Use it instead.
 	 * 
 	 * @param name
 	 *            the name with which to reference this ignore pattern
 	 * @param ignore
 	 *            the <tt>Pattern</tt> to ignore
 	 */
+	@Deprecated
 	public final void ignore(String name, Pattern ignore) {
-		ignores.put(name, ignore);
-		patterns.put(ignore, null);
+		addIgnore(name, ignore);
 	}
 	
 	/**
