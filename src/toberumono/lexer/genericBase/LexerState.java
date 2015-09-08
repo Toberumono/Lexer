@@ -168,7 +168,7 @@ public class LexerState<To extends GenericToken<Ty, To>, Ty extends GenericType,
 		if (head + lexer.skipIgnores(this) < input.length()) {
 			if (descender != null) {
 				Matcher longest = null;
-				for (Pattern p : lexer.patterns.keySet()) {
+				for (Pattern p : lexer.getPatterns().keySet()) {
 					Matcher m = p.matcher(input);
 					if (m.find(head) && m.start() == head && (longest == null || m.end() > longest.end()))
 						longest = m;
