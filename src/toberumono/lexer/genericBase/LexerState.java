@@ -173,7 +173,7 @@ public class LexerState<To extends GenericToken<Ty, To>, Ty extends GenericType,
 					if (m.find(head) && m.start() == head && (longest == null || m.end() > longest.end()))
 						longest = m;
 				}
-				return longest.pattern() == descender.close;
+				return longest.pattern() != descender.close;
 			}
 			return true;
 		}
