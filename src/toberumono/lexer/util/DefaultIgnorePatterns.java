@@ -1,9 +1,10 @@
-package toberumono.lexer;
+package toberumono.lexer.util;
 
 import java.util.regex.Pattern;
 
 import toberumono.lexer.genericBase.GenericLexer;
 import toberumono.lexer.genericBase.GenericType;
+import toberumono.lexer.genericBase.IgnorePattern;
 import toberumono.lexer.genericBase.TokenConstructor;
 
 /**

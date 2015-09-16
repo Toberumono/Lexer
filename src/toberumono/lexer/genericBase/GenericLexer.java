@@ -7,13 +7,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import toberumono.lexer.DefaultIgnorePatterns;
-import toberumono.lexer.IgnorePattern;
 import toberumono.lexer.errors.EmptyInputException;
 import toberumono.lexer.errors.LexerException;
 import toberumono.lexer.errors.PatternCollisionException;
 import toberumono.lexer.errors.UnbalancedDescenderException;
 import toberumono.lexer.errors.UnrecognizedCharacterException;
+import toberumono.lexer.util.DefaultIgnorePatterns;
 
 /**
  * This represents a generic tokenizer that uses a set of user-defined rules to a {@link String} input.<br>
@@ -37,7 +36,7 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	private final Map<String, D> descenders, unmodifiableDescenders;
 	private final Map<String, Pattern> ignores, unmodifiableIgnores;
 	private final Map<Pattern, String> names = new HashMap<>();
-	private final Map<Pattern, LogicBlock<To, Ty, R, D, L>> patterns = new LinkedHashMap<>(), unmodifiablePatterns = Collections.unmodifiableMap(patterns);
+	private final Map<Pattern, LogicBlock<To, Ty, R, D, L>> patterns, unmodifiablePatterns;
 	private final TokenConstructor<Ty, To> tokenConstructor;
 	protected final Ty emptyType;
 	
@@ -54,7 +53,7 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 * @see DefaultIgnorePatterns
 	 */
 	public GenericLexer(TokenConstructor<Ty, To> tokenConstructor, Ty emptyType, IgnorePattern... ignore) {
-		this(new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), tokenConstructor, emptyType, ignore);
+		this(new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), tokenConstructor, emptyType, ignore);
 	}
 	
 	/**
@@ -66,6 +65,8 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 *            the {@link Map} in which to store descenders
 	 * @param ignores
 	 *            the {@link Map} in which to store ignores
+	 * @param patterns
+	 *            the {@link Map} in which to store the active patterns
 	 * @param tokenConstructor
 	 *            a function that takes no arguments and returns a new instance of the class extending {@link GenericToken}.
 	 * @param emptyType
@@ -75,7 +76,8 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 	 *            A list of patterns to ignore. The {@link DefaultIgnorePatterns} enum has a few common patterns.
 	 * @see DefaultIgnorePatterns
 	 */
-	public GenericLexer(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, TokenConstructor<Ty, To> tokenConstructor, Ty emptyType, IgnorePattern... ignore) {
+	public GenericLexer(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, LogicBlock<To, Ty, R, D, L>> patterns, TokenConstructor<Ty, To> tokenConstructor,
+			Ty emptyType, IgnorePattern... ignore) {
 		this.rules = rules;
 		this.unmodifiableRules = Collections.unmodifiableMap(this.rules);
 		this.descenders = descenders;
@@ -84,6 +86,8 @@ public class GenericLexer<To extends GenericToken<Ty, To>, Ty extends GenericTyp
 		this.unmodifiableIgnores = Collections.unmodifiableMap(this.ignores);
 		this.tokenConstructor = tokenConstructor;
 		this.emptyType = emptyType;
+		this.patterns = patterns;
+		this.unmodifiablePatterns = Collections.unmodifiableMap(this.patterns);
 		for (IgnorePattern p : ignore)
 			this.addIgnore(p);
 	}

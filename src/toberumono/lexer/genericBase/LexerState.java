@@ -118,7 +118,8 @@ public class LexerState<To extends GenericToken<Ty, To>, Ty extends GenericType,
 	 * appended to the output.<br>
 	 * In order to remove the <tt>Token</tt> from the output, use {@link #popPreviousToken()}
 	 * 
-	 * @return the most recently appended <tt>Token</tt>
+	 * @return the most recently appended <tt>Token</tt> or {@code null} if no such <tt>Token</tt> exists (this occurs if
+	 *         there has yet to be a match or all of the matched <tt>Tokens</tt> were popped via {@link #popPreviousToken()})
 	 * @see #popPreviousToken()
 	 */
 	public To getPreviousToken() {
@@ -131,10 +132,13 @@ public class LexerState<To extends GenericToken<Ty, To>, Ty extends GenericType,
 	 * appended to the output.<br>
 	 * Use {@link #getPreviousToken()} to get the <tt>Token</tt> without removing it.
 	 * 
-	 * @return the most recently appended <tt>Token</tt>
+	 * @return the most recently appended <tt>Token</tt> or {@code null} if no such <tt>Token</tt> exists (this occurs if
+	 *         there has yet to be a match or all of the matched <tt>Tokens</tt> were popped via {@link #popPreviousToken()})
 	 * @see #getPreviousToken()
 	 */
 	public To popPreviousToken() {
+		if (last == null)
+			return last;
 		To ret = last;
 		if (last == root)
 			last = root = null;
