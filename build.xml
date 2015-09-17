@@ -41,6 +41,7 @@
 	<patternset id="libraries">
 		<!--Add the names of the libraries to be included here.-->
 		<include name="Utils.jar" />
+		<include name="Structures.jar" />
 	</patternset>
 
 	<patternset id="Build Excludes">

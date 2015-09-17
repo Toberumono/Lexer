@@ -11,7 +11,7 @@ import toberumono.lexer.genericBase.GenericRule;
  * 
  * @author Toberumono
  */
-public class Rule extends GenericRule<Token, Type, Rule, Descender, Lexer> {
+public class Rule extends GenericRule<ConsCell, Type, Rule, Descender, Lexer> {
 	
 	/**
 	 * Constructs a new <tt>Rule</tt> with the given data
@@ -19,7 +19,7 @@ public class Rule extends GenericRule<Token, Type, Rule, Descender, Lexer> {
 	 * @param pattern
 	 *            the regex <tt>Pattern</tt> for this <tt>Rule</tt> to use.
 	 * @param type
-	 *            the type for <tt>Token</tt>s matched by this rule
+	 *            the type for <tt>ConsCell</tt>s matched by this rule
 	 */
 	public Rule(Pattern pattern, Type type) {
 		super(pattern, type);
@@ -33,7 +33,7 @@ public class Rule extends GenericRule<Token, Type, Rule, Descender, Lexer> {
 	 * @param action
 	 *            the action to perform on the part of the input matched by this <tt>Rule</tt>
 	 */
-	public Rule(Pattern pattern, GenericAction<Token, Type, Rule, Descender, Lexer, MatchResult> action) {
+	public Rule(Pattern pattern, GenericAction<ConsCell, Type, Rule, Descender, Lexer, MatchResult> action) {
 		super(pattern, action);
 	}
 }

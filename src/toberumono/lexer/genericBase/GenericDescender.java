@@ -2,14 +2,18 @@ package toberumono.lexer.genericBase;
 
 import java.util.regex.Pattern;
 
+import toberumono.structures.sexps.ConsCellConstructor;
+import toberumono.structures.sexps.GenericConsCell;
+import toberumono.structures.sexps.GenericConsType;
+
 /**
- * Represents the action to take upon seeing a particular descent-start token.
+ * Represents the action to take upon seeing a particular descent-start cell.
  * 
  * @author Toberumono
- * @param <To>
- *            the implementation of {@link GenericToken} to be used
- * @param <Ty>
- *            the implementation of {@link GenericType} to be used
+ * @param <C>
+ *            the implementation of {@link GenericConsCell} to be used
+ * @param <T>
+ *            the implementation of {@link GenericConsType} to be used
  * @param <R>
  *            the implementation of {@link GenericRule} to be used
  * @param <D>
@@ -17,69 +21,69 @@ import java.util.regex.Pattern;
  * @param <L>
  *            the implementation of {@link GenericLexer} to be used
  */
-public class GenericDescender<To extends GenericToken<Ty, To>, Ty extends GenericType, R extends GenericRule<To, Ty, R, D, L>, D extends GenericDescender<To, Ty, R, D, L>, L extends GenericLexer<To, Ty, R, D, L>> {
+public class GenericDescender<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends GenericRule<C, T, R, D, L>, D extends GenericDescender<C, T, R, D, L>, L extends GenericLexer<C, T, R, D, L>> {
 	protected final Pattern open, close;
-	protected final GenericAction<To, Ty, R, D, L, To> closeAction;
+	protected final GenericAction<C, T, R, D, L, C> closeAction;
 	protected final DescenderAction<L> openAction;
 	
 	/**
-	 * Constructs a {@link GenericDescender} that corresponds to the given type with the given open and close tokens.
+	 * Constructs a {@link GenericDescender} that corresponds to the given type with the given open and close cells.
 	 * 
 	 * @param open
-	 *            the open token
+	 *            the open cell
 	 * @param close
-	 *            the close token
+	 *            the close cell
 	 * @param type
-	 *            the {@link GenericType type} to be associated with the {@link GenericDescender}
+	 *            the {@link GenericConsType type} to be associated with the {@link GenericDescender}
 	 */
-	public GenericDescender(String open, String close, Ty type) {
+	public GenericDescender(String open, String close, T type) {
 		this(Pattern.compile(open, Pattern.LITERAL), Pattern.compile(close, Pattern.LITERAL), (lexer, state) -> {} ,
-				(lexer, state, match) -> ((TokenConstructor<Ty, To>) lexer.getTokenConstructor()).construct(match, type, null, lexer.emptyType));
+				(lexer, state, match) -> ((ConsCellConstructor<T, C>) lexer.getConsCellConstructor()).construct(match, type, null, lexer.emptyType));
 	}
 	
 	/**
-	 * Constructs a {@link GenericDescender} with the given open and close tokens and open and close actions.
+	 * Constructs a {@link GenericDescender} with the given open and close cells and open and close actions.
 	 * 
 	 * @param open
-	 *            the open token
+	 *            the open cell
 	 * @param close
-	 *            the close token
+	 *            the close cell
 	 * @param openAction
-	 *            the {@link DescenderAction} to perform when the open token is encountered (prior to descending)
+	 *            the {@link DescenderAction} to perform when the open cell is encountered (prior to descending)
 	 * @param closeAction
-	 *            the {@link GenericAction} to perform when the close token is encountered (prior to ascending)
+	 *            the {@link GenericAction} to perform when the close cell is encountered (prior to ascending)
 	 */
-	public GenericDescender(String open, String close, DescenderAction<L> openAction, GenericAction<To, Ty, R, D, L, To> closeAction) {
+	public GenericDescender(String open, String close, DescenderAction<L> openAction, GenericAction<C, T, R, D, L, C> closeAction) {
 		this(Pattern.compile(open, Pattern.LITERAL), Pattern.compile(close, Pattern.LITERAL), openAction, closeAction);
 	}
 	
 	/**
-	 * Constructs a {@link GenericDescender} that corresponds to the given type with the given open and close tokens.
+	 * Constructs a {@link GenericDescender} that corresponds to the given type with the given open and close cells.
 	 * 
 	 * @param open
-	 *            the open token
+	 *            the open cell
 	 * @param close
-	 *            the close token
+	 *            the close cell
 	 * @param type
-	 *            the {@link GenericType type} to be associated with the {@link GenericDescender}
+	 *            the {@link GenericConsType type} to be associated with the {@link GenericDescender}
 	 */
-	public GenericDescender(Pattern open, Pattern close, Ty type) {
-		this(open, close, (lexer, state) -> {} , (lexer, state, match) -> ((TokenConstructor<Ty, To>) lexer.getTokenConstructor()).construct(match, type, null, lexer.emptyType));
+	public GenericDescender(Pattern open, Pattern close, T type) {
+		this(open, close, (lexer, state) -> {} , (lexer, state, match) -> ((ConsCellConstructor<T, C>) lexer.getConsCellConstructor()).construct(match, type, null, lexer.emptyType));
 	}
 	
 	/**
-	 * Constructs a {@link GenericDescender} with the given open and close tokens and open and close actions.
+	 * Constructs a {@link GenericDescender} with the given open and close cells and open and close actions.
 	 * 
 	 * @param open
-	 *            the open token
+	 *            the open cell
 	 * @param close
-	 *            the close token
+	 *            the close cell
 	 * @param openAction
-	 *            the {@link DescenderAction} to perform when the open token is encountered (prior to descending)
+	 *            the {@link DescenderAction} to perform when the open cell is encountered (prior to descending)
 	 * @param closeAction
-	 *            the {@link GenericAction} to perform when the close token is encountered (prior to ascending)
+	 *            the {@link GenericAction} to perform when the close cell is encountered (prior to ascending)
 	 */
-	public GenericDescender(Pattern open, Pattern close, DescenderAction<L> openAction, GenericAction<To, Ty, R, D, L, To> closeAction) {
+	public GenericDescender(Pattern open, Pattern close, DescenderAction<L> openAction, GenericAction<C, T, R, D, L, C> closeAction) {
 		this.open = open;
 		this.close = close;
 		this.openAction = openAction;

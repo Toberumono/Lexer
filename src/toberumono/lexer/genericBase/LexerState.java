@@ -4,15 +4,18 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import toberumono.structures.sexps.GenericConsCell;
+import toberumono.structures.sexps.GenericConsType;
+
 /**
  * A container that stores the state information of a lexing operation.<br>
  * These are usually created during a call to {@link GenericLexer#lex(String)}.
  * 
  * @author Toberumono
- * @param <To>
- *            the implementation of {@link GenericToken} to be used
- * @param <Ty>
- *            the implementation of {@link GenericType} to be used
+ * @param <C>
+ *            the implementation of {@link GenericConsCell} to be used
+ * @param <T>
+ *            the implementation of {@link GenericConsType} to be used
  * @param <R>
  *            the implementation of {@link GenericRule} to be used
  * @param <D>
@@ -20,15 +23,15 @@ import java.util.regex.Pattern;
  * @param <L>
  *            the implementation of {@link GenericLexer} to be used
  */
-public class LexerState<To extends GenericToken<Ty, To>, Ty extends GenericType, R extends GenericRule<To, Ty, R, D, L>, D extends GenericDescender<To, Ty, R, D, L>, L extends GenericLexer<To, Ty, R, D, L>> {
+public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends GenericRule<C, T, R, D, L>, D extends GenericDescender<C, T, R, D, L>, L extends GenericLexer<C, T, R, D, L>> {
 	private final String input;
 	private final D descender;
 	private final L lexer;
 	private int head;
-	private To root, last;
+	private C root, last;
 	
 	@SuppressWarnings("unchecked")
-	LexerState(String input, int head, D descender, GenericLexer<To, Ty, R, D, L> lexer) {
+	LexerState(String input, int head, D descender, GenericLexer<C, T, R, D, L> lexer) {
 		this.input = input;
 		this.head = head;
 		this.descender = descender;
@@ -44,7 +47,7 @@ public class LexerState<To extends GenericToken<Ty, To>, Ty extends GenericType,
 	}
 	
 	/**
-	 * @return the index from which the next token will be matched
+	 * @return the index from which the next cell will be matched
 	 */
 	public int getHead() {
 		return head;
@@ -91,82 +94,82 @@ public class LexerState<To extends GenericToken<Ty, To>, Ty extends GenericType,
 	}
 	
 	/**
-	 * @return the root token of the resulting token tree (the left-most token)
+	 * @return the root cell of the resulting cell tree (the left-most cell)
 	 */
-	public To getRoot() {
+	public C getRoot() {
 		return root;
 	}
 	
 	/**
-	 * Appends the given token to the token tree.
+	 * Appends the given cell to the cell tree.
 	 * 
-	 * @param token
-	 *            the token to append
+	 * @param cell
+	 *            the cell to append
 	 * @return {@code this} for easy chaining
 	 */
-	public LexerState<To, Ty, R, D, L> appendMatch(To token) {
+	public LexerState<C, T, R, D, L> appendMatch(C cell) {
 		if (root == null)
-			root = last = token;
+			root = last = cell;
 		else
-			last = last.append(token);
+			last = last.append(cell);
 		return this;
 	}
 	
 	/**
-	 * Gets the most recently appended <tt>Token</tt> from the output and returns it.<br>
-	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> <tt>Token</tt>, just the last <tt>Token</tt> that was
+	 * Gets the most recently appended <tt>ConsCell</tt> from the output and returns it.<br>
+	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> <tt>ConsCell</tt>, just the last <tt>ConsCell</tt> that was
 	 * appended to the output.<br>
-	 * In order to remove the <tt>Token</tt> from the output, use {@link #popPreviousToken()}
+	 * In order to remove the <tt>ConsCell</tt> from the output, use {@link #popPreviousConsCell()}
 	 * 
-	 * @return the most recently appended <tt>Token</tt> or {@code null} if no such <tt>Token</tt> exists (this occurs if
-	 *         there has yet to be a match or all of the matched <tt>Tokens</tt> were popped via {@link #popPreviousToken()})
-	 * @see #popPreviousToken()
+	 * @return the most recently appended <tt>ConsCell</tt> or {@code null} if no such <tt>ConsCell</tt> exists (this occurs if
+	 *         there has yet to be a match or all of the matched <tt>ConsCells</tt> were popped via {@link #popPreviousConsCell()})
+	 * @see #popPreviousConsCell()
 	 */
-	public To getPreviousToken() {
+	public C getPreviousConsCell() {
 		return last;
 	}
 	
 	/**
-	 * Removes the most recently appended <tt>Token</tt> from the output and returns it.<br>
-	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> <tt>Token</tt>, just the last <tt>Token</tt> that was
+	 * Removes the most recently appended <tt>ConsCell</tt> from the output and returns it.<br>
+	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> <tt>ConsCell</tt>, just the last <tt>ConsCell</tt> that was
 	 * appended to the output.<br>
-	 * Use {@link #getPreviousToken()} to get the <tt>Token</tt> without removing it.
+	 * Use {@link #getPreviousConsCell()} to get the <tt>ConsCell</tt> without removing it.
 	 * 
-	 * @return the most recently appended <tt>Token</tt> or {@code null} if no such <tt>Token</tt> exists (this occurs if
-	 *         there has yet to be a match or all of the matched <tt>Tokens</tt> were popped via {@link #popPreviousToken()})
-	 * @see #getPreviousToken()
+	 * @return the most recently appended <tt>ConsCell</tt> or {@code null} if no such <tt>ConsCell</tt> exists (this occurs if
+	 *         there has yet to be a match or all of the matched <tt>ConsCells</tt> were popped via {@link #popPreviousConsCell()})
+	 * @see #getPreviousConsCell()
 	 */
-	public To popPreviousToken() {
+	public C popPreviousConsCell() {
 		if (last == null)
 			return last;
-		To ret = last;
+		C ret = last;
 		if (last == root)
 			last = root = null;
 		else {
-			last = last.getPreviousToken();
+			last = last.getPreviousConsCell();
 			ret.remove();
 		}
 		return ret;
 	}
 	
 	/**
-	 * Constructs a new {@link LexerState} with the same fields but null tokens and the descender set to <tt>descender</tt>.
+	 * Constructs a new {@link LexerState} with the same fields but null cells and the descender set to <tt>descender</tt>.
 	 * 
 	 * @param descender
 	 *            the {@link GenericDescender Descender} that was encountered
-	 * @return a separate {@link LexerState} that is used to watch for the correct close token
+	 * @return a separate {@link LexerState} that is used to watch for the correct close cell
 	 */
-	public LexerState<To, Ty, R, D, L> descend(D descender) {
+	public LexerState<C, T, R, D, L> descend(D descender) {
 		return new LexerState<>(input, head, descender, lexer);
 	}
 	
 	/**
-	 * This method returns true if there any untokenized input remains after skipping over tokens that are set to be ignored
-	 * and the next matched token would not be an ascent token.<br>
+	 * This method returns true if there any uncellized input remains after skipping over cells that are set to be ignored
+	 * and the next matched cell would not be an ascent cell.<br>
 	 * <b><i>Note</i></b>: This is <i>slow</i> - the {@link GenericLexer Lexer} already performs these checks before getting
-	 * the next token, so if you are calling this regularly, consider re-working the logic behind your rules.
+	 * the next cell, so if you are calling this regularly, consider re-working the logic behind your rules.
 	 * 
-	 * @return true if there is still untokenized input at the current descent level, otherwise false.
+	 * @return true if there is still uncellized input at the current descent level, otherwise false.
 	 */
 	public boolean hasNext() {
 		if (head + lexer.skipIgnores(this) < input.length()) {

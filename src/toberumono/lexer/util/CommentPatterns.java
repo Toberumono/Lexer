@@ -3,16 +3,16 @@ package toberumono.lexer.util;
 import java.util.regex.Pattern;
 
 import toberumono.lexer.genericBase.GenericLexer;
-import toberumono.lexer.genericBase.GenericType;
 import toberumono.lexer.genericBase.IgnorePattern;
-import toberumono.lexer.genericBase.TokenConstructor;
+import toberumono.structures.sexps.ConsCellConstructor;
+import toberumono.structures.sexps.GenericConsType;
 
 /**
  * A few {@link Pattern Patterns} for various comment styles.<br>
  * Mainly used in the {@link GenericLexer GenericLexer's} constructor.
  * 
  * @author Toberumono
- * @see GenericLexer#GenericLexer(TokenConstructor, GenericType, IgnorePattern...)
+ * @see GenericLexer#GenericLexer(ConsCellConstructor, GenericConsType, IgnorePattern...)
  * @see DefaultIgnorePatterns
  */
 public enum CommentPatterns implements IgnorePattern {

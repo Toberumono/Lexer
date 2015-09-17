@@ -1,7 +1,10 @@
 package toberumono.lexer.genericBase;
 
+import toberumono.structures.sexps.GenericConsCell;
+import toberumono.structures.sexps.GenericConsType;
+
 @FunctionalInterface
-interface AscentBlock<To extends GenericToken<Ty, To>, Ty extends GenericType, R extends GenericRule<To, Ty, R, D, L>, D extends GenericDescender<To, Ty, R, D, L>, L extends GenericLexer<To, Ty, R, D, L>>
-		extends LogicBlock<To, Ty, R, D, L> {
+interface AscentBlock<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends GenericRule<C, T, R, D, L>, D extends GenericDescender<C, T, R, D, L>, L extends GenericLexer<C, T, R, D, L>>
+		extends LogicBlock<C, T, R, D, L> {
 		
 }

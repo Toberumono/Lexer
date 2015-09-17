@@ -7,11 +7,11 @@ import toberumono.lexer.genericBase.GenericAction;
 import toberumono.lexer.genericBase.GenericDescender;
 
 /**
- * A Descender for the <tt>Lexer</tt> that uses the provided <tt>Token</tt> class
+ * A Descender for the <tt>Lexer</tt> that uses the provided <tt>ConsCell</tt> class
  * 
  * @author Toberumono
  */
-public class Descender extends GenericDescender<Token, Type, Rule, Descender, Lexer> {
+public class Descender extends GenericDescender<ConsCell, Type, Rule, Descender, Lexer> {
 	
 	/**
 	 * Constructs a new <tt>Descender</tt> with the given data
@@ -21,7 +21,7 @@ public class Descender extends GenericDescender<Token, Type, Rule, Descender, Le
 	 * @param close
 	 *            the close symbol for this <tt>Descender</tt>
 	 * @param type
-	 *            the <tt>Type</tt> for the Token returned by this <tt>Descender</tt>
+	 *            the <tt>Type</tt> for the ConsCell returned by this <tt>Descender</tt>
 	 */
 	public Descender(String open, String close, Type type) {
 		super(open, close, type);
@@ -37,9 +37,9 @@ public class Descender extends GenericDescender<Token, Type, Rule, Descender, Le
 	 * @param openAction
 	 *            the actions to perform upon seeing the open token of this <tt>Descender</tt>
 	 * @param closeAction
-	 *            the action to be performed on the <tt>Tokens</tt> matched within the found descent set
+	 *            the action to be performed on the <tt>ConsCells</tt> matched within the found descent set
 	 */
-	public Descender(String open, String close, DescenderAction<Lexer> openAction, GenericAction<Token, Type, Rule, Descender, Lexer, Token> closeAction) {
+	public Descender(String open, String close, DescenderAction<Lexer> openAction, GenericAction<ConsCell, Type, Rule, Descender, Lexer, ConsCell> closeAction) {
 		super(open, close, openAction, closeAction);
 	}
 	
@@ -51,7 +51,7 @@ public class Descender extends GenericDescender<Token, Type, Rule, Descender, Le
 	 * @param close
 	 *            the close symbol for this <tt>Descender</tt>
 	 * @param type
-	 *            the <tt>Type</tt> for the Token returned by this <tt>Descender</tt>
+	 *            the <tt>Type</tt> for the ConsCell returned by this <tt>Descender</tt>
 	 */
 	public Descender(Pattern open, Pattern close, Type type) {
 		super(open, close, type);
@@ -67,9 +67,9 @@ public class Descender extends GenericDescender<Token, Type, Rule, Descender, Le
 	 * @param openAction
 	 *            the actions to perform upon seeing the open token of this <tt>Descender</tt>
 	 * @param closeAction
-	 *            the action to be performed on the <tt>Tokens</tt> matched within the found descent set
+	 *            the action to be performed on the <tt>ConsCells</tt> matched within the found descent set
 	 */
-	public Descender(Pattern open, Pattern close, DescenderAction<Lexer> openAction, GenericAction<Token, Type, Rule, Descender, Lexer, Token> closeAction) {
+	public Descender(Pattern open, Pattern close, DescenderAction<Lexer> openAction, GenericAction<ConsCell, Type, Rule, Descender, Lexer, ConsCell> closeAction) {
 		super(open, close, openAction, closeAction);
 	}
 }
