@@ -43,14 +43,14 @@ public enum CommentPatterns implements IgnorePattern {
 	 * 
 	 * @see #SINGLE_LINE_COMMENT
 	 */
-	SH_COMMENT(Pattern.compile("(#.*?" + System.lineSeparator())),
+	SH_COMMENT(Pattern.compile("#.*?" + System.lineSeparator())),
 	/**
 	 * Ignores the contents of C- and Shell-style single- and multi-line comments.
 	 * 
 	 * @see #SH_COMMENT
 	 * @see #C_COMMENT
 	 */
-	COMMENT(Pattern.compile("((//|#).*?" + System.lineSeparator() + "|/\\*.*?\\*/)"));
+	COMMENT(Pattern.compile("((//|#).*?" + System.lineSeparator() + "|/\\*.*?\\*/)", Pattern.DOTALL));
 	
 	private Pattern pattern;
 	
