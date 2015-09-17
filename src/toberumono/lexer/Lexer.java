@@ -1,11 +1,12 @@
 package toberumono.lexer;
 
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import toberumono.lexer.genericBase.GenericAction;
 import toberumono.lexer.genericBase.GenericLexer;
 import toberumono.lexer.genericBase.IgnorePattern;
-import toberumono.lexer.genericBase.LogicBlock;
 import toberumono.lexer.util.CommentPatterns;
 import toberumono.lexer.util.DefaultIgnorePatterns;
 
@@ -21,13 +22,31 @@ public class Lexer extends GenericLexer<ConsCell, Type, Rule, Descender, Lexer> 
 	 * Basic constructor for a {@link Lexer}
 	 * 
 	 * @param ignore
-	 *            A list of patterns to ignore. The {@link DefaultIgnorePatterns} and {@link CommentPatterns} enums have a few common patterns.
+	 *            a list of patterns to ignore. The {@link DefaultIgnorePatterns} and {@link CommentPatterns} enums have a
+	 *            few common patterns.
 	 */
 	public Lexer(IgnorePattern... ignore) {
 		super(ConsCell::new, Type.EMPTY, ignore);
 	}
 	
-	public Lexer(Map<String, Rule> rules, Map<String, Descender> descenders, Map<String, Pattern> ignores, Map<Pattern, LogicBlock<ConsCell, Type, Rule, Descender, Lexer>> patterns, IgnorePattern... ignore) {
+	/**
+	 * Alternate constructor that allows for the internal maps to be set by whatever called this constructor
+	 * 
+	 * @param rules
+	 *            the {@link Map} to be used to hold the {@link Rule Rules}
+	 * @param descenders
+	 *            the {@link Map} to be used to hold the {@link Descender Descenders}
+	 * @param ignores
+	 *            the {@link Map} to be used to hold the {@link Pattern Patterns} to be ignored
+	 * @param patterns
+	 *            the {@link Map} to be used to hold the {@link Pattern Patterns} for the {@link Rule Rules} and
+	 *            {@link Descender Descenders}
+	 * @param ignore
+	 *            a list of patterns to ignore. The {@link DefaultIgnorePatterns} and {@link CommentPatterns} enums have a
+	 *            few common patterns.
+	 */
+	public Lexer(Map<String, Rule> rules, Map<String, Descender> descenders, Map<String, Pattern> ignores,
+			Map<Pattern, GenericAction<ConsCell, Type, Rule, Descender, Lexer, Matcher>> patterns, IgnorePattern... ignore) {
 		super(rules, descenders, ignores, patterns, ConsCell::new, Type.EMPTY, ignore);
 	}
 }

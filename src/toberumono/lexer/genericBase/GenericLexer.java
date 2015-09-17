@@ -13,6 +13,7 @@ import toberumono.lexer.errors.PatternCollisionException;
 import toberumono.lexer.errors.UnbalancedDescenderException;
 import toberumono.lexer.errors.UnrecognizedCharacterException;
 import toberumono.lexer.util.DefaultIgnorePatterns;
+import toberumono.lexer.genericBase.GenericAction;
 import toberumono.structures.sexps.ConsCellConstructor;
 import toberumono.structures.sexps.GenericConsCell;
 import toberumono.structures.sexps.GenericConsType;
@@ -39,7 +40,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	private final Map<String, D> descenders, unmodifiableDescenders;
 	private final Map<String, Pattern> ignores, unmodifiableIgnores;
 	private final Map<Pattern, String> names = new HashMap<>();
-	private final Map<Pattern, LogicBlock<C, T, R, D, L>> patterns, unmodifiablePatterns;
+	private final Map<Pattern, GenericAction<C, T, R, D, L, Matcher>> patterns, unmodifiablePatterns;
 	private final ConsCellConstructor<T, C> cellConstructor;
 	protected final T emptyType;
 	
@@ -79,7 +80,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 *            A list of patterns to ignore. The {@link DefaultIgnorePatterns} enum has a few common patterns.
 	 * @see DefaultIgnorePatterns
 	 */
-	public GenericLexer(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, LogicBlock<C, T, R, D, L>> patterns, ConsCellConstructor<T, C> cellConstructor,
+	public GenericLexer(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, GenericAction<C, T, R, D, L, Matcher>> patterns, ConsCellConstructor<T, C> cellConstructor,
 			T emptyType, IgnorePattern... ignore) {
 		this.rules = rules;
 		this.unmodifiableRules = Collections.unmodifiableMap(this.rules);
@@ -125,7 +126,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 			throw new EmptyInputException();
 		for (int lim = state.getInput().length(); state.getHead() < lim;) {
 			Matcher longest = null;
-			LogicBlock<C, T, R, D, L> match = null;
+			GenericAction<C, T, R, D, L, Matcher> match = null;
 			for (Pattern p : patterns.keySet()) {
 				Matcher m = p.matcher(state.getInput());
 				if (m.find(state.getHead()) && m.start() == state.getHead() && (longest == null || m.end() > longest.end())) {
@@ -139,7 +140,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 			if (match == null) //Handle ignores
 				continue;
 			@SuppressWarnings("unchecked")
-			C cell = match.handle((L) this, state, longest);
+			C cell = match.perform((L) this, state, longest);
 			if (match instanceof AscentBlock)
 				return cell;
 			if (cell != null)
@@ -171,7 +172,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 				throw new EmptyInputException();
 			for (int lim = state.getInput().length(); state.getHead() < lim;) {
 				Matcher longest = null;
-				LogicBlock<C, T, R, D, L> match = null;
+				GenericAction<C, T, R, D, L, Matcher> match = null;
 				for (Pattern p : patterns.keySet()) {
 					Matcher m = p.matcher(state.getInput());
 					if (m.find(state.getHead()) && m.start() == state.getHead() && (longest == null || m.end() > longest.end())) {
@@ -187,7 +188,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 				if (match instanceof AscentBlock)
 					throw new EmptyInputException();
 				@SuppressWarnings("unchecked")
-				C cell = match.handle((L) this, state, longest);
+				C cell = match.perform((L) this, state, longest);
 				return cell;
 			}
 			C out = state.getRoot();
@@ -207,7 +208,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 */
 	final int skipIgnores(LexerState<C, T, R, D, L> state) {
 		Matcher longest = null;
-		LogicBlock<C, T, R, D, L> match = null;
+		GenericAction<C, T, R, D, L, Matcher> match = null;
 		int pos = state.getHead();
 		while (true) {
 			longest = null;
@@ -437,7 +438,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 * @return an unmodifiable view of the patterns map (this view is backed by the internal map and only needs to be
 	 *         retrieved once)
 	 */
-	public Map<Pattern, LogicBlock<C, T, R, D, L>> getPatterns() {
+	public Map<Pattern, GenericAction<C, T, R, D, L, Matcher>> getPatterns() {
 		return unmodifiablePatterns;
 	}
 	
