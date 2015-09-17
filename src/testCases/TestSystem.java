@@ -2,12 +2,12 @@ package testCases;
 
 import java.util.regex.Pattern;
 
-import toberumono.lexer.ConsCell;
 import toberumono.lexer.Descender;
 import toberumono.lexer.Lexer;
 import toberumono.lexer.Rule;
-import toberumono.lexer.ConsType;
 import toberumono.lexer.util.DefaultIgnorePatterns;
+import toberumono.structures.sexpressions.ConsCell;
+import toberumono.structures.sexpressions.ConsType;
 
 /**
  * A simple testing class.

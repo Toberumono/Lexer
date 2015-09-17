@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 import toberumono.lexer.genericBase.DescenderAction;
 import toberumono.lexer.genericBase.GenericAction;
 import toberumono.lexer.genericBase.GenericDescender;
+import toberumono.structures.sexpressions.ConsCell;
+import toberumono.structures.sexpressions.ConsType;
 
 /**
  * A Descender for the <tt>Lexer</tt> that uses the provided <tt>ConsCell</tt> class

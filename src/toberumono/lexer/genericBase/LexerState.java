@@ -4,8 +4,8 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import toberumono.structures.sexps.GenericConsCell;
-import toberumono.structures.sexps.GenericConsType;
+import toberumono.structures.sexpressions.generic.GenericConsCell;
+import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
  * A container that stores the state information of a lexing operation.<br>

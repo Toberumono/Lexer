@@ -4,8 +4,8 @@ import java.util.regex.Pattern;
 
 import toberumono.lexer.genericBase.GenericLexer;
 import toberumono.lexer.genericBase.IgnorePattern;
-import toberumono.structures.sexps.ConsCellConstructor;
-import toberumono.structures.sexps.GenericConsType;
+import toberumono.structures.sexpressions.ConsCellConstructor;
+import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
  * A few patterns that are commonly included as spacing between tokens and should therefore be ignored.<br>

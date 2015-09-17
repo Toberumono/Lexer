@@ -3,8 +3,8 @@ package toberumono.lexer.genericBase;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
-import toberumono.structures.sexps.GenericConsCell;
-import toberumono.structures.sexps.GenericConsType;
+import toberumono.structures.sexpressions.generic.GenericConsCell;
+import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
  * Represents the action to take upon seeing input that matches a particular {@link java.util.regex.Pattern Pattern}.

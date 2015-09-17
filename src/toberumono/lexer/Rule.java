@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 import toberumono.lexer.genericBase.GenericAction;
 import toberumono.lexer.genericBase.GenericRule;
+import toberumono.structures.sexpressions.ConsCell;
+import toberumono.structures.sexpressions.ConsType;
 
 /**
  * A Rule for the Lexer

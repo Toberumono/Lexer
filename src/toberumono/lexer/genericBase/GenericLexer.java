@@ -13,10 +13,9 @@ import toberumono.lexer.errors.PatternCollisionException;
 import toberumono.lexer.errors.UnbalancedDescenderException;
 import toberumono.lexer.errors.UnrecognizedCharacterException;
 import toberumono.lexer.util.DefaultIgnorePatterns;
-import toberumono.lexer.genericBase.GenericAction;
-import toberumono.structures.sexps.ConsCellConstructor;
-import toberumono.structures.sexps.GenericConsCell;
-import toberumono.structures.sexps.GenericConsType;
+import toberumono.structures.sexpressions.ConsCellConstructor;
+import toberumono.structures.sexpressions.generic.GenericConsCell;
+import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
  * This represents a generic cellizer that uses a set of user-defined rules to a {@link String} input.<br>

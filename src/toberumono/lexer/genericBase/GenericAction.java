@@ -1,8 +1,8 @@
 package toberumono.lexer.genericBase;
 
 import toberumono.lexer.errors.LexerException;
-import toberumono.structures.sexps.GenericConsCell;
-import toberumono.structures.sexps.GenericConsType;
+import toberumono.structures.sexpressions.generic.GenericConsCell;
+import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
  * Represents an action to apply to a matched part of an input.

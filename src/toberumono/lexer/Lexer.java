@@ -9,6 +9,8 @@ import toberumono.lexer.genericBase.GenericLexer;
 import toberumono.lexer.genericBase.IgnorePattern;
 import toberumono.lexer.util.CommentPatterns;
 import toberumono.lexer.util.DefaultIgnorePatterns;
+import toberumono.structures.sexpressions.ConsCell;
+import toberumono.structures.sexpressions.ConsType;
 
 /**
  * A basic implementation of {@link GenericLexer}. For most purposes, using this implementation should be more than
