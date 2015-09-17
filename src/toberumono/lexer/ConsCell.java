@@ -7,7 +7,7 @@ import toberumono.structures.sexps.GenericConsCell;
  * 
  * @author Toberumono
  */
-public class ConsCell extends GenericConsCell<Type, ConsCell> {
+public class ConsCell extends GenericConsCell<ConsType, ConsCell> {
 	
 	/**
 	 * Constructs a {@link ConsCell} with the given car and cdr values.
@@ -21,8 +21,8 @@ public class ConsCell extends GenericConsCell<Type, ConsCell> {
 	 * @param cdrType
 	 *            the cdr type
 	 */
-	public ConsCell(Object car, Type carType, Object cdr, Type cdrType) {
-		super(car, carType, cdr, cdrType, ConsCell::new, Type.TOKEN, Type.EMPTY);
+	public ConsCell(Object car, ConsType carType, Object cdr, ConsType cdrType) {
+		super(car, carType, cdr, cdrType, ConsCell::new, ConsType.TOKEN, ConsType.EMPTY);
 	}
 	
 	/**
@@ -33,14 +33,14 @@ public class ConsCell extends GenericConsCell<Type, ConsCell> {
 	 * @param carType
 	 *            the car type
 	 */
-	public ConsCell(Object car, Type carType) {
-		super(car, carType, ConsCell::new, Type.TOKEN, Type.EMPTY);
+	public ConsCell(Object car, ConsType carType) {
+		super(car, carType, ConsCell::new, ConsType.TOKEN, ConsType.EMPTY);
 	}
 	
 	/**
 	 * Constructs an empty {@link ConsCell}.
 	 */
 	public ConsCell() {
-		super(ConsCell::new, Type.TOKEN, Type.EMPTY);
+		super(ConsCell::new, ConsType.TOKEN, ConsType.EMPTY);
 	}
 }

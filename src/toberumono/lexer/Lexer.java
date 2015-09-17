@@ -16,7 +16,7 @@ import toberumono.lexer.util.DefaultIgnorePatterns;
  * 
  * @author Toberumono
  */
-public class Lexer extends GenericLexer<ConsCell, Type, Rule, Descender, Lexer> {
+public class Lexer extends GenericLexer<ConsCell, ConsType, Rule, Descender, Lexer> {
 	
 	/**
 	 * Basic constructor for a {@link Lexer}
@@ -26,7 +26,7 @@ public class Lexer extends GenericLexer<ConsCell, Type, Rule, Descender, Lexer> 
 	 *            few common patterns.
 	 */
 	public Lexer(IgnorePattern... ignore) {
-		super(ConsCell::new, Type.EMPTY, ignore);
+		super(ConsCell::new, ConsType.EMPTY, ignore);
 	}
 	
 	/**
@@ -46,7 +46,7 @@ public class Lexer extends GenericLexer<ConsCell, Type, Rule, Descender, Lexer> 
 	 *            few common patterns.
 	 */
 	public Lexer(Map<String, Rule> rules, Map<String, Descender> descenders, Map<String, Pattern> ignores,
-			Map<Pattern, GenericAction<ConsCell, Type, Rule, Descender, Lexer, Matcher>> patterns, IgnorePattern... ignore) {
-		super(rules, descenders, ignores, patterns, ConsCell::new, Type.EMPTY, ignore);
+			Map<Pattern, GenericAction<ConsCell, ConsType, Rule, Descender, Lexer, Matcher>> patterns, IgnorePattern... ignore) {
+		super(rules, descenders, ignores, patterns, ConsCell::new, ConsType.EMPTY, ignore);
 	}
 }

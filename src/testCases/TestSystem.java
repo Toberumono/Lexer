@@ -6,7 +6,7 @@ import toberumono.lexer.ConsCell;
 import toberumono.lexer.Descender;
 import toberumono.lexer.Lexer;
 import toberumono.lexer.Rule;
-import toberumono.lexer.Type;
+import toberumono.lexer.ConsType;
 import toberumono.lexer.util.DefaultIgnorePatterns;
 
 /**
@@ -24,12 +24,12 @@ public class TestSystem {
 	 */
 	public static void main(String[] args) {
 		Lexer lexer = new Lexer(DefaultIgnorePatterns.SPACES);
-		final Type integer = new Type("Integer");
-		final Type decimal = new Type("Decimal");
+		final ConsType integer = new ConsType("Integer");
+		final ConsType decimal = new ConsType("Decimal");
 		lexer.addRule("Integer", new Rule(Pattern.compile("[0-9]+"), (l, s, match) -> new ConsCell(new Integer(match.group()), integer)));
 		lexer.addRule("Decimal", new Rule(Pattern.compile("([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+)"), (l, s, match) -> new ConsCell(new Double(match.group()), decimal)));
-		lexer.addDescender("Parentheses", new Descender("(", ")", new Type("Parentheses", "(", ")")));
-		lexer.addDescender("Brackets", new Descender("[", "]", new Type("Brackets", "[", "]")));
+		lexer.addDescender("Parentheses", new Descender("(", ")", new ConsType("Parentheses", "(", ")")));
+		lexer.addDescender("Brackets", new Descender("[", "]", new ConsType("Brackets", "[", "]")));
 		lexer.addIgnore("Newline", Pattern.compile("\n+"));
 		String test = "10.0 100 ((3.0 300\n)) [51 5 6] ()";
 		try {

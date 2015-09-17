@@ -7,12 +7,12 @@ import toberumono.structures.sexps.ConsCellType;
  * 
  * @author Toberumono
  */
-public class Type extends ConsCellType {
+public class ConsType extends ConsCellType {
 	
 	/**
 	 * A pre-created type that <i>must</i> be used to denote empty values (e.g. the end of a list)
 	 */
-	public static final Type EMPTY = new Type("Empty") {
+	public static final ConsType EMPTY = new ConsType("Empty") {
 		@Override
 		public String valueToString(Object value) {
 			return "";
@@ -25,9 +25,9 @@ public class Type extends ConsCellType {
 	};
 	
 	/**
-	 * A pre-created {@link Type} that flags the value as an instance of {@link ConsCell}
+	 * A pre-created {@link ConsType} that flags the value as an instance of {@link ConsCell}
 	 */
-	public static final Type TOKEN = new Type("ConsCell") {
+	public static final ConsType TOKEN = new ConsType("ConsCell") {
 		
 		@Override
 		public ConsCell cloneValue(Object value) {
@@ -36,7 +36,7 @@ public class Type extends ConsCellType {
 	};
 	
 	/**
-	 * Constructs a {@link Type} with the given name and descender tokens.
+	 * Constructs a {@link ConsType} with the given name and descender tokens.
 	 * 
 	 * @param name
 	 *            the name of the type
@@ -45,17 +45,17 @@ public class Type extends ConsCellType {
 	 * @param close
 	 *            the close token
 	 */
-	public Type(String name, String open, String close) {
+	public ConsType(String name, String open, String close) {
 		super(name, open, close);
 	}
 
 	/**
-	 * Constructs a {@link Type} with the given name and no descender tokens.
+	 * Constructs a {@link ConsType} with the given name and no descender tokens.
 	 * 
 	 * @param name
 	 *            the name of the type
 	 */
-	public Type(String name) {
+	public ConsType(String name) {
 		super(name);
 	}
 }

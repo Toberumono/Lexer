@@ -11,7 +11,7 @@ import toberumono.lexer.genericBase.GenericDescender;
  * 
  * @author Toberumono
  */
-public class Descender extends GenericDescender<ConsCell, Type, Rule, Descender, Lexer> {
+public class Descender extends GenericDescender<ConsCell, ConsType, Rule, Descender, Lexer> {
 	
 	/**
 	 * Constructs a new <tt>Descender</tt> with the given data
@@ -23,7 +23,7 @@ public class Descender extends GenericDescender<ConsCell, Type, Rule, Descender,
 	 * @param type
 	 *            the <tt>Type</tt> for the ConsCell returned by this <tt>Descender</tt>
 	 */
-	public Descender(String open, String close, Type type) {
+	public Descender(String open, String close, ConsType type) {
 		super(open, close, type);
 	}
 	
@@ -39,7 +39,7 @@ public class Descender extends GenericDescender<ConsCell, Type, Rule, Descender,
 	 * @param closeAction
 	 *            the action to be performed on the <tt>ConsCells</tt> matched within the found descent set
 	 */
-	public Descender(String open, String close, DescenderAction<Lexer> openAction, GenericAction<ConsCell, Type, Rule, Descender, Lexer, ConsCell> closeAction) {
+	public Descender(String open, String close, DescenderAction<Lexer> openAction, GenericAction<ConsCell, ConsType, Rule, Descender, Lexer, ConsCell> closeAction) {
 		super(open, close, openAction, closeAction);
 	}
 	
@@ -53,7 +53,7 @@ public class Descender extends GenericDescender<ConsCell, Type, Rule, Descender,
 	 * @param type
 	 *            the <tt>Type</tt> for the ConsCell returned by this <tt>Descender</tt>
 	 */
-	public Descender(Pattern open, Pattern close, Type type) {
+	public Descender(Pattern open, Pattern close, ConsType type) {
 		super(open, close, type);
 	}
 	
@@ -69,7 +69,7 @@ public class Descender extends GenericDescender<ConsCell, Type, Rule, Descender,
 	 * @param closeAction
 	 *            the action to be performed on the <tt>ConsCells</tt> matched within the found descent set
 	 */
-	public Descender(Pattern open, Pattern close, DescenderAction<Lexer> openAction, GenericAction<ConsCell, Type, Rule, Descender, Lexer, ConsCell> closeAction) {
+	public Descender(Pattern open, Pattern close, DescenderAction<Lexer> openAction, GenericAction<ConsCell, ConsType, Rule, Descender, Lexer, ConsCell> closeAction) {
 		super(open, close, openAction, closeAction);
 	}
 }
