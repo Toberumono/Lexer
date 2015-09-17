@@ -37,5 +37,6 @@ clone_build_project() {
 }
 
 clone_build_project "Utils"
+clone_build_project "Structures"
 
 ant "$@" #Yep.  That's the final step.
