@@ -55,7 +55,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 *            A list of patterns to ignore. The {@link DefaultIgnorePatterns} enum has a few common patterns.
 	 * @see DefaultIgnorePatterns
 	 */
-	public GenericLexer(ConsCellConstructor<T, C> cellConstructor, T emptyType, IgnorePattern... ignore) {
+	public GenericLexer(ConsCellConstructor<T, C> cellConstructor, T emptyType, DefaultPattern... ignore) {
 		this(new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), cellConstructor, emptyType, ignore);
 	}
 	
@@ -80,7 +80,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 * @see DefaultIgnorePatterns
 	 */
 	public GenericLexer(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, GenericAction<C, T, R, D, L, Matcher>> patterns, ConsCellConstructor<T, C> cellConstructor,
-			T emptyType, IgnorePattern... ignore) {
+			T emptyType, DefaultPattern... ignore) {
 		this.rules = rules;
 		this.unmodifiableRules = Collections.unmodifiableMap(this.rules);
 		this.descenders = descenders;
@@ -91,7 +91,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 		this.emptyType = emptyType;
 		this.patterns = patterns;
 		this.unmodifiablePatterns = Collections.unmodifiableMap(this.patterns);
-		for (IgnorePattern p : ignore)
+		for (DefaultPattern p : ignore)
 			this.addIgnore(p);
 	}
 	
@@ -374,14 +374,14 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	}
 	
 	/**
-	 * Adds the {@link IgnorePattern} to the lexer.
+	 * Adds the {@link DefaultPattern} to the lexer.
 	 * 
 	 * @param ignore
-	 *            the {@link IgnorePattern} to add
+	 *            the {@link DefaultPattern} to add
 	 * @throws PatternCollisionException
 	 *             if a {@link Pattern} being added is already loaded
 	 */
-	public void addIgnore(IgnorePattern ignore) {
+	public void addIgnore(DefaultPattern ignore) {
 		addIgnore(ignore.getName(), ignore.getPattern());
 	}
 	
@@ -402,13 +402,13 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	}
 	
 	/**
-	 * Removes the {@link IgnorePattern} from the lexer.
+	 * Removes the {@link DefaultPattern} from the lexer.
 	 * 
 	 * @param ignore
-	 *            the {@link IgnorePattern} to remove
+	 *            the {@link DefaultPattern} to remove
 	 * @return the {@link Pattern} that was being ignored if it was loaded in the lexer, otherwise null
 	 */
-	public Pattern removeIgnore(IgnorePattern ignore) {
+	public Pattern removeIgnore(DefaultPattern ignore) {
 		return removeIgnore(ignore.getName());
 	}
 	

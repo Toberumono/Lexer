@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import toberumono.lexer.genericBase.GenericAction;
 import toberumono.lexer.genericBase.GenericLexer;
-import toberumono.lexer.genericBase.IgnorePattern;
+import toberumono.lexer.genericBase.DefaultPattern;
 import toberumono.lexer.util.CommentPatterns;
 import toberumono.lexer.util.DefaultIgnorePatterns;
 import toberumono.structures.sexpressions.ConsCell;
@@ -27,7 +27,7 @@ public class Lexer extends GenericLexer<ConsCell, ConsType, Rule, Descender, Lex
 	 *            a list of patterns to ignore. The {@link DefaultIgnorePatterns} and {@link CommentPatterns} enums have a
 	 *            few common patterns.
 	 */
-	public Lexer(IgnorePattern... ignore) {
+	public Lexer(DefaultPattern... ignore) {
 		super(ConsCell::new, ConsType.EMPTY, ignore);
 	}
 	
@@ -48,7 +48,7 @@ public class Lexer extends GenericLexer<ConsCell, ConsType, Rule, Descender, Lex
 	 *            few common patterns.
 	 */
 	public Lexer(Map<String, Rule> rules, Map<String, Descender> descenders, Map<String, Pattern> ignores,
-			Map<Pattern, GenericAction<ConsCell, ConsType, Rule, Descender, Lexer, Matcher>> patterns, IgnorePattern... ignore) {
+			Map<Pattern, GenericAction<ConsCell, ConsType, Rule, Descender, Lexer, Matcher>> patterns, DefaultPattern... ignore) {
 		super(rules, descenders, ignores, patterns, ConsCell::new, ConsType.EMPTY, ignore);
 	}
 }

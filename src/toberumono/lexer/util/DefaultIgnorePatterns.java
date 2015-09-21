@@ -3,7 +3,7 @@ package toberumono.lexer.util;
 import java.util.regex.Pattern;
 
 import toberumono.lexer.genericBase.GenericLexer;
-import toberumono.lexer.genericBase.IgnorePattern;
+import toberumono.lexer.genericBase.DefaultPattern;
 import toberumono.structures.sexpressions.ConsCellConstructor;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
@@ -12,10 +12,10 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * Mainly used in the {@link GenericLexer GenericLexer's} constructor.
  * 
  * @author Toberumono
- * @see GenericLexer#GenericLexer(ConsCellConstructor, GenericConsType, IgnorePattern...)
+ * @see GenericLexer#GenericLexer(ConsCellConstructor, GenericConsType, DefaultPattern...)
  * @see CommentPatterns
  */
-public enum DefaultIgnorePatterns implements IgnorePattern {
+public enum DefaultIgnorePatterns implements DefaultPattern {
 	/**
 	 * Ignores spaces {@code Pattern.compile(" +")}
 	 */
