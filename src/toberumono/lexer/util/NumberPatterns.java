@@ -68,7 +68,7 @@ public enum NumberPatterns implements DefaultPattern,NumberPatternsConstants {
 	 * @see #PICKY_DOUBLE
 	 */
 	COMPLEX(Pattern.compile("[+-]?((i|i[*/]?" + DN + "|" + DN + "[*/]?i)(" + PMDN + ")?|" + DN + "(" + PM + "(i|i[*/]?" + DN + "|" + DN + "[*/]?i))?)"));
-	//Number formats:                  i, ai, ia, ai+-b, ia+-b, i+-b              |                    a, a+-i, a+-bi, a+-ib
+	//Number formats:                     i, ai, ia, ai+-b, ia+-b, i+-b                |                    a, a+-i, a+-bi, a+-ib
 	
 	private final Pattern pattern;
 	

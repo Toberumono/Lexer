@@ -1,13 +1,13 @@
 package testCases;
 
-import java.util.regex.Pattern;
-
 import toberumono.lexer.Descender;
 import toberumono.lexer.Lexer;
 import toberumono.lexer.Rule;
 import toberumono.lexer.util.DefaultIgnorePatterns;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
+
+import static toberumono.lexer.util.NumberPatterns.*;
 
 /**
  * A simple testing class.
@@ -23,14 +23,13 @@ public class TestSystem {
 	 *            this is ignored
 	 */
 	public static void main(String[] args) {
-		Lexer lexer = new Lexer(DefaultIgnorePatterns.SPACES);
+		Lexer lexer = new Lexer(DefaultIgnorePatterns.WHITESPACE);
 		final ConsType integer = new ConsType("Integer");
 		final ConsType decimal = new ConsType("Decimal");
-		lexer.addRule("Integer", new Rule(Pattern.compile("[0-9]+"), (l, s, match) -> new ConsCell(new Integer(match.group()), integer)));
-		lexer.addRule("Decimal", new Rule(Pattern.compile("([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+)"), (l, s, match) -> new ConsCell(new Double(match.group()), decimal)));
+		lexer.addRule("Integer", new Rule(INTEGER.getPattern(), (l, s, match) -> new ConsCell(new Integer(match.group()), integer)));
+		lexer.addRule("Decimal", new Rule(DOUBLE.getPattern(), (l, s, match) -> new ConsCell(new Double(match.group()), decimal)));
 		lexer.addDescender("Parentheses", new Descender("(", ")", new ConsType("Parentheses", "(", ")")));
 		lexer.addDescender("Brackets", new Descender("[", "]", new ConsType("Brackets", "[", "]")));
-		lexer.addIgnore("Newline", Pattern.compile("\n+"));
 		String test = "10.0 100 ((3.0 300\n)) [51 5 6] ()";
 		try {
 			ConsCell token = lexer.lex(test);
