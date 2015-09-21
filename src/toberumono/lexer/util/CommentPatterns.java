@@ -17,7 +17,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  */
 public enum CommentPatterns implements DefaultPattern {
 	/**
-	 * Ignores the contents of C-style single-line comments.
+	 * Describes C-style single-line comments.
 	 * 
 	 * @see #C_COMMENT
 	 * @see #SH_COMMENT
@@ -25,33 +25,33 @@ public enum CommentPatterns implements DefaultPattern {
 	 */
 	SINGLE_LINE_COMMENT(Pattern.compile("//.*?" + System.lineSeparator())),
 	/**
-	 * Ignores the contents of C-style multi-line comments.
+	 * Describes C-style multi-line comments.
 	 * 
 	 * @see #C_COMMENT
 	 * @see #SINGLE_LINE_COMMENT
 	 */
 	MULTI_LINE_COMMENT(Pattern.compile("/\\*.*?\\*/", Pattern.DOTALL)),
 	/**
-	 * Ignores the contents of C-style single- and multi-line comments.
+	 * Describes C-style single- and multi-line comments.
 	 * 
 	 * @see #SINGLE_LINE_COMMENT
 	 * @see #MULTI_LINE_COMMENT
 	 */
 	C_COMMENT(Pattern.compile("(//[^\n\r]*?" + System.lineSeparator() + "|/\\*.*?\\*/)", Pattern.DOTALL)),
 	/**
-	 * Ignores the contents of Shell-style single-line comments.
+	 * Describes Shell-style single-line comments.
 	 * 
 	 * @see #SINGLE_LINE_COMMENT
 	 */
 	SH_COMMENT(Pattern.compile("#.*?" + System.lineSeparator())),
 	/**
-	 * Ignores the contents of Markup language-style comments (e.g. HTML, XML)
+	 * Describes Markup language-style comments (e.g. HTML, XML)
 	 * @see #SINGLE_LINE_COMMENT
 	 * @see #MULTI_LINE_COMMENT
 	 */
 	ML_COMMENT(Pattern.compile("<!--.*?-->", Pattern.DOTALL)),
 	/**
-	 * Ignores the contents of C- and Shell-style single- and multi-line comments.
+	 * Describes C- and Shell-style single- and multi-line comments.
 	 * 
 	 * @see #SH_COMMENT
 	 * @see #C_COMMENT
