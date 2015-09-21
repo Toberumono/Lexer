@@ -39,9 +39,4 @@ public enum DefaultIgnorePatterns implements DefaultPattern {
 	public Pattern getPattern() {
 		return pattern;
 	}
-	
-	@Override
-	public String getName() {
-		return this.toString();
-	}
 }

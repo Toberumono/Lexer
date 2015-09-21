@@ -12,7 +12,9 @@ public interface DefaultPattern {
 	/**
 	 * @return the name of the {@link DefaultPattern}
 	 */
-	public String getName();
+	public default String getName() {
+		return this.toString(); //This works for all uniquely-named enums
+	}
 	
 	/**
 	 * @return the {@link Pattern} that the {@link DefaultPattern} represents
