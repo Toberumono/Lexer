@@ -5,7 +5,7 @@ import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
- * Represents an action to apply to a matched part of an input.
+ * Represents an action to apply to perform when matching an open token.
  * 
  * @author Toberumono
  * @param <C>

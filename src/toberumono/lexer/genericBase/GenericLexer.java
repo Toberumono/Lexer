@@ -244,7 +244,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 			throw new PatternCollisionException(rule.pattern, names.get(rule.pattern));
 		rules.put(name, rule);
 		names.put(rule.pattern, name + "::rule");
-		patterns.put(rule.pattern, (lexer, state, match) -> rule.action.perform(lexer, state, match));
+		patterns.put(rule.pattern, rule.action::perform);
 	}
 	
 	/**
@@ -303,7 +303,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 		patterns.put(descender.open, (lexer, state, match) -> {
 			if (descender.close.matcher(match.group()).matches() && state.getDescender() == descender) //This allows descenders with the same open and close patterns to work.
 				return descender.closeAction.perform(lexer, state, state.getRoot());
-			descender.openAction.apply(lexer, state);
+			descender.openAction.perform(lexer, state, match);
 			LexerState<C, T, R, D, L> descended = state.descend(descender);
 			C out = ((GenericLexer<C, T, R, D, L>) lexer).lex(descended);
 			state.setHead(descended.getHead());
