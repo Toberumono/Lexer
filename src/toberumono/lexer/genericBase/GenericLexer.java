@@ -131,7 +131,8 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 			GenericAction<C, T, R, D, L, Matcher> match = null;
 			for (Pattern p : patterns.keySet()) {
 				Matcher m = p.matcher(state.getInput());
-				if (m.find(state.getHead()) && m.start() == state.getHead() && (longest == null || m.end() > longest.end())) {
+				if (m.find(state.getHead()) && m.start() == state.getHead() && (longest == null || m.end() > longest.end() ||
+						(state.getDescender() != null && m.end() == longest.end() && p == state.getDescender().close))) {
 					longest = m;
 					match = patterns.get(p);
 				}
