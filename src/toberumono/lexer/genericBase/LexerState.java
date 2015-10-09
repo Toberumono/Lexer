@@ -117,12 +117,13 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	
 	/**
 	 * Gets the most recently appended <tt>ConsCell</tt> from the output and returns it.<br>
-	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> <tt>ConsCell</tt>, just the last <tt>ConsCell</tt> that was
-	 * appended to the output.<br>
+	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> <tt>ConsCell</tt>, just the last <tt>ConsCell</tt> that
+	 * was appended to the output.<br>
 	 * In order to remove the <tt>ConsCell</tt> from the output, use {@link #popPreviousConsCell()}
 	 * 
-	 * @return the most recently appended <tt>ConsCell</tt> or {@code null} if no such <tt>ConsCell</tt> exists (this occurs if
-	 *         there has yet to be a match or all of the matched <tt>ConsCells</tt> were popped via {@link #popPreviousConsCell()})
+	 * @return the most recently appended <tt>ConsCell</tt> or {@code null} if no such <tt>ConsCell</tt> exists (this occurs
+	 *         if there has yet to be a match or all of the matched <tt>ConsCells</tt> were popped via
+	 *         {@link #popPreviousConsCell()})
 	 * @see #popPreviousConsCell()
 	 */
 	public C getPreviousConsCell() {
@@ -131,12 +132,13 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	
 	/**
 	 * Removes the most recently appended <tt>ConsCell</tt> from the output and returns it.<br>
-	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> <tt>ConsCell</tt>, just the last <tt>ConsCell</tt> that was
-	 * appended to the output.<br>
+	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> <tt>ConsCell</tt>, just the last <tt>ConsCell</tt> that
+	 * was appended to the output.<br>
 	 * Use {@link #getPreviousConsCell()} to get the <tt>ConsCell</tt> without removing it.
 	 * 
-	 * @return the most recently appended <tt>ConsCell</tt> or {@code null} if no such <tt>ConsCell</tt> exists (this occurs if
-	 *         there has yet to be a match or all of the matched <tt>ConsCells</tt> were popped via {@link #popPreviousConsCell()})
+	 * @return the most recently appended <tt>ConsCell</tt> or {@code null} if no such <tt>ConsCell</tt> exists (this occurs
+	 *         if there has yet to be a match or all of the matched <tt>ConsCells</tt> were popped via
+	 *         {@link #popPreviousConsCell()})
 	 * @see #getPreviousConsCell()
 	 */
 	public C popPreviousConsCell() {
@@ -177,7 +179,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 				Matcher longest = null;
 				for (Pattern p : lexer.getPatterns().keySet()) {
 					Matcher m = p.matcher(input);
-					if (m.find(head) && m.start() == head && (longest == null || m.end() > longest.end()))
+					if (m.find(head) && m.start() == head && (longest == null || m.end() > longest.end() || (descender != null && m.end() == longest.end() && p == descender.close)))
 						longest = m;
 				}
 				return longest.pattern() != descender.close;

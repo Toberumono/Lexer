@@ -18,7 +18,7 @@ import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
- * This represents a generic cellizer that uses a set of user-defined rules to a {@link String} input.<br>
+ * This represents a generic tokenizer that uses a set of user-defined rules to a {@link String} input.<br>
  * While this implementation is designed to work with cons-cell esque cells (e.g. those from Lisp), it can theoretically be
  * modified to work with other structures.
  * 
@@ -47,7 +47,8 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 * Constructs a {@link GenericLexer} with the provided cell constructor.
 	 * 
 	 * @param cellConstructor
-	 *            a function that takes no arguments and returns a new instance of the class extending {@link GenericConsCell}.
+	 *            a function that takes no arguments and returns a new instance of the class extending
+	 *            {@link GenericConsCell}.
 	 * @param emptyType
 	 *            the <tt>Type</tt> that represents an empty (or null) value in the <tt>ConsCell</tt> type that this
 	 *            <tt>Lexer</tt> uses.
@@ -71,7 +72,8 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 * @param patterns
 	 *            the {@link Map} in which to store the active patterns
 	 * @param cellConstructor
-	 *            a function that takes no arguments and returns a new instance of the class extending {@link GenericConsCell}.
+	 *            a function that takes no arguments and returns a new instance of the class extending
+	 *            {@link GenericConsCell}.
 	 * @param emptyType
 	 *            the <tt>Type</tt> that represents an empty (or null) value in the <tt>ConsCell</tt> type that this
 	 *            <tt>Lexer</tt> uses.
@@ -79,7 +81,8 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 *            A list of patterns to ignore. The {@link DefaultIgnorePatterns} enum has a few common patterns.
 	 * @see DefaultIgnorePatterns
 	 */
-	public GenericLexer(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, GenericAction<C, T, R, D, L, Matcher>> patterns, ConsCellConstructor<T, C> cellConstructor,
+	public GenericLexer(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, GenericAction<C, T, R, D, L, Matcher>> patterns,
+			ConsCellConstructor<T, C> cellConstructor,
 			T emptyType, DefaultPattern... ignore) {
 		this.rules = rules;
 		this.unmodifiableRules = Collections.unmodifiableMap(this.rules);
@@ -96,10 +99,10 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	}
 	
 	/**
-	 * ConsCellizes a <tt>String</tt>
+	 * Tokenizes a <tt>String</tt>
 	 * 
 	 * @param input
-	 *            the <tt>String</tt> to cellize
+	 *            the <tt>String</tt> to tokenize
 	 * @return the <tt>ConsCell</tt>s in the <tt>String</tt>
 	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
@@ -111,7 +114,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	
 	/**
 	 * Processes the given {@link LexerState State}.<br>
-	 * Use {@link #lex(String)} to cellize an input from the beginning.
+	 * Use {@link #lex(String)} to tokenize an input from the beginning.
 	 * 
 	 * @param state
 	 *            the {@link LexerState} to process
@@ -174,7 +177,8 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 				GenericAction<C, T, R, D, L, Matcher> match = null;
 				for (Pattern p : patterns.keySet()) {
 					Matcher m = p.matcher(state.getInput());
-					if (m.find(state.getHead()) && m.start() == state.getHead() && (longest == null || m.end() > longest.end())) {
+					if (m.find(state.getHead()) && m.start() == state.getHead() && (longest == null || m.end() > longest.end() ||
+							(state.getDescender() != null && m.end() == longest.end() && p == state.getDescender().close))) {
 						longest = m;
 						match = patterns.get(p);
 					}
@@ -184,8 +188,12 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 				state.advance(longest);
 				if (match == null) //Handle ignores
 					continue;
-				if (match instanceof AscentBlock)
-					throw new EmptyInputException();
+				if (match instanceof AscentBlock) {
+					if (longest.pattern() == state.getDescender().close)
+						throw new EmptyInputException();
+					else
+						throw new UnrecognizedCharacterException(state.getInput(), state.getHead());
+				}
 				@SuppressWarnings("unchecked")
 				C cell = match.perform((L) this, state, longest);
 				return cell;
@@ -309,12 +317,12 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 			state.setHead(descended.getHead());
 			return out;
 		});
-		patterns.put(descender.close, ((AscentBlock<C, T, R, D, L>) (lexer, state, match) -> {
+		patterns.put(descender.close, (AscentBlock<C, T, R, D, L>) (lexer, state, match) -> {
 			if (state.getDescender() != descender)
 				throw new UnbalancedDescenderException(state.getInput(), state.getHead());
 			C root = state.getRoot();
 			return descender.closeAction.perform(lexer, state, root == null ? cellConstructor.construct() : root);
-		}));
+		});
 	}
 	
 	/**
