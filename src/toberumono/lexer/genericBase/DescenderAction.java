@@ -12,8 +12,9 @@ import toberumono.utils.functions.ExceptedBiConsumer;
  */
 @FunctionalInterface
 public interface DescenderAction<L extends GenericLexer<?, ?, ?, ?, L>> extends ExceptedBiConsumer<L, LexerState<?, ?, ?, ?, L>> {
+	
 	/**
-	 * Performs the action associated with the descender
+	 * Performs the action associated with the descender.
 	 * 
 	 * @param lexer
 	 *            the {@link GenericLexer Lexer} that is requesting the action be performed
@@ -24,5 +25,23 @@ public interface DescenderAction<L extends GenericLexer<?, ?, ?, ?, L>> extends 
 	 *             if an error occurs
 	 */
 	@Override
-	public void apply(L lexer, LexerState<?, ?, ?, ?, L> state) throws LexerException;
+	public void accept(L lexer, LexerState<?, ?, ?, ?, L> state) throws LexerException;
+	
+	/**
+	 * Performs the action associated with the descender.<br>
+	 * Forwards to {@link #accept(GenericLexer, LexerState)}
+	 * 
+	 * @param lexer
+	 *            the {@link GenericLexer Lexer} that is requesting the action be performed
+	 * @param state
+	 *            the current {@link LexerState State} of the {@link GenericLexer Lexer} that is requesting the action to be
+	 *            performed
+	 * @throws LexerException
+	 *             if an error occurs
+	 */
+	@Override
+	@Deprecated
+	public default void apply(L lexer, LexerState<?, ?, ?, ?, L> state) throws Exception {
+		accept(lexer, state);
+	}
 }

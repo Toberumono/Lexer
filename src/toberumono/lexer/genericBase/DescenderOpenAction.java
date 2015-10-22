@@ -61,6 +61,6 @@ public interface DescenderOpenAction<C extends GenericConsCell<T, C>, T extends 
 	public static <
 			C extends GenericConsCell<T, C>, T extends GenericConsType, R extends GenericRule<C, T, R, D, L>, D extends GenericDescender<C, T, R, D, L>, L extends GenericLexer<C, T, R, D, L>, O>
 			DescenderOpenAction<C, T, R, D, L, O> wrapOldAction(DescenderAction<L> action) {
-		return (lexer, state, match) -> action.apply(lexer, state);
+		return (lexer, state, match) -> action.accept(lexer, state);
 	}
 }
