@@ -190,8 +190,10 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 				if (match == null) //Handle ignores
 					continue;
 				if (match instanceof AscentBlock) {
-					if (longest.pattern() == state.getDescender().close)
+					if (longest.pattern() == state.getDescender().close) {
+						state.setHead(initial);
 						throw new EmptyInputException();
+					}
 					else
 						throw new UnrecognizedCharacterException(state.getInput(), state.getHead());
 				}
