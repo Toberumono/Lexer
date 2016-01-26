@@ -11,6 +11,21 @@ import toberumono.structures.sexpressions.ConsCellConstructor;
 import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
+/**
+ * This represents a language that can be used by a {@link GenericLexer} to tokenize an input {@link String}
+ * 
+ * @author Toberumono
+ * @param <C>
+ *            the implementation of {@link GenericConsCell} to be used
+ * @param <T>
+ *            the implementation of {@link GenericConsType} to be used
+ * @param <R>
+ *            the implementation of {@link GenericRule} to be used
+ * @param <D>
+ *            the implementation of {@link GenericDescender} to be used
+ * @param <L>
+ *            the implementation of {@link GenericLexer} to be used
+ */
 public class GenericLanguage<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends GenericRule<C, T, R, D, L>, D extends GenericDescender<C, T, R, D, L>, L extends GenericLexer<C, T, R, D, L>> {
 	private final Map<String, R> rules;
 	private final Map<String, D> descenders;
@@ -19,10 +34,33 @@ public class GenericLanguage<C extends GenericConsCell<T, C>, T extends GenericC
 	private final Map<Pattern, GenericAction<C, T, R, D, L, Matcher>> patterns;
 	private final ConsCellConstructor<T, C> cellConstructor;
 	
+	/**
+	 * Constructs an empty {@link GenericLanguage} with the given {@link ConsCellConstructor}
+	 * 
+	 * @param cellConstructor
+	 *            the {@link ConsCellConstructor} to be used
+	 */
 	public GenericLanguage(ConsCellConstructor<T, C> cellConstructor) {
 		this(cellConstructor, new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>());
 	}
 	
+	/**
+	 * Constructs a {@link GenericLanguage} with the given {@link ConsCellConstructor} and data maps. Note that the
+	 * {@link Map Maps} are <i>not</i> copied in the constructor
+	 * 
+	 * @param cellConstructor
+	 *            the {@link ConsCellConstructor} to be used
+	 * @param rules
+	 *            a {@link Map} containing the {@link GenericRule Rules}
+	 * @param descenders
+	 *            a {@link Map} containing the {@link GenericDescender Descender}
+	 * @param ignores
+	 *            a {@link Map} containing the {@link Pattern Patterns} to ignore
+	 * @param names
+	 *            a {@link Map} containing the names that are in use
+	 * @param patterns
+	 *            a {@link Map} that maps {@link Pattern Patterns} to their associated {@link GenericAction} actions
+	 */
 	public GenericLanguage(ConsCellConstructor<T, C> cellConstructor, Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, String> names,
 			Map<Pattern, GenericAction<C, T, R, D, L, Matcher>> patterns) {
 		this.cellConstructor = cellConstructor;
@@ -96,14 +134,14 @@ public class GenericLanguage<C extends GenericConsCell<T, C>, T extends GenericC
 	 *             if a {@link Pattern} being added is already loaded
 	 */
 	public synchronized void addDescender(String name, D descender) {
-		if (getNames().containsKey(descender.open))
-			throw new PatternCollisionException(descender.open, getNames().get(descender.open));
-		if (getNames().containsKey(descender.close))
-			throw new PatternCollisionException(descender.close, getNames().get(descender.close));
-		getDescenders().put(name, descender);
-		getNames().put(descender.open, name + "::descender.open");
-		getNames().put(descender.close, name + "::descender.close");
-		getPatterns().put(descender.open, (lexer, state, match) -> {
+		if (names.containsKey(descender.open))
+			throw new PatternCollisionException(descender.open, names.get(descender.open));
+		if (names.containsKey(descender.close))
+			throw new PatternCollisionException(descender.close, names.get(descender.close));
+		descenders.put(name, descender);
+		names.put(descender.open, name + "::descender.open");
+		names.put(descender.close, name + "::descender.close");
+		patterns.put(descender.open, (lexer, state, match) -> {
 			if (descender.close.matcher(match.group()).matches() && state.getDescender() == descender) //This allows descenders with the same open and close patterns to work.
 				return descender.closeAction.perform(lexer, state, state.getRoot());
 			descender.openAction.perform(lexer, state, match);
@@ -112,7 +150,7 @@ public class GenericLanguage<C extends GenericConsCell<T, C>, T extends GenericC
 			state.setHead(descended.getHead());
 			return out;
 		});
-		getPatterns().put(descender.close, (AscentBlock<C, T, R, D, L>) (lexer, state, match) -> {
+		patterns.put(descender.close, (AscentBlock<C, T, R, D, L>) (lexer, state, match) -> {
 			if (state.getDescender() != descender)
 				throw new UnbalancedDescenderException(state.getInput(), state.getHead());
 			C root = state.getRoot();
@@ -129,13 +167,13 @@ public class GenericLanguage<C extends GenericConsCell<T, C>, T extends GenericC
 	 *         otherwise {@code null}
 	 */
 	public synchronized D removeDescender(String name) {
-		D out = getDescenders().remove(name);
+		D out = descenders.remove(name);
 		if (out == null)
 			return out;
-		getPatterns().remove(out.open);
-		getPatterns().remove(out.close);
-		getNames().remove(out.open);
-		getNames().remove(out.close);
+		patterns.remove(out.open);
+		patterns.remove(out.close);
+		names.remove(out.open);
+		names.remove(out.close);
 		return out;
 	}
 	
@@ -147,7 +185,7 @@ public class GenericLanguage<C extends GenericConsCell<T, C>, T extends GenericC
 	 * @return the descender if a descender corresponding to that name is loaded, otherwise null
 	 */
 	public D getDescender(String name) {
-		return getDescenders().get(name);
+		return descenders.get(name);
 	}
 	
 	/**
@@ -168,11 +206,11 @@ public class GenericLanguage<C extends GenericConsCell<T, C>, T extends GenericC
 	 *             if a {@link Pattern} being added is already loaded
 	 */
 	public synchronized void addIgnore(String name, Pattern pattern) {
-		if (getNames().containsKey(pattern))
-			throw new PatternCollisionException(pattern, getNames().get(pattern));
-		getIgnores().put(name, pattern);
-		getNames().put(pattern, name + "::ignore");
-		getPatterns().put(pattern, null);
+		if (names.containsKey(pattern))
+			throw new PatternCollisionException(pattern, names.get(pattern));
+		ignores.put(name, pattern);
+		names.put(pattern, name + "::ignore");
+		patterns.put(pattern, null);
 	}
 	
 	/**
@@ -195,11 +233,11 @@ public class GenericLanguage<C extends GenericConsCell<T, C>, T extends GenericC
 	 * @return the removed {@link Pattern} if a {@link Pattern} of that name existed, otherwise null
 	 */
 	public synchronized Pattern removeIgnore(String name) {
-		Pattern out = getIgnores().remove(name);
+		Pattern out = ignores.remove(name);
 		if (out == null)
 			return out;
-		getPatterns().remove(out);
-		getNames().remove(out);
+		patterns.remove(out);
+		names.remove(out);
 		return out;
 	}
 	
@@ -222,7 +260,7 @@ public class GenericLanguage<C extends GenericConsCell<T, C>, T extends GenericC
 	 * @return the ignored {@link Pattern} if one corresponding to that name is loaded, otherwise null
 	 */
 	public Pattern getIgnore(String name) {
-		return getIgnores().get(name);
+		return ignores.get(name);
 	}
 	
 	/**
