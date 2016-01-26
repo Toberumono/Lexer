@@ -27,15 +27,49 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	private final String input;
 	private final D descender;
 	private final L lexer;
+	private final GenericLanguage<C, T, R, D, L> language;
 	private int head;
 	private C root, last;
 	
+	/**
+	 * Constructs a new {@link LexerState} with the given state information. This should generally only be called from
+	 * {@link GenericLexer#lex(String)}.
+	 * 
+	 * @param input
+	 *            the input to be lexed
+	 * @param head
+	 *            the position from which the next match must start
+	 * @param descender
+	 *            the most recent descender
+	 * @param lexer
+	 *            the {@link GenericLexer Lexer} for which the {@link LexerState} was created
+	 */
+	public LexerState(String input, int head, D descender, GenericLexer<C, T, R, D, L> lexer) {
+		this(input, head, descender, lexer, lexer.getLanguage());
+	}
+	
+	/**
+	 * Constructs a new {@link LexerState} with the given state information. This should generally only be called from
+	 * {@link GenericLexer#lex(String)}.
+	 * 
+	 * @param input
+	 *            the input to be lexed
+	 * @param head
+	 *            the position from which the next match must start
+	 * @param descender
+	 *            the most recent descender
+	 * @param lexer
+	 *            the {@link GenericLexer Lexer} for which the {@link LexerState} was created
+	 * @param language
+	 *            the {@link GenericLanguage Language} that the {@link LexerState} is to use
+	 */
 	@SuppressWarnings("unchecked")
-	LexerState(String input, int head, D descender, GenericLexer<C, T, R, D, L> lexer) {
+	public LexerState(String input, int head, D descender, GenericLexer<C, T, R, D, L> lexer, GenericLanguage<C, T, R, D, L> language) {
 		this.input = input;
 		this.head = head;
 		this.descender = descender;
 		this.lexer = (L) lexer;
+		this.language = language;
 		last = root = null;
 	}
 	
@@ -187,5 +221,24 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * @return the {@link GenericLanguage Language} in use
+	 */
+	public GenericLanguage<C, T, R, D, L> getLanguage() {
+		return language;
+	}
+	
+	/**
+	 * Produces a shallow copy of this {@link LexerState} with the given {@link GenericLanguage Language}. This method can be
+	 * called from any {@link GenericAction}.
+	 * 
+	 * @param language
+	 *            the new {@link GenericLanguage Language} to use
+	 * @return a shallow copy of this {@link LexerState} with the given {@link GenericLanguage Language}
+	 */
+	public LexerState<C, T, R, D, L> setLanguage(GenericLanguage<C, T, R, D, L> language) {
+		return new LexerState<>(input, head, descender, lexer, language);
 	}
 }
