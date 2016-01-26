@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,8 +44,51 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 * @param cellConstructor
 	 *            a function that takes no arguments and returns a new instance of the class extending
 	 *            {@link GenericConsCell}
+	 * @param emptyType
+	 *            the {@code Type} that represents an empty (or null) value in the {@code ConsCell} type that this
+	 *            {@code Lexer} uses.
+	 * @param ignore
+	 *            A list of patterns to ignore. The {@link DefaultIgnorePatterns} enum has a few common patterns.
+	 * @see DefaultIgnorePatterns
+	 */
+	public GenericLexer(ConsCellConstructor<T, C> cellConstructor, T emptyType, DefaultPattern... ignore) {
+		this(new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), cellConstructor, emptyType, ignore);
+	}
+	
+	/**
+	 * Constructs a {@link GenericLexer} using the given maps and cell constructor.
+	 * 
+	 * @param rules
+	 *            the {@link Map} in which to store rules
+	 * @param descenders
+	 *            the {@link Map} in which to store descenders
+	 * @param ignores
+	 *            the {@link Map} in which to store ignores
+	 * @param patterns
+	 *            the {@link Map} in which to store the active patterns
+	 * @param cellConstructor
+	 *            a function that takes no arguments and returns a new instance of the class extending
+	 *            {@link GenericConsCell}
+	 * @param emptyType
+	 *            the {@code Type} that represents an empty (or null) value in the {@code ConsCell} type that this
+	 *            {@code Lexer} uses.
+	 * @param ignore
+	 *            A list of patterns to ignore. The {@link DefaultIgnorePatterns} enum has a few common patterns.
+	 * @see DefaultIgnorePatterns
+	 */
+	public GenericLexer(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, GenericAction<C, T, R, D, L, Matcher>> patterns,
+			ConsCellConstructor<T, C> cellConstructor, T emptyType, DefaultPattern... ignore) {
+		this(rules, descenders, ignores, patterns, cellConstructor, GenericLanguage<C, T, R, D, L>::new, emptyType, ignore);
+	}
+	
+	/**
+	 * Constructs a {@link GenericLexer} with the provided cell constructor.
+	 * 
+	 * @param cellConstructor
+	 *            a function that takes no arguments and returns a new instance of the class extending
+	 *            {@link GenericConsCell}
 	 * @param languageConstructor
-	 *            a {@link Supplier} that returns a new instance of the type of {@link GenericLanguage Language} to be used
+	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link GenericLanguage Language} to be used
 	 * @param emptyType
 	 *            the {@code Type} that represents an empty (or null) value in the {@code ConsCell} type that this
 	 *            {@code Lexer} uses.
@@ -73,7 +115,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 *            a function that takes no arguments and returns a new instance of the class extending
 	 *            {@link GenericConsCell}
 	 * @param languageConstructor
-	 *            a {@link Supplier} that returns a new instance of the type of {@link GenericLanguage Language} to be used
+	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link GenericLanguage Language} to be used
 	 * @param emptyType
 	 *            the {@code Type} that represents an empty (or null) value in the {@code ConsCell} type that this
 	 *            {@code Lexer} uses.
