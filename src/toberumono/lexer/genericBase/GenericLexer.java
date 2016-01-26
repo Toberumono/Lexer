@@ -18,7 +18,7 @@ import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
- * This represents a generic tokenizer that uses a set of user-defined rules to a {@link String} input.<br>
+ * This represents a generic tokenizer that uses a set of user-defined rules to tokenize a {@link String} input.<br>
  * While this implementation is designed to work with cons-cell esque cells (e.g. those from Lisp), it can theoretically be
  * modified to work with other structures.
  * 
@@ -332,11 +332,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 *             if a {@link Pattern} being added is already loaded
 	 */
 	public synchronized void addIgnore(String name, Pattern pattern) {
-		if (language.getNames().containsKey(pattern))
-			throw new PatternCollisionException(pattern, language.getNames().get(pattern));
-		language.getIgnores().put(name, pattern);
-		language.getNames().put(pattern, name + "::ignore");
-		language.getPatterns().put(pattern, null);
+		language.addIgnore(name, pattern);
 	}
 	
 	/**
@@ -348,7 +344,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 *             if a {@link Pattern} being added is already loaded
 	 */
 	public void addIgnore(DefaultPattern ignore) {
-		addIgnore(ignore.getName(), ignore.getPattern());
+		language.addIgnore(ignore.getName(), ignore.getPattern());
 	}
 	
 	/**
@@ -359,12 +355,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 * @return the removed {@link Pattern} if a {@link Pattern} of that name existed, otherwise null
 	 */
 	public synchronized Pattern removeIgnore(String name) {
-		Pattern out = language.getIgnores().remove(name);
-		if (out == null)
-			return out;
-		language.getPatterns().remove(out);
-		language.getNames().remove(out);
-		return out;
+		return language.removeIgnore(name);
 	}
 	
 	/**
@@ -375,7 +366,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 * @return the {@link Pattern} that was being ignored if it was loaded in the lexer, otherwise null
 	 */
 	public Pattern removeIgnore(DefaultPattern ignore) {
-		return removeIgnore(ignore.getName());
+		return language.removeIgnore(ignore);
 	}
 	
 	/**
@@ -386,7 +377,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 * @return the ignored {@link Pattern} if one corresponding to that name is loaded, otherwise null
 	 */
 	public Pattern getIgnore(String name) {
-		return language.getIgnores().get(name);
+		return language.getIgnore(name);
 	}
 	
 	/**
@@ -418,7 +409,7 @@ public class GenericLexer<C extends GenericConsCell<T, C>, T extends GenericCons
 	 */
 	@Deprecated
 	public final void ignore(String name, Pattern ignore) {
-		addIgnore(name, ignore);
+		language.addIgnore(name, ignore);
 	}
 	
 	/**
