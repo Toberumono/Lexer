@@ -1,4 +1,4 @@
-package toberumono.lexer.genericBase;
+package toberumono.lexer.base;
 
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
@@ -9,7 +9,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
  * A container that stores the state information of a lexing operation.<br>
- * These are usually created during a call to {@link GenericLexer#lex(String)}.
+ * These are usually created during a call to {@link Lexer#lex(String)}.
  * 
  * @author Toberumono
  * @param <C>
@@ -17,23 +17,23 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * @param <T>
  *            the implementation of {@link GenericConsType} to be used
  * @param <R>
- *            the implementation of {@link GenericRule} to be used
+ *            the implementation of {@link Rule} to be used
  * @param <D>
- *            the implementation of {@link GenericDescender} to be used
+ *            the implementation of {@link Descender} to be used
  * @param <L>
- *            the implementation of {@link GenericLexer} to be used
+ *            the implementation of {@link Lexer} to be used
  */
-public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends GenericRule<C, T, R, D, L>, D extends GenericDescender<C, T, R, D, L>, L extends GenericLexer<C, T, R, D, L>> {
+public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
 	private final String input;
 	private final D descender;
 	private final L lexer;
-	private final GenericLanguage<C, T, R, D, L> language;
+	private final Language<C, T, R, D, L> language;
 	private int head;
 	private C root, last;
 	
 	/**
 	 * Constructs a new {@link LexerState} with the given state information. This should generally only be called from
-	 * {@link GenericLexer#lex(String)}.
+	 * {@link AbstractLexer#lex(String)}.
 	 * 
 	 * @param input
 	 *            the input to be lexed
@@ -42,15 +42,15 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 * @param descender
 	 *            the most recent descender
 	 * @param lexer
-	 *            the {@link GenericLexer Lexer} for which the {@link LexerState} was created
+	 *            the {@link AbstractLexer Lexer} for which the {@link LexerState} was created
 	 */
-	public LexerState(String input, int head, D descender, GenericLexer<C, T, R, D, L> lexer) {
+	public LexerState(String input, int head, D descender, Lexer<C, T, R, D, L> lexer) {
 		this(input, head, descender, lexer, lexer.getLanguage());
 	}
 	
 	/**
 	 * Constructs a new {@link LexerState} with the given state information. This should generally only be called from
-	 * {@link GenericLexer#lex(String)}.
+	 * {@link AbstractLexer#lex(String)}.
 	 * 
 	 * @param input
 	 *            the input to be lexed
@@ -59,12 +59,12 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 * @param descender
 	 *            the most recent descender
 	 * @param lexer
-	 *            the {@link GenericLexer Lexer} for which the {@link LexerState} was created
+	 *            the {@link AbstractLexer Lexer} for which the {@link LexerState} was created
 	 * @param language
-	 *            the {@link GenericLanguage Language} that the {@link LexerState} is to use
+	 *            the {@link Language} that the {@link LexerState} is to use
 	 */
 	@SuppressWarnings("unchecked")
-	public LexerState(String input, int head, D descender, GenericLexer<C, T, R, D, L> lexer, GenericLanguage<C, T, R, D, L> language) {
+	public LexerState(String input, int head, D descender, Lexer<C, T, R, D, L> lexer, Language<C, T, R, D, L> language) {
 		this.input = input;
 		this.head = head;
 		this.descender = descender;
@@ -88,7 +88,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	}
 	
 	/**
-	 * @return the {@link GenericDescender Descender} that created this {@link LexerState}. This is <i>often</i> {@code null}
+	 * @return the {@link Descender} that created this {@link LexerState}. This is <i>often</i> {@code null}
 	 */
 	public D getDescender() {
 		return descender;
@@ -192,7 +192,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 * Constructs a new {@link LexerState} with the same fields but null cells and the descender set to <tt>descender</tt>.
 	 * 
 	 * @param descender
-	 *            the {@link GenericDescender Descender} that was encountered
+	 *            the {@link AbstractDescender Descender} that was encountered
 	 * @return a separate {@link LexerState} that is used to watch for the correct close cell
 	 */
 	public LexerState<C, T, R, D, L> descend(D descender) {
@@ -200,12 +200,12 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	}
 	
 	/**
-	 * This method returns true if there any uncellized input remains after skipping over cells that are set to be ignored
+	 * This method returns true if any untokenized input remains after skipping over cells that are set to be ignored
 	 * and the next matched cell would not be an ascent cell.<br>
-	 * <b><i>Note</i></b>: This is <i>slow</i> - the {@link GenericLexer Lexer} already performs these checks before getting
+	 * <b><i>Note</i></b>: This is <i>slow</i> - the {@link Lexer} already performs these checks before getting
 	 * the next cell, so if you are calling this regularly, consider re-working the logic behind your rules.
 	 * 
-	 * @return true if there is still uncellized input at the current descent level, otherwise false.
+	 * @return {@code true} if there is still untokenized input at the current descent level, otherwise false.
 	 */
 	public boolean hasNext() {
 		if (head + lexer.skipIgnores(this) < input.length()) {
@@ -213,10 +213,10 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 				Matcher longest = null;
 				for (Pattern p : lexer.getPatterns().keySet()) {
 					Matcher m = p.matcher(input);
-					if (m.find(head) && m.start() == head && (longest == null || m.end() > longest.end() || (descender != null && m.end() == longest.end() && p == descender.close)))
+					if (m.find(head) && m.start() == head && (longest == null || m.end() > longest.end() || (descender != null && m.end() == longest.end() && p == descender.getClosePattern())))
 						longest = m;
 				}
-				return longest.pattern() != descender.close;
+				return longest.pattern() != descender.getClosePattern();
 			}
 			return true;
 		}
@@ -224,21 +224,21 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	}
 	
 	/**
-	 * @return the {@link GenericLanguage Language} in use
+	 * @return the {@link Language} in use
 	 */
-	public GenericLanguage<C, T, R, D, L> getLanguage() {
+	public Language<C, T, R, D, L> getLanguage() {
 		return language;
 	}
 	
 	/**
-	 * Produces a shallow copy of this {@link LexerState} with the given {@link GenericLanguage Language}. This method can be
-	 * called from any {@link GenericAction}.
+	 * Produces a shallow copy of this {@link LexerState} with the given {@link Language}. This method can be
+	 * called from any {@link Action}.
 	 * 
 	 * @param language
-	 *            the new {@link GenericLanguage Language} to use
-	 * @return a shallow copy of this {@link LexerState} with the given {@link GenericLanguage Language}
+	 *            the new {@link Language} to use
+	 * @return a shallow copy of this {@link LexerState} with the given {@link Language}
 	 */
-	public LexerState<C, T, R, D, L> setLanguage(GenericLanguage<C, T, R, D, L> language) {
+	public LexerState<C, T, R, D, L> setLanguage(Language<C, T, R, D, L> language) {
 		return new LexerState<>(input, head, descender, lexer, language);
 	}
 }

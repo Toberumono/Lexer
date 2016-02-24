@@ -2,18 +2,18 @@ package toberumono.lexer.util;
 
 import java.util.regex.Pattern;
 
-import toberumono.lexer.genericBase.DefaultPattern;
-import toberumono.lexer.genericBase.GenericLexer;
-import toberumono.lexer.genericBase.LanguageConstructor;
+import toberumono.lexer.base.DefaultPattern;
+import toberumono.lexer.base.AbstractLexer;
+import toberumono.lexer.base.LanguageConstructor;
 import toberumono.structures.sexpressions.ConsCellConstructor;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
  * A few {@link Pattern Patterns} for various comment styles.<br>
- * Mainly used in the {@link GenericLexer GenericLexer's} constructor.
+ * Mainly used in the {@link AbstractLexer GenericLexer's} constructor.
  * 
  * @author Toberumono
- * @see GenericLexer#GenericLexer(ConsCellConstructor, LanguageConstructor, GenericConsType, DefaultPattern...)
+ * @see AbstractLexer#AbstractLexer(ConsCellConstructor, LanguageConstructor, GenericConsType, DefaultPattern...)
  * @see DefaultIgnorePatterns
  */
 public enum CommentPatterns implements DefaultPattern {

@@ -3,8 +3,8 @@ package toberumono.lexer;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
-import toberumono.lexer.genericBase.GenericAction;
-import toberumono.lexer.genericBase.GenericRule;
+import toberumono.lexer.base.Action;
+import toberumono.lexer.base.AbstractRule;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
 
@@ -13,7 +13,7 @@ import toberumono.structures.sexpressions.ConsType;
  * 
  * @author Toberumono
  */
-public class Rule extends GenericRule<ConsCell, ConsType, Rule, Descender, Lexer> {
+public class BasicRule extends AbstractRule<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer> {
 	
 	/**
 	 * Constructs a new <tt>Rule</tt> with the given data
@@ -23,7 +23,7 @@ public class Rule extends GenericRule<ConsCell, ConsType, Rule, Descender, Lexer
 	 * @param type
 	 *            the type for <tt>ConsCell</tt>s matched by this rule
 	 */
-	public Rule(Pattern pattern, ConsType type) {
+	public BasicRule(Pattern pattern, ConsType type) {
 		super(pattern, type);
 	}
 	
@@ -35,7 +35,7 @@ public class Rule extends GenericRule<ConsCell, ConsType, Rule, Descender, Lexer
 	 * @param action
 	 *            the action to perform on the part of the input matched by this <tt>Rule</tt>
 	 */
-	public Rule(Pattern pattern, GenericAction<ConsCell, ConsType, Rule, Descender, Lexer, MatchResult> action) {
+	public BasicRule(Pattern pattern, Action<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, MatchResult> action) {
 		super(pattern, action);
 	}
 }

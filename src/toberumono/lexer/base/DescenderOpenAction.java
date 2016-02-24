@@ -1,11 +1,11 @@
-package toberumono.lexer.genericBase;
+package toberumono.lexer.base;
 
 import toberumono.lexer.errors.LexerException;
 import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
- * Represents an action to apply to perform when matching an open token.
+ * Represents an action to apply to a matched part of an input.
  * 
  * @author Toberumono
  * @param <C>
@@ -13,16 +13,16 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * @param <T>
  *            the implementation of {@link GenericConsType} to be used
  * @param <R>
- *            the implementation of {@link GenericRule} to be used
+ *            the implementation of {@link AbstractRule} to be used
  * @param <D>
- *            the implementation of {@link GenericDescender} to be used
+ *            the implementation of {@link AbstractDescender} to be used
  * @param <L>
- *            the implementation of {@link GenericLexer} to be used
+ *            the implementation of {@link AbstractLexer} to be used
  * @param <O>
  *            the type of the matched data
  */
 @FunctionalInterface
-public interface GenericAction<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends GenericRule<C, T, R, D, L>, D extends GenericDescender<C, T, R, D, L>, L extends GenericLexer<C, T, R, D, L>, O> {
+public interface DescenderOpenAction<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>, O> {
 	/**
 	 * Performs the action
 	 * 
@@ -32,9 +32,8 @@ public interface GenericAction<C extends GenericConsCell<T, C>, T extends Generi
 	 *            the lexer's state
 	 * @param match
 	 *            the value that was matched
-	 * @return an instance of {@link GenericConsCell}
 	 * @throws LexerException
 	 *             if an error occurs
 	 */
-	public C perform(L lexer, LexerState<C, T, R, D, L> state, O match) throws LexerException;
+	public void perform(L lexer, LexerState<C, T, R, D, L> state, O match) throws LexerException;
 }

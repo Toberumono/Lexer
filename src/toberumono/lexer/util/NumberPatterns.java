@@ -2,9 +2,9 @@ package toberumono.lexer.util;
 
 import java.util.regex.Pattern;
 
-import toberumono.lexer.genericBase.DefaultPattern;
-import toberumono.lexer.genericBase.GenericLexer;
-import toberumono.lexer.genericBase.LanguageConstructor;
+import toberumono.lexer.base.DefaultPattern;
+import toberumono.lexer.base.AbstractLexer;
+import toberumono.lexer.base.LanguageConstructor;
 import toberumono.structures.sexpressions.ConsCellConstructor;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
@@ -13,7 +13,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * NOTE: the PICKY_... {@link Pattern Patterns} are more complicated to parse, so only use them when needed.
  * 
  * @author Toberumono
- * @see GenericLexer#GenericLexer(ConsCellConstructor, LanguageConstructor, GenericConsType, DefaultPattern...)
+ * @see AbstractLexer#AbstractLexer(ConsCellConstructor, LanguageConstructor, GenericConsType, DefaultPattern...)
  * @see CommentPatterns
  */
 public enum NumberPatterns implements DefaultPattern,NumberPatternsConstants {
