@@ -129,7 +129,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 */
 	public int setHead(int pos) {
 		int oldIndex = getHead();
-		setHead(pos);
+		head = pos;
 		return oldIndex;
 	}
 	
