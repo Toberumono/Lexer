@@ -94,7 +94,9 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	
 	@Override
 	public C lex(String input) throws LexerException {
-		return lex(new LexerState<>(input, 0, null, this));
+		@SuppressWarnings("unchecked") //The Lexer is guaranteed to match L
+		LexerState<C, T, R, D, L> state = new LexerState<>(input, 0, null, (L) this);
+		return lex(state);
 	}
 	
 	@Override

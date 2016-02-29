@@ -121,9 +121,8 @@ public abstract class AbstractLanguage<C extends GenericConsCell<T, C>, T extend
 		});
 		patterns.put(descender.getClosePattern(), (AscentBlock<C, T, R, D, L>) (lexer, state, match) -> {
 			if (state.getDescender() != descender)
-			C root = state.getRoot();
-			return descender.getCloseAction().perform(lexer, state, root == null ? cellConstructor.construct() : root);
 				throw new UnbalancedDescenderException(state);
+			return descender.getCloseAction().perform(lexer, state, state.getRoot() == null ? cellConstructor.construct() : state.getRoot());
 		});
 	}
 	
