@@ -1,7 +1,10 @@
 package toberumono.lexer.errors;
 
+import toberumono.lexer.base.Lexer;
+import toberumono.lexer.base.LexerState;
+
 /**
- * Thrown when the lexer is out of input but is still being queried for more tokens.
+ * Thrown when a {@link Lexer} is out of input but is still being queried for more tokens.
  * 
  * @author Toberumono
  */

@@ -151,7 +151,7 @@ public interface Language<C extends GenericConsCell<T, C>, T extends GenericCons
 	Map<String, Pattern> getIgnores();
 	
 	/**
-	 * @return the names used by {@link Rule Rules}, {@link AbstractDescender Descenders}, and ignores in the
+	 * @return the names used by {@link Rule Rules}, {@link Descender Descenders}, and ignores in the
 	 *         {@link Language}
 	 */
 	Map<Pattern, String> getNames();

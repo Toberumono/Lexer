@@ -8,6 +8,7 @@ import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
+ * An implementation of the core components of {@link Descender}.
  * Represents the action to take upon seeing a particular descent-start cell.
  * 
  * @author Toberumono
@@ -22,14 +23,14 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public class AbstractDescender<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends AbstractDescender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
+public class AbstractDescender<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
 		implements Descender<C, T, R, D, L> {
 	private final Pattern open, close;
 	private final Action<C, T, R, D, L, C> closeAction;
 	private final DescenderOpenAction<C, T, R, D, L, MatchResult> openAction;
 	
 	/**
-	 * Constructs a {@link AbstractDescender} that corresponds to the given type with the given open and close tokens.
+	 * Constructs an {@link AbstractDescender} that corresponds to the given type with the given open and close tokens.
 	 * 
 	 * @param open
 	 *            the open token
@@ -44,7 +45,7 @@ public class AbstractDescender<C extends GenericConsCell<T, C>, T extends Generi
 	}
 	
 	/**
-	 * Constructs a {@link AbstractDescender} that takes no action when the open token is matched with the given open and
+	 * Constructs an {@link AbstractDescender} that takes no action when the open token is matched with the given open and
 	 * close tokens and close action.
 	 * 
 	 * @param open

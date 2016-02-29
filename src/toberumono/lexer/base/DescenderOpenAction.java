@@ -13,11 +13,11 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * @param <T>
  *            the implementation of {@link GenericConsType} to be used
  * @param <R>
- *            the implementation of {@link AbstractRule} to be used
+ *            the implementation of {@link Rule} to be used
  * @param <D>
- *            the implementation of {@link AbstractDescender} to be used
+ *            the implementation of {@link Descender} to be used
  * @param <L>
- *            the implementation of {@link AbstractLexer} to be used
+ *            the implementation of {@link Lexer} to be used
  * @param <O>
  *            the type of the matched data
  */

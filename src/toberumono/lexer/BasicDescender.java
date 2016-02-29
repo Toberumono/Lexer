@@ -6,11 +6,12 @@ import java.util.regex.Pattern;
 import toberumono.lexer.base.AbstractDescender;
 import toberumono.lexer.base.Action;
 import toberumono.lexer.base.DescenderOpenAction;
+import toberumono.lexer.base.Lexer;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
 
 /**
- * A Descender for the <tt>Lexer</tt> that uses the provided <tt>ConsCell</tt> class
+ * A Descender for the {@link Lexer} that uses the provided {@code ConsCell} class
  * 
  * @author Toberumono
  */
@@ -24,7 +25,7 @@ public class BasicDescender extends AbstractDescender<ConsCell, ConsType, BasicR
 	 * @param close
 	 *            the close symbol for this {@link BasicDescender}
 	 * @param type
-	 *            the <tt>Type</tt> for the ConsCell returned by this {@link BasicDescender}
+	 *            the {@code Type} for the ConsCell returned by this {@link BasicDescender}
 	 */
 	public BasicDescender(String open, String close, ConsType type) {
 		super(open, close, type);
@@ -38,7 +39,7 @@ public class BasicDescender extends AbstractDescender<ConsCell, ConsType, BasicR
 	 * @param close
 	 *            the close symbol for this {@link BasicDescender}
 	 * @param closeAction
-	 *            the action to be performed on the <tt>ConsCells</tt> matched within the found descent set
+	 *            the action to be performed on the {@code ConsCells} matched within the found descent set
 	 */
 	public BasicDescender(String open, String close, Action<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, ConsCell> closeAction) {
 		super(open, close, closeAction);
@@ -54,7 +55,7 @@ public class BasicDescender extends AbstractDescender<ConsCell, ConsType, BasicR
 	 * @param openAction
 	 *            the actions to perform upon seeing the open token of this {@link BasicDescender}
 	 * @param closeAction
-	 *            the action to be performed on the <tt>ConsCells</tt> matched within the found descent set
+	 *            the action to be performed on the {@code ConsCells} matched within the found descent set
 	 */
 	public BasicDescender(String open, String close, DescenderOpenAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, MatchResult> openAction,
 			Action<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, ConsCell> closeAction) {
@@ -69,7 +70,7 @@ public class BasicDescender extends AbstractDescender<ConsCell, ConsType, BasicR
 	 * @param close
 	 *            the close symbol for this {@link BasicDescender}
 	 * @param type
-	 *            the <tt>Type</tt> for the ConsCell returned by this {@link BasicDescender}
+	 *            the {@code Type} for the ConsCell returned by this {@link BasicDescender}
 	 */
 	public BasicDescender(Pattern open, Pattern close, ConsType type) {
 		super(open, close, type);
@@ -83,7 +84,7 @@ public class BasicDescender extends AbstractDescender<ConsCell, ConsType, BasicR
 	 * @param close
 	 *            the close symbol for this {@link BasicDescender}
 	 * @param closeAction
-	 *            the action to be performed on the <tt>ConsCells</tt> matched within the found descent set
+	 *            the action to be performed on the {@code ConsCells} matched within the found descent set
 	 */
 	public BasicDescender(Pattern open, Pattern close, Action<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, ConsCell> closeAction) {
 		super(open, close, closeAction);
@@ -99,7 +100,7 @@ public class BasicDescender extends AbstractDescender<ConsCell, ConsType, BasicR
 	 * @param openAction
 	 *            the actions to perform upon seeing the open token of this {@link BasicDescender}
 	 * @param closeAction
-	 *            the action to be performed on the <tt>ConsCells</tt> matched within the found descent set
+	 *            the action to be performed on the {@code ConsCells} matched within the found descent set
 	 */
 	public BasicDescender(Pattern open, Pattern close, DescenderOpenAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, MatchResult> openAction,
 			Action<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, ConsCell> closeAction) {

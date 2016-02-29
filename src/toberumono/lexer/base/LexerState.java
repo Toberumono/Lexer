@@ -33,16 +33,16 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	
 	/**
 	 * Constructs a new {@link LexerState} with the given state information. This should generally only be called from
-	 * {@link AbstractLexer#lex(String)}.
+	 * {@link Lexer#lex(String)}.
 	 * 
 	 * @param input
-	 *            the input to be lexed
+	 *            the input to be tokenized
 	 * @param head
 	 *            the position from which the next match must start
 	 * @param descender
 	 *            the most recent descender
 	 * @param lexer
-	 *            the {@link AbstractLexer Lexer} for which the {@link LexerState} was created
+	 *            the {@link Lexer} for which the {@link LexerState} was created
 	 */
 	public LexerState(String input, int head, D descender, Lexer<C, T, R, D, L> lexer) {
 		this(input, head, descender, lexer, lexer.getLanguage());
@@ -50,16 +50,16 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	
 	/**
 	 * Constructs a new {@link LexerState} with the given state information. This should generally only be called from
-	 * {@link AbstractLexer#lex(String)}.
+	 * {@link Lexer#lex(String)}.
 	 * 
 	 * @param input
-	 *            the input to be lexed
+	 *            the input to be tokenized
 	 * @param head
 	 *            the position from which the next match must start
 	 * @param descender
 	 *            the most recent descender
 	 * @param lexer
-	 *            the {@link AbstractLexer Lexer} for which the {@link LexerState} was created
+	 *            the {@link Lexer} for which the {@link LexerState} was created
 	 * @param language
 	 *            the {@link Language} that the {@link LexerState} is to use
 	 */
@@ -95,7 +95,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	}
 	
 	/**
-	 * Sets the head position to the value of {@link MatchResult#end()} for the given <tt>match</tt>
+	 * Sets the head position to the value of {@link MatchResult#end()} for the given {@code match}
 	 * 
 	 * @param match
 	 *            the match with which to update the head position
@@ -105,7 +105,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	}
 	
 	/**
-	 * Increases the stored head position by <tt>n</tt>
+	 * Increases the stored head position by {@code n}
 	 * 
 	 * @param n
 	 *            the amount by which to increase the stored index
@@ -150,13 +150,13 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	}
 	
 	/**
-	 * Gets the most recently appended <tt>ConsCell</tt> from the output and returns it.<br>
-	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> <tt>ConsCell</tt>, just the last <tt>ConsCell</tt> that
+	 * Gets the most recently appended {@code ConsCell} from the output and returns it.<br>
+	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> {@code ConsCell}, just the last {@code ConsCell} that
 	 * was appended to the output.<br>
-	 * In order to remove the <tt>ConsCell</tt> from the output, use {@link #popPreviousConsCell()}
+	 * In order to remove the {@code ConsCell} from the output, use {@link #popPreviousConsCell()}
 	 * 
-	 * @return the most recently appended <tt>ConsCell</tt> or {@code null} if no such <tt>ConsCell</tt> exists (this occurs
-	 *         if there has yet to be a match or all of the matched <tt>ConsCells</tt> were popped via
+	 * @return the most recently appended {@code ConsCell} or {@code null} if no such {@code ConsCell} exists (this occurs
+	 *         if there has yet to be a match or all of the matched {@code ConsCells} were popped via
 	 *         {@link #popPreviousConsCell()})
 	 * @see #popPreviousConsCell()
 	 */
@@ -165,13 +165,13 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	}
 	
 	/**
-	 * Removes the most recently appended <tt>ConsCell</tt> from the output and returns it.<br>
-	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> <tt>ConsCell</tt>, just the last <tt>ConsCell</tt> that
+	 * Removes the most recently appended {@code ConsCell} from the output and returns it.<br>
+	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> {@code ConsCell}, just the last {@code ConsCell} that
 	 * was appended to the output.<br>
-	 * Use {@link #getPreviousConsCell()} to get the <tt>ConsCell</tt> without removing it.
+	 * Use {@link #getPreviousConsCell()} to get the {@code ConsCell} without removing it.
 	 * 
-	 * @return the most recently appended <tt>ConsCell</tt> or {@code null} if no such <tt>ConsCell</tt> exists (this occurs
-	 *         if there has yet to be a match or all of the matched <tt>ConsCells</tt> were popped via
+	 * @return the most recently appended {@code ConsCell} or {@code null} if no such {@code ConsCell} exists (this occurs
+	 *         if there has yet to be a match or all of the matched {@code ConsCells} were popped via
 	 *         {@link #popPreviousConsCell()})
 	 * @see #getPreviousConsCell()
 	 */
@@ -189,10 +189,10 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	}
 	
 	/**
-	 * Constructs a new {@link LexerState} with the same fields but null cells and the descender set to <tt>descender</tt>.
+	 * Constructs a new {@link LexerState} with the same fields but null cells and the descender set to {@code descender}.
 	 * 
 	 * @param descender
-	 *            the {@link AbstractDescender Descender} that was encountered
+	 *            the {@link Descender} that was encountered
 	 * @return a separate {@link LexerState} that is used to watch for the correct close cell
 	 */
 	public LexerState<C, T, R, D, L> descend(D descender) {

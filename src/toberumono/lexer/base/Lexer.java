@@ -97,7 +97,7 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	 * 
 	 * @param name
 	 *            the name of the rule to remove
-	 * @return the removed rule if a rule of that name existed, otherwise null
+	 * @return the removed rule if a rule of that name existed, otherwise {@code null}
 	 */
 	public R removeRule(String name);
 	
@@ -106,7 +106,7 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	 * 
 	 * @param name
 	 *            the name of the rule to get
-	 * @return the rule if a rule corresponding to that name is loaded, otherwise null
+	 * @return the rule if a rule corresponding to that name is loaded, otherwise {@code null}
 	 */
 	public R getRule(String name);
 	
@@ -117,47 +117,47 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	public Map<String, R> getRules();
 	
 	/**
-	 * Adds a new {@link AbstractDescender Descender}.
+	 * Adds a new {@link Descender}.
 	 * 
 	 * @param name
-	 *            the name of the {@link AbstractDescender Descender}
+	 *            the name of the {@link Descender}
 	 * @param descender
-	 *            the {@link AbstractDescender Descender}
+	 *            the {@link Descender}
 	 * @throws PatternCollisionException
 	 *             if a {@link Pattern} being added is already loaded
 	 */
 	public void addDescender(String name, D descender);
 	
 	/**
-	 * Removes a {@link AbstractDescender Descender}
+	 * Removes a {@link Descender}
 	 * 
 	 * @param name
-	 *            the name of the {@link AbstractDescender Descender} to remove
-	 * @return the removed {@link AbstractDescender Descender} if a {@link AbstractDescender Descender} of that name existed,
+	 *            the name of the {@link Descender} to remove
+	 * @return the removed {@link Descender} if a {@link Descender} of that name existed,
 	 *         otherwise {@code null}
 	 */
 	public D removeDescender(String name);
 	
 	/**
-	 * Gets a descender by name.
+	 * Gets a {@link Descender} by name.
 	 * 
 	 * @param name
-	 *            the name of the descender to get
-	 * @return the descender if a descender corresponding to that name is loaded, otherwise null
+	 *            the name of the {@link Descender} to get
+	 * @return the {@link Descender} if a {@link Descender} corresponding to that name is loaded, otherwise {@code null}
 	 */
 	public D getDescender(String name);
 	
 	/**
-	 * @return an unmodifiable view of the descenders map (this view is backed by the internal map and only needs to be
+	 * @return an unmodifiable view of the {@link Descender Descenders} {@link Map} (this view is backed by the internal {@link Map} and only needs to be
 	 *         retrieved once)
 	 */
 	public Map<String, D> getDescenders();
 	
 	/**
-	 * Adds a new {@link Pattern} that the lexer should recognize but not do anything with (in other words, ignore).
+	 * Adds a new {@link Pattern} that the {@link Lexer} should recognize but not do anything with (in other words, ignore).
 	 * 
 	 * @param name
-	 *            the name with which to reference this ignore {@link Pattern}
+	 *            the name with which to reference the ignored {@link Pattern}
 	 * @param pattern
 	 *            the {@link Pattern} to ignore
 	 * @throws PatternCollisionException
@@ -166,7 +166,7 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	public void addIgnore(String name, Pattern pattern);
 	
 	/**
-	 * Adds the {@link DefaultPattern} to the lexer.
+	 * Adds the {@link DefaultPattern} to the {@link Lexer}.
 	 * 
 	 * @param ignore
 	 *            the {@link DefaultPattern} to add
@@ -180,16 +180,16 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	 * 
 	 * @param name
 	 *            the name of the ignored {@link Pattern} to remove
-	 * @return the removed {@link Pattern} if a {@link Pattern} of that name existed, otherwise null
+	 * @return the removed {@link Pattern} if a {@link Pattern} of that name existed, otherwise {@code null}
 	 */
 	public Pattern removeIgnore(String name);
 	
 	/**
-	 * Removes the {@link DefaultPattern} from the lexer.
+	 * Removes the {@link DefaultPattern} from the {@link Lexer}
 	 * 
 	 * @param ignore
 	 *            the {@link DefaultPattern} to remove
-	 * @return the {@link Pattern} that was being ignored if it was loaded in the lexer, otherwise null
+	 * @return the {@link Pattern} that was being ignored if it was loaded, otherwise {@code null}
 	 */
 	public Pattern removeIgnore(DefaultPattern ignore);
 	
@@ -198,12 +198,12 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	 * 
 	 * @param name
 	 *            the name of the ignored {@link Pattern} to get
-	 * @return the ignored {@link Pattern} if one corresponding to that name is loaded, otherwise null
+	 * @return the ignored {@link Pattern} if one corresponding to that name is loaded, otherwise {@code null}
 	 */
 	public Pattern getIgnore(String name);
 	
 	/**
-	 * @return an unmodifiable view of the ignores map (this view is backed by the internal map and only needs to be
+	 * @return an unmodifiable view of the ignores {@link Map} (this view is backed by the internal {@link Map} and only needs to be
 	 *         retrieved once)
 	 */
 	public Map<String, Pattern> getIgnores();
@@ -211,18 +211,18 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	/**
 	 * The patterns map that is used in the actual lexing loop. This is mainly for internal use.
 	 * 
-	 * @return an unmodifiable view of the patterns map (this view is backed by the internal map and only needs to be
+	 * @return an unmodifiable view of the patterns {@link Map} (this view is backed by the internal {@link Map} and only needs to be
 	 *         retrieved once)
 	 */
 	public Map<Pattern, Action<C, T, R, D, L, Matcher>> getPatterns();
 	
 	/**
-	 * @return the cell constructor being used by this {@link AbstractLexer}
+	 * @return the cell constructor being used by the {@link Lexer}
 	 */
 	public ConsCellConstructor<T, C> getConsCellConstructor();
 	
 	/**
-	 * @return the default {@link AbstractLanguage Language} for this {@link AbstractLexer}
+	 * @return the default {@link Language} for the {@link Lexer}
 	 */
 	public Language<C, T, R, D, L> getLanguage();
 	

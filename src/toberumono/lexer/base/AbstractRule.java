@@ -7,6 +7,7 @@ import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
+ * An implementation of the core components of {@link Rule}.
  * Represents the action to take upon seeing input that matches a particular {@link Pattern}.
  * 
  * @author Toberumono
@@ -21,30 +22,30 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public class AbstractRule<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends AbstractRule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
+public class AbstractRule<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
 		implements Rule<C, T, R, D, L> {
 	private final Pattern pattern;
 	private final Action<C, T, R, D, L, MatchResult> action;
 	
 	/**
-	 * Constructs a new <tt>Rule</tt> with the given data
+	 * Constructs a new {@link Rule} with the given data
 	 * 
 	 * @param pattern
-	 *            the regex <tt>Pattern</tt> for this <tt>Rule</tt> to use.
+	 *            the regex {@link Pattern} for this {@link Rule} to use.
 	 * @param type
-	 *            the type for <tt>ConsCell</tt>s matched by this rule
+	 *            the type for {@code ConsCell}s matched by this rule
 	 */
 	public AbstractRule(Pattern pattern, T type) {
 		this(pattern, (lexer, state, match) -> lexer.getConsCellConstructor().construct(match.group(), type, null, lexer.getEmptyType()));
 	}
 	
 	/**
-	 * Constructs a new <tt>Rule</tt> with the given data
+	 * Constructs a new {@link Rule} with the given data
 	 * 
 	 * @param pattern
-	 *            the regex {@link Pattern} for this <tt>Rule</tt> to use.
+	 *            the regex {@link Pattern} for this {@link Rule} to use.
 	 * @param action
-	 *            the action to perform on the part of the input matched by this <tt>Rule</tt>
+	 *            the action to perform on the part of the input matched by this {@link Rule}
 	 */
 	public AbstractRule(Pattern pattern, Action<C, T, R, D, L, MatchResult> action) {
 		this.pattern = pattern;

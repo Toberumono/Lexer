@@ -12,6 +12,7 @@ import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
+ * An implementation of the core components of {@link Language}.
  * This represents a language that can be used by a {@link Lexer} to tokenize an input {@link String}
  * 
  * @author Toberumono
@@ -45,15 +46,15 @@ public abstract class AbstractLanguage<C extends GenericConsCell<T, C>, T extend
 	}
 	
 	/**
-	 * Constructs a {@link AbstractLanguage} with the given {@link ConsCellConstructor} and data maps. Note that the
+	 * Constructs an {@link AbstractLanguage} with the given {@link ConsCellConstructor} and data maps. Note that the
 	 * {@link Map Maps} are <i>not</i> copied in the constructor
 	 * 
 	 * @param cellConstructor
 	 *            the {@link ConsCellConstructor} to be used
 	 * @param rules
-	 *            a {@link Map} containing the {@link AbstractRule Rules}
+	 *            a {@link Map} containing the {@link Rule Rules}
 	 * @param descenders
-	 *            a {@link Map} containing the {@link AbstractDescender Descender}
+	 *            a {@link Map} containing the {@link Descender Descender}
 	 * @param ignores
 	 *            a {@link Map} containing the {@link Pattern Patterns} to ignore
 	 * @param names

@@ -10,7 +10,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
  * A few {@link Pattern Patterns} for various comment styles.<br>
- * Mainly used in the {@link AbstractLexer GenericLexer's} constructor.
+ * Mainly used in the {@link AbstractLexer AbstractLexer's} constructor.
  * 
  * @author Toberumono
  * @see AbstractLexer#AbstractLexer(ConsCellConstructor, LanguageConstructor, GenericConsType, DefaultPattern...)

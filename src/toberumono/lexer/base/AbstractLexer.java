@@ -16,6 +16,7 @@ import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
+ * An implementation of the core components of {@link Lexer}.
  * This represents a generic tokenizer that uses a set of user-defined rules to tokenize a {@link String} input.<br>
  * While this implementation is designed to work with cons-cell esque tokens (e.g. those from Lisp), it can theoretically be
  * modified to work with other structures.
@@ -32,20 +33,20 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends AbstractLexer<C, T, R, D, L>>
+public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
 		implements Lexer<C, T, R, D, L>, Language<C, T, R, D, L> {
 	private final Language<C, T, R, D, L> language;
 	private final ConsCellConstructor<T, C> cellConstructor;
 	private final T emptyType;
 	
 	/**
-	 * Constructs a {@link AbstractLexer} with the provided cell constructor.
+	 * Constructs an {@link AbstractLexer} with the provided cell constructor.
 	 * 
 	 * @param cellConstructor
 	 *            a function that takes no arguments and returns a new instance of the class extending
 	 *            {@link GenericConsCell}
 	 * @param languageConstructor
-	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link AbstractLanguage Language}
+	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link Language}
 	 *            to be used
 	 * @param emptyType
 	 *            the {@code Type} that represents an empty (or null) value in the {@code ConsCell} type that this
@@ -73,7 +74,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	 *            a function that takes no arguments and returns a new instance of the class extending
 	 *            {@link GenericConsCell}
 	 * @param languageConstructor
-	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link AbstractLanguage Language}
+	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link Language}
 	 *            to be used
 	 * @param emptyType
 	 *            the {@code Type} that represents an empty (or null) value in the {@code ConsCell} type that this
