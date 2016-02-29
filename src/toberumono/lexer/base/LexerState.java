@@ -23,7 +23,8 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
+public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
+		implements Cloneable {
 	private final String input;
 	private final D descender;
 	private final L lexer;
@@ -44,7 +45,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 * @param lexer
 	 *            the {@link Lexer} for which the {@link LexerState} was created
 	 */
-	public LexerState(String input, int head, D descender, Lexer<C, T, R, D, L> lexer) {
+	public LexerState(String input, int head, D descender, L lexer) {
 		this(input, head, descender, lexer, lexer.getLanguage());
 	}
 	
@@ -63,14 +64,19 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 * @param language
 	 *            the {@link Language} that the {@link LexerState} is to use
 	 */
-	@SuppressWarnings("unchecked")
-	public LexerState(String input, int head, D descender, Lexer<C, T, R, D, L> lexer, Language<C, T, R, D, L> language) {
+	public LexerState(String input, int head, D descender, L lexer, Language<C, T, R, D, L> language) {
 		this.input = input;
 		this.head = head;
 		this.descender = descender;
-		this.lexer = (L) lexer;
+		this.lexer = lexer;
 		this.language = language;
 		last = root = null;
+	}
+	
+	private LexerState(LexerState<C, T, R, D, L> base) {
+		this(base.getInput(), base.getHead(), base.getDescender(), base.lexer, base.getLanguage());
+		this.root = root.clone();
+		this.last = root.getLastConsCell();
 	}
 	
 	/**
@@ -151,12 +157,12 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	
 	/**
 	 * Gets the most recently appended {@code ConsCell} from the output and returns it.<br>
-	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> {@code ConsCell}, just the last {@code ConsCell} that
-	 * was appended to the output.<br>
+	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> {@code ConsCell}, just the last {@code ConsCell} that was
+	 * appended to the output.<br>
 	 * In order to remove the {@code ConsCell} from the output, use {@link #popPreviousConsCell()}
 	 * 
-	 * @return the most recently appended {@code ConsCell} or {@code null} if no such {@code ConsCell} exists (this occurs
-	 *         if there has yet to be a match or all of the matched {@code ConsCells} were popped via
+	 * @return the most recently appended {@code ConsCell} or {@code null} if no such {@code ConsCell} exists (this occurs if
+	 *         there has yet to be a match or all of the matched {@code ConsCells} were popped via
 	 *         {@link #popPreviousConsCell()})
 	 * @see #popPreviousConsCell()
 	 */
@@ -166,12 +172,12 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	
 	/**
 	 * Removes the most recently appended {@code ConsCell} from the output and returns it.<br>
-	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> {@code ConsCell}, just the last {@code ConsCell} that
-	 * was appended to the output.<br>
+	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> {@code ConsCell}, just the last {@code ConsCell} that was
+	 * appended to the output.<br>
 	 * Use {@link #getPreviousConsCell()} to get the {@code ConsCell} without removing it.
 	 * 
-	 * @return the most recently appended {@code ConsCell} or {@code null} if no such {@code ConsCell} exists (this occurs
-	 *         if there has yet to be a match or all of the matched {@code ConsCells} were popped via
+	 * @return the most recently appended {@code ConsCell} or {@code null} if no such {@code ConsCell} exists (this occurs if
+	 *         there has yet to be a match or all of the matched {@code ConsCells} were popped via
 	 *         {@link #popPreviousConsCell()})
 	 * @see #getPreviousConsCell()
 	 */
@@ -200,10 +206,10 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	}
 	
 	/**
-	 * This method returns true if any untokenized input remains after skipping over cells that are set to be ignored
-	 * and the next matched cell would not be an ascent cell.<br>
-	 * <b><i>Note</i></b>: This is <i>slow</i> - the {@link Lexer} already performs these checks before getting
-	 * the next cell, so if you are calling this regularly, consider re-working the logic behind your rules.
+	 * This method returns true if any untokenized input remains after skipping over cells that are set to be ignored and the
+	 * next matched cell would not be an ascent cell.<br>
+	 * <b><i>Note</i></b>: This is <i>slow</i> - the {@link Lexer} already performs these checks before getting the next
+	 * cell, so if you are calling this regularly, consider re-working the logic behind your rules.
 	 * 
 	 * @return {@code true} if there is still untokenized input at the current descent level, otherwise false.
 	 */
@@ -231,8 +237,8 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	}
 	
 	/**
-	 * Produces a shallow copy of this {@link LexerState} with the given {@link Language}. This method can be
-	 * called from any {@link Action}.
+	 * Produces a shallow copy of this {@link LexerState} with the given {@link Language}. This method can be called from any
+	 * {@link Action}.
 	 * 
 	 * @param language
 	 *            the new {@link Language} to use
@@ -240,5 +246,10 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 */
 	public LexerState<C, T, R, D, L> setLanguage(Language<C, T, R, D, L> language) {
 		return new LexerState<>(input, head, descender, lexer, language);
+	}
+	
+	@Override
+	public LexerState<C, T, R, D, L> clone() {
+		return new LexerState<>(this);
 	}
 }
