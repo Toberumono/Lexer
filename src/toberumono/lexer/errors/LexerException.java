@@ -24,7 +24,7 @@ public class LexerException extends Exception {
 	 */
 	public LexerException(LexerState<?, ?, ?, ?, ?> state) {
 		super();
-		this.state = state.clone();
+		this.state = state.deepClone();
 	}
 	
 	/**
@@ -38,7 +38,7 @@ public class LexerException extends Exception {
 	 */
 	public LexerException(String message, LexerState<?, ?, ?, ?, ?> state) {
 		super(message);
-		this.state = state.clone();
+		this.state = state.deepClone();
 	}
 	
 	/**
@@ -52,7 +52,7 @@ public class LexerException extends Exception {
 	 */
 	public LexerException(Throwable cause, LexerState<?, ?, ?, ?, ?> state) {
 		super(cause);
-		this.state = state.clone();
+		this.state = state.deepClone();
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class LexerException extends Exception {
 	 */
 	public LexerException(String message, Throwable cause, LexerState<?, ?, ?, ?, ?> state) {
 		super(message, cause);
-		this.state = state.clone();
+		this.state = state.deepClone();
 	}
 	
 	/**

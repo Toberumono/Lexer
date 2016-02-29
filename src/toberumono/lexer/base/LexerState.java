@@ -73,10 +73,10 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 		last = root = null;
 	}
 	
-	private LexerState(LexerState<C, T, R, D, L> base) {
+	private LexerState(LexerState<C, T, R, D, L> base, C root, C last) {
 		this(base.getInput(), base.getHead(), base.getDescender(), base.lexer, base.getLanguage());
-		this.root = root.clone();
-		this.last = root.getLastConsCell();
+		this.root = root;
+		this.last = last;
 	}
 	
 	/**
@@ -250,6 +250,17 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	
 	@Override
 	public LexerState<C, T, R, D, L> clone() {
-		return new LexerState<>(this);
+		return new LexerState<>(this, getRoot(), getPreviousConsCell());
+	}
+	
+	/**
+	 * Creates a deep clone of the {@link LexerState} - that is, the language, root, and last fields are entirely independent
+	 * from those of the base {@link LexerState}.
+	 * 
+	 * @return a deep copy of the {@link LexerState}
+	 */
+	public LexerState<C, T, R, D, L> deepClone() {
+		C root = getRoot().clone();
+		return new LexerState<>(this, root, root.getLastConsCell());
 	}
 }
