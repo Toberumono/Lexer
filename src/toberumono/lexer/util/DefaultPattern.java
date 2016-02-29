@@ -1,4 +1,4 @@
-package toberumono.lexer.base;
+package toberumono.lexer.util;
 
 import java.util.regex.Pattern;
 

@@ -2,7 +2,6 @@ package toberumono.lexer.util;
 
 import java.util.regex.Pattern;
 
-import toberumono.lexer.base.DefaultPattern;
 import toberumono.lexer.base.AbstractLexer;
 import toberumono.lexer.base.LanguageConstructor;
 import toberumono.structures.sexpressions.ConsCellConstructor;

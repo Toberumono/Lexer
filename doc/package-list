@@ -1,4 +1,4 @@
 toberumono.lexer
+toberumono.lexer.base
 toberumono.lexer.errors
-toberumono.lexer.genericBase
 toberumono.lexer.util

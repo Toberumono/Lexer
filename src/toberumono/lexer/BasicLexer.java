@@ -6,10 +6,10 @@ import java.util.regex.Pattern;
 
 import toberumono.lexer.base.AbstractLexer;
 import toberumono.lexer.base.Action;
-import toberumono.lexer.base.DefaultPattern;
 import toberumono.lexer.base.Lexer;
 import toberumono.lexer.util.CommentPatterns;
 import toberumono.lexer.util.DefaultIgnorePatterns;
+import toberumono.lexer.util.DefaultPattern;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
 

@@ -11,6 +11,7 @@ import toberumono.lexer.errors.EmptyInputException;
 import toberumono.lexer.errors.LexerException;
 import toberumono.lexer.errors.UnrecognizedCharacterException;
 import toberumono.lexer.util.DefaultIgnorePatterns;
+import toberumono.lexer.util.DefaultPattern;
 import toberumono.structures.sexpressions.ConsCellConstructor;
 import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
