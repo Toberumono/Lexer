@@ -172,8 +172,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 * In order to remove the {@code ConsCell} from the output, use {@link #popLast()}
 	 * 
 	 * @return the most recently appended {@code ConsCell} or {@code null} if no such {@code ConsCell} exists (this occurs if
-	 *         there has yet to be a match or all of the matched {@code ConsCells} were popped via
-	 *         {@link #popLast()})
+	 *         there has yet to be a match or all of the matched {@code ConsCells} were popped via {@link #popLast()})
 	 * @see #popLast()
 	 */
 	public C getLast() {
@@ -198,8 +197,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 * Use {@link #getLast()} to get the {@code ConsCell} without removing it.
 	 * 
 	 * @return the most recently appended {@code ConsCell} or {@code null} if no such {@code ConsCell} exists (this occurs if
-	 *         there has yet to be a match or all of the matched {@code ConsCells} were popped via
-	 *         {@link #popLast()})
+	 *         there has yet to be a match or all of the matched {@code ConsCells} were popped via {@link #popLast()})
 	 * @see #getLast()
 	 */
 	public C popLast() {
@@ -216,7 +214,8 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	}
 	
 	/**
-	 * Constructs a new {@link LexerState} with the same fields but null cells and the descender set to {@code descender}.
+	 * Constructs a new {@link LexerState} with the same fields but {@code null} cells and the descender set to
+	 * {@code descender}.
 	 * 
 	 * @param descender
 	 *            the {@link Descender} that was encountered
