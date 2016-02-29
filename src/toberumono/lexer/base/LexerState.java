@@ -107,7 +107,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 *            the match with which to update the head position
 	 */
 	public void advance(MatchResult match) {
-		head = match.end();
+		setHead(match.end());
 	}
 	
 	/**
@@ -117,7 +117,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 *            the amount by which to increase the stored index
 	 */
 	public void advance(int n) {
-		head += n;
+		setHead(getHead() + n);
 	}
 	
 	/**
@@ -128,8 +128,8 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 * @return the previous position of the head
 	 */
 	public int setHead(int pos) {
-		int oldIndex = this.head;
-		this.head = pos;
+		int oldIndex = getHead();
+		setHead(pos);
 		return oldIndex;
 	}
 	
@@ -141,6 +141,16 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	}
 	
 	/**
+	 * Sets the pointer to the most root {@code ConsCell}.
+	 * 
+	 * @param root
+	 *            the root {@code ConsCell}
+	 */
+	public void setRoot(C root) {
+		this.root = root;
+	}
+	
+	/**
 	 * Appends the given cell to the cell tree.
 	 * 
 	 * @param cell
@@ -149,9 +159,9 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 */
 	public LexerState<C, T, R, D, L> appendMatch(C cell) {
 		if (root == null)
-			root = last = cell;
+			setRoot(setLast(cell));
 		else
-			last = last.append(cell);
+			setLast(getLast().append(cell));
 		return this;
 	}
 	
@@ -159,36 +169,47 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 * Gets the most recently appended {@code ConsCell} from the output and returns it.<br>
 	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> {@code ConsCell}, just the last {@code ConsCell} that was
 	 * appended to the output.<br>
-	 * In order to remove the {@code ConsCell} from the output, use {@link #popPreviousConsCell()}
+	 * In order to remove the {@code ConsCell} from the output, use {@link #popLast()}
 	 * 
 	 * @return the most recently appended {@code ConsCell} or {@code null} if no such {@code ConsCell} exists (this occurs if
 	 *         there has yet to be a match or all of the matched {@code ConsCells} were popped via
-	 *         {@link #popPreviousConsCell()})
-	 * @see #popPreviousConsCell()
+	 *         {@link #popLast()})
+	 * @see #popLast()
 	 */
-	public C getPreviousConsCell() {
+	public C getLast() {
 		return last;
+	}
+	
+	/**
+	 * Sets the pointer to the most recently appended {@code ConsCell}.
+	 * 
+	 * @param last
+	 *            the most recently appended {@code ConsCell}
+	 * @return {@code last} for chaining purposes
+	 */
+	public C setLast(C last) {
+		return this.last = last;
 	}
 	
 	/**
 	 * Removes the most recently appended {@code ConsCell} from the output and returns it.<br>
 	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> {@code ConsCell}, just the last {@code ConsCell} that was
 	 * appended to the output.<br>
-	 * Use {@link #getPreviousConsCell()} to get the {@code ConsCell} without removing it.
+	 * Use {@link #getLast()} to get the {@code ConsCell} without removing it.
 	 * 
 	 * @return the most recently appended {@code ConsCell} or {@code null} if no such {@code ConsCell} exists (this occurs if
 	 *         there has yet to be a match or all of the matched {@code ConsCells} were popped via
-	 *         {@link #popPreviousConsCell()})
-	 * @see #getPreviousConsCell()
+	 *         {@link #popLast()})
+	 * @see #getLast()
 	 */
-	public C popPreviousConsCell() {
-		if (last == null)
-			return last;
-		C ret = last;
-		if (last == root)
-			last = root = null;
+	public C popLast() {
+		if (getLast() == null)
+			return getLast();
+		C ret = getLast();
+		if (getLast() == getRoot())
+			setRoot(setLast(null));
 		else {
-			last = last.getPreviousConsCell();
+			setLast(getLast().getPreviousConsCell());
 			ret.remove();
 		}
 		return ret;
@@ -202,7 +223,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 * @return a separate {@link LexerState} that is used to watch for the correct close cell
 	 */
 	public LexerState<C, T, R, D, L> descend(D descender) {
-		return new LexerState<>(input, head, descender, lexer);
+		return new LexerState<>(getInput(), getHead(), descender, getLexer());
 	}
 	
 	/**
@@ -214,19 +235,27 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 * @return {@code true} if there is still untokenized input at the current descent level, otherwise false.
 	 */
 	public boolean hasNext() {
-		if (head + lexer.skipIgnores(this) < input.length()) {
-			if (descender != null) {
+		if (getHead() + getLexer().skipIgnores(this) < getInput().length()) {
+			if (getDescender() != null) {
 				Matcher longest = null;
-				for (Pattern p : lexer.getPatterns().keySet()) {
-					Matcher m = p.matcher(input);
-					if (m.find(head) && m.start() == head && (longest == null || m.end() > longest.end() || (descender != null && m.end() == longest.end() && p == descender.getClosePattern())))
+				for (Pattern p : getLexer().getPatterns().keySet()) {
+					Matcher m = p.matcher(getInput());
+					if (m.find(getHead()) && m.start() == getHead() &&
+							(longest == null || m.end() > longest.end() || (getDescender() != null && m.end() == longest.end() && p == getDescender().getClosePattern())))
 						longest = m;
 				}
-				return longest.pattern() != descender.getClosePattern();
+				return longest.pattern() != getDescender().getClosePattern();
 			}
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * @return the {@link Lexer} in use
+	 */
+	public L getLexer() {
+		return lexer;
 	}
 	
 	/**
@@ -245,12 +274,12 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 * @return a shallow copy of this {@link LexerState} with the given {@link Language}
 	 */
 	public LexerState<C, T, R, D, L> setLanguage(Language<C, T, R, D, L> language) {
-		return new LexerState<>(input, head, descender, lexer, language);
+		return new LexerState<>(getInput(), getHead(), getDescender(), getLexer(), language);
 	}
 	
 	@Override
 	public LexerState<C, T, R, D, L> clone() {
-		return new LexerState<>(this, getRoot(), getPreviousConsCell());
+		return new LexerState<>(this, getRoot(), getLast());
 	}
 	
 	/**
