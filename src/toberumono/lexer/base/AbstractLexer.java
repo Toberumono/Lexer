@@ -100,7 +100,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	@Override
 	public C lex(LexerState<C, T, R, D, L> state) throws LexerException {
 		if (state.getHead() >= state.getInput().length())
-			throw new EmptyInputException();
+			throw new EmptyInputException(state);
 		for (int lim = state.getInput().length(); state.getHead() < lim;) {
 			Matcher longest = null;
 			Action<C, T, R, D, L, Matcher> match = null;
@@ -113,7 +113,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 				}
 			}
 			if (longest == null)
-				throw new UnrecognizedCharacterException(state.getInput(), state.getHead());
+				throw new UnrecognizedCharacterException(state);
 			state.advance(longest);
 			if (match == null) //Handle ignores
 				continue;
@@ -131,11 +131,11 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	@Override
 	public C getNextConsCell(LexerState<C, T, R, D, L> state, boolean advance) throws LexerException {
 		if (state.getHead() >= state.getInput().length())
-			throw new EmptyInputException();
+			throw new EmptyInputException(state);
 		int initial = state.getHead();
 		try {
 			if (state.getHead() >= state.getInput().length())
-				throw new EmptyInputException();
+				throw new EmptyInputException(state);
 			for (int lim = state.getInput().length(); state.getHead() < lim;) {
 				Matcher longest = null;
 				Action<C, T, R, D, L, Matcher> match = null;
@@ -148,17 +148,17 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 					}
 				}
 				if (longest == null)
-					throw new UnrecognizedCharacterException(state.getInput(), state.getHead());
+					throw new UnrecognizedCharacterException(state);
 				state.advance(longest);
 				if (match == null) //Handle ignores
 					continue;
 				if (match instanceof AscentBlock) {
 					if (longest.pattern() == state.getDescender().getClosePattern()) {
 						state.setHead(initial);
-						throw new EmptyInputException();
+						throw new EmptyInputException(state);
 					}
 					else
-						throw new UnrecognizedCharacterException(state.getInput(), state.getHead());
+						throw new UnrecognizedCharacterException(state);
 				}
 				@SuppressWarnings("unchecked")
 				C cell = match.perform((L) this, state, longest);

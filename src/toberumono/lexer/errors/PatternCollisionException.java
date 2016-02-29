@@ -2,9 +2,13 @@ package toberumono.lexer.errors;
 
 import java.util.regex.Pattern;
 
+import toberumono.lexer.base.Descender;
+import toberumono.lexer.base.Lexer;
+import toberumono.lexer.base.Rule;
+
 /**
- * This is thrown when there is an attempt to add a rule, descender, or ignore to a lexer that contains an preexisting
- * pattern.
+ * This is thrown when there is an attempt to add a {@link Rule}, {@link Descender}, or ignore to a {@link Lexer} that
+ * contains that {@link Pattern}.
  * 
  * @author Toberumono
  */
