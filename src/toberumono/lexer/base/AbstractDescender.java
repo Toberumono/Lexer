@@ -26,7 +26,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
 public class AbstractDescender<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
 		implements Descender<C, T, R, D, L> {
 	private final Pattern open, close;
-	private final Action<C, T, R, D, L, C> closeAction;
+	private final LexerAction<C, T, R, D, L, C> closeAction;
 	private final DescenderOpenAction<C, T, R, D, L, MatchResult> openAction;
 	
 	/**
@@ -53,9 +53,9 @@ public class AbstractDescender<C extends GenericConsCell<T, C>, T extends Generi
 	 * @param close
 	 *            the close token
 	 * @param closeAction
-	 *            the {@link Action} to perform when the close token is encountered (prior to ascending)
+	 *            the {@link LexerAction} to perform when the close token is encountered (prior to ascending)
 	 */
-	public AbstractDescender(String open, String close, Action<C, T, R, D, L, C> closeAction) {
+	public AbstractDescender(String open, String close, LexerAction<C, T, R, D, L, C> closeAction) {
 		this(Pattern.compile(open, Pattern.LITERAL), Pattern.compile(close, Pattern.LITERAL), (lexer, state, match) -> {}, closeAction);
 	}
 	
@@ -69,9 +69,9 @@ public class AbstractDescender<C extends GenericConsCell<T, C>, T extends Generi
 	 * @param openAction
 	 *            the {@link DescenderOpenAction} to perform when the open token is encountered (prior to descending)
 	 * @param closeAction
-	 *            the {@link Action} to perform when the close token is encountered (prior to ascending)
+	 *            the {@link LexerAction} to perform when the close token is encountered (prior to ascending)
 	 */
-	public AbstractDescender(String open, String close, DescenderOpenAction<C, T, R, D, L, MatchResult> openAction, Action<C, T, R, D, L, C> closeAction) {
+	public AbstractDescender(String open, String close, DescenderOpenAction<C, T, R, D, L, MatchResult> openAction, LexerAction<C, T, R, D, L, C> closeAction) {
 		this(Pattern.compile(open, Pattern.LITERAL), Pattern.compile(close, Pattern.LITERAL), openAction, closeAction);
 	}
 	
@@ -98,9 +98,9 @@ public class AbstractDescender<C extends GenericConsCell<T, C>, T extends Generi
 	 * @param close
 	 *            the close token
 	 * @param closeAction
-	 *            the {@link Action} to perform when the close token is encountered (prior to ascending)
+	 *            the {@link LexerAction} to perform when the close token is encountered (prior to ascending)
 	 */
-	public AbstractDescender(Pattern open, Pattern close, Action<C, T, R, D, L, C> closeAction) {
+	public AbstractDescender(Pattern open, Pattern close, LexerAction<C, T, R, D, L, C> closeAction) {
 		this(open, close, (lexer, state, match) -> {}, closeAction);
 	}
 	
@@ -114,9 +114,9 @@ public class AbstractDescender<C extends GenericConsCell<T, C>, T extends Generi
 	 * @param openAction
 	 *            the {@link DescenderOpenAction} to perform when the open token is encountered (prior to descending)
 	 * @param closeAction
-	 *            the {@link Action} to perform when the close token is encountered (prior to ascending)
+	 *            the {@link LexerAction} to perform when the close token is encountered (prior to ascending)
 	 */
-	public AbstractDescender(Pattern open, Pattern close, DescenderOpenAction<C, T, R, D, L, MatchResult> openAction, Action<C, T, R, D, L, C> closeAction) {
+	public AbstractDescender(Pattern open, Pattern close, DescenderOpenAction<C, T, R, D, L, MatchResult> openAction, LexerAction<C, T, R, D, L, C> closeAction) {
 		this.open = open;
 		this.close = close;
 		this.openAction = openAction;
@@ -134,7 +134,7 @@ public class AbstractDescender<C extends GenericConsCell<T, C>, T extends Generi
 	}
 	
 	@Override
-	public Action<C, T, R, D, L, C> getCloseAction() {
+	public LexerAction<C, T, R, D, L, C> getCloseAction() {
 		return closeAction;
 	}
 	

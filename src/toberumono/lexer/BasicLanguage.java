@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import toberumono.lexer.base.AbstractDescender;
 import toberumono.lexer.base.AbstractLanguage;
 import toberumono.lexer.base.AbstractRule;
-import toberumono.lexer.base.Action;
+import toberumono.lexer.base.LexerAction;
 import toberumono.lexer.base.Lexer;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsCellConstructor;
@@ -45,10 +45,10 @@ public class BasicLanguage extends AbstractLanguage<ConsCell, ConsType, BasicRul
 	 * @param names
 	 *            a {@link Map} containing the names that are in use
 	 * @param patterns
-	 *            a {@link Map} that maps {@link Pattern Patterns} to their associated {@link Action} actions
+	 *            a {@link Map} that maps {@link Pattern Patterns} to their associated {@link LexerAction} actions
 	 */
 	public BasicLanguage(ConsCellConstructor<ConsType, ConsCell> cellConstructor, Map<String, BasicRule> rules, Map<String, BasicDescender> descenders, Map<String, Pattern> ignores,
-			Map<Pattern, String> names, Map<Pattern, Action<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, Matcher>> patterns) {
+			Map<Pattern, String> names, Map<Pattern, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, Matcher>> patterns) {
 		super(cellConstructor, rules, descenders, ignores, names, patterns);
 	}
 	

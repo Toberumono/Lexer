@@ -158,8 +158,8 @@ public interface Language<C extends GenericConsCell<T, C>, T extends GenericCons
 	Map<Pattern, String> getNames();
 	
 	/**
-	 * @return the a mapping {@link Pattern} to {@link Action} to perform when the {@link Pattern} is matched
+	 * @return the a mapping {@link Pattern} to {@link LexerAction} to perform when the {@link Pattern} is matched
 	 */
-	Map<Pattern, Action<C, T, R, D, L, Matcher>> getPatterns();
+	Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns();
 	
 }

@@ -84,7 +84,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	 *            A list of patterns to ignore. The {@link DefaultIgnorePatterns} enum has a few common patterns.
 	 * @see DefaultIgnorePatterns
 	 */
-	public AbstractLexer(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, Action<C, T, R, D, L, Matcher>> patterns,
+	public AbstractLexer(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns,
 			ConsCellConstructor<T, C> cellConstructor, LanguageConstructor<C, T, R, D, L> languageConstructor, T emptyType, DefaultPattern... ignore) {
 		this.cellConstructor = cellConstructor;
 		this.emptyType = emptyType;
@@ -106,7 +106,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 			throw new EmptyInputException(state);
 		for (int lim = state.getInput().length(); state.getHead() < lim;) {
 			Matcher longest = null;
-			Action<C, T, R, D, L, Matcher> match = null;
+			LexerAction<C, T, R, D, L, Matcher> match = null;
 			for (Pattern p : state.getLanguage().getPatterns().keySet()) {
 				Matcher m = p.matcher(state.getInput());
 				if (m.find(state.getHead()) && m.start() == state.getHead() && (longest == null || m.end() > longest.end() ||
@@ -141,7 +141,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 				throw new EmptyInputException(state);
 			for (int lim = state.getInput().length(); state.getHead() < lim;) {
 				Matcher longest = null;
-				Action<C, T, R, D, L, Matcher> match = null;
+				LexerAction<C, T, R, D, L, Matcher> match = null;
 				for (Pattern p : state.getLanguage().getPatterns().keySet()) {
 					Matcher m = p.matcher(state.getInput());
 					if (m.find(state.getHead()) && m.start() == state.getHead() && (longest == null || m.end() > longest.end() ||
@@ -179,7 +179,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	@Override
 	public final int skipIgnores(LexerState<C, T, R, D, L> state) {
 		Matcher longest = null;
-		Action<C, T, R, D, L, Matcher> match = null;
+		LexerAction<C, T, R, D, L, Matcher> match = null;
 		int pos = state.getHead();
 		while (true) {
 			longest = null;
@@ -272,7 +272,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	}
 	
 	@Override
-	public Map<Pattern, Action<C, T, R, D, L, Matcher>> getPatterns() {
+	public Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns() {
 		return Collections.unmodifiableMap(language.getPatterns());
 	}
 	

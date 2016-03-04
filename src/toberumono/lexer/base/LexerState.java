@@ -266,7 +266,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	
 	/**
 	 * Produces a shallow copy of this {@link LexerState} with the given {@link Language}. This method can be called from any
-	 * {@link Action}.
+	 * {@link LexerAction}.
 	 * 
 	 * @param language
 	 *            the new {@link Language} to use

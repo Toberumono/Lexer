@@ -23,4 +23,4 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  */
 @FunctionalInterface
 public interface AscentBlock<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
-		extends Action<C, T, R, D, L, Matcher> {}
+		extends LexerAction<C, T, R, D, L, Matcher> {}

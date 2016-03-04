@@ -4,7 +4,7 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import toberumono.lexer.base.AbstractRule;
-import toberumono.lexer.base.Action;
+import toberumono.lexer.base.LexerAction;
 import toberumono.lexer.base.Rule;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
@@ -36,7 +36,7 @@ public class BasicRule extends AbstractRule<ConsCell, ConsType, BasicRule, Basic
 	 * @param action
 	 *            the action to perform on the part of the input matched by this {@link Rule}
 	 */
-	public BasicRule(Pattern pattern, Action<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, MatchResult> action) {
+	public BasicRule(Pattern pattern, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, MatchResult> action) {
 		super(pattern, action);
 	}
 }

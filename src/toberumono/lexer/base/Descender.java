@@ -34,12 +34,12 @@ public interface Descender<C extends GenericConsCell<T, C>, T extends GenericCon
 	public Pattern getClosePattern();
 	
 	/**
-	 * @return the {@link Action} that is performed when the {@link Descender} is closed
+	 * @return the {@link LexerAction} that is performed when the {@link Descender} is closed
 	 */
-	public Action<C, T, R, D, L, C> getCloseAction();
+	public LexerAction<C, T, R, D, L, C> getCloseAction();
 	
 	/**
-	 * @return the {@link Action} that is performed when the {@link Descender} is opened
+	 * @return the {@link LexerAction} that is performed when the {@link Descender} is opened
 	 */
 	public DescenderOpenAction<C, T, R, D, L, MatchResult> getOpenAction();
 }

@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import toberumono.lexer.base.AbstractLexer;
-import toberumono.lexer.base.Action;
+import toberumono.lexer.base.LexerAction;
 import toberumono.lexer.base.Lexer;
 import toberumono.lexer.util.CommentPatterns;
 import toberumono.lexer.util.DefaultIgnorePatterns;
@@ -49,7 +49,7 @@ public class BasicLexer extends AbstractLexer<ConsCell, ConsType, BasicRule, Bas
 	 *            few common patterns.
 	 */
 	public BasicLexer(Map<String, BasicRule> rules, Map<String, BasicDescender> descenders, Map<String, Pattern> ignores,
-			Map<Pattern, Action<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, Matcher>> patterns, DefaultPattern... ignore) {
+			Map<Pattern, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, Matcher>> patterns, DefaultPattern... ignore) {
 		super(rules, descenders, ignores, patterns, ConsCell::new, BasicLanguage::new, ConsType.EMPTY, ignore);
 	}
 }

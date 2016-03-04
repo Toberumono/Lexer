@@ -29,7 +29,7 @@ public interface Rule<C extends GenericConsCell<T, C>, T extends GenericConsType
 	public Pattern getPattern();
 	
 	/**
-	 * @return the {@link Action} that the {@link Rule} performs
+	 * @return the {@link LexerAction} that the {@link Rule} performs
 	 */
-	public Action<C, T, R, D, L, MatchResult> getAction();
+	public LexerAction<C, T, R, D, L, MatchResult> getAction();
 }

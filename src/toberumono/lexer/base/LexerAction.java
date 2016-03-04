@@ -22,7 +22,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  *            the type of the matched data
  */
 @FunctionalInterface
-public interface Action<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>, O> {
+public interface LexerAction<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>, O> {
 	
 	/**
 	 * Performs the action

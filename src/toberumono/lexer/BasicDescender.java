@@ -4,7 +4,7 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import toberumono.lexer.base.AbstractDescender;
-import toberumono.lexer.base.Action;
+import toberumono.lexer.base.LexerAction;
 import toberumono.lexer.base.DescenderOpenAction;
 import toberumono.lexer.base.Lexer;
 import toberumono.structures.sexpressions.ConsCell;
@@ -41,7 +41,7 @@ public class BasicDescender extends AbstractDescender<ConsCell, ConsType, BasicR
 	 * @param closeAction
 	 *            the action to be performed on the {@code ConsCells} matched within the found descent set
 	 */
-	public BasicDescender(String open, String close, Action<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, ConsCell> closeAction) {
+	public BasicDescender(String open, String close, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, ConsCell> closeAction) {
 		super(open, close, closeAction);
 	}
 	
@@ -58,7 +58,7 @@ public class BasicDescender extends AbstractDescender<ConsCell, ConsType, BasicR
 	 *            the action to be performed on the {@code ConsCells} matched within the found descent set
 	 */
 	public BasicDescender(String open, String close, DescenderOpenAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, MatchResult> openAction,
-			Action<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, ConsCell> closeAction) {
+			LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, ConsCell> closeAction) {
 		super(open, close, openAction, closeAction);
 	}
 	
@@ -86,7 +86,7 @@ public class BasicDescender extends AbstractDescender<ConsCell, ConsType, BasicR
 	 * @param closeAction
 	 *            the action to be performed on the {@code ConsCells} matched within the found descent set
 	 */
-	public BasicDescender(Pattern open, Pattern close, Action<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, ConsCell> closeAction) {
+	public BasicDescender(Pattern open, Pattern close, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, ConsCell> closeAction) {
 		super(open, close, closeAction);
 	}
 	
@@ -103,7 +103,7 @@ public class BasicDescender extends AbstractDescender<ConsCell, ConsType, BasicR
 	 *            the action to be performed on the {@code ConsCells} matched within the found descent set
 	 */
 	public BasicDescender(Pattern open, Pattern close, DescenderOpenAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, MatchResult> openAction,
-			Action<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, ConsCell> closeAction) {
+			LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, ConsCell> closeAction) {
 		super(open, close, openAction, closeAction);
 	}
 }

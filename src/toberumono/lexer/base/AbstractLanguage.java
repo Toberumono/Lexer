@@ -33,7 +33,7 @@ public abstract class AbstractLanguage<C extends GenericConsCell<T, C>, T extend
 	private final Map<String, D> descenders;
 	private final Map<String, Pattern> ignores;
 	private final Map<Pattern, String> names;
-	private final Map<Pattern, Action<C, T, R, D, L, Matcher>> patterns;
+	private final Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns;
 	private final ConsCellConstructor<T, C> cellConstructor;
 	
 	/**
@@ -61,10 +61,10 @@ public abstract class AbstractLanguage<C extends GenericConsCell<T, C>, T extend
 	 * @param names
 	 *            a {@link Map} containing the names that are in use
 	 * @param patterns
-	 *            a {@link Map} that maps {@link Pattern Patterns} to their associated {@link Action} actions
+	 *            a {@link Map} that maps {@link Pattern Patterns} to their associated {@link LexerAction} actions
 	 */
 	public AbstractLanguage(ConsCellConstructor<T, C> cellConstructor, Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, String> names,
-			Map<Pattern, Action<C, T, R, D, L, Matcher>> patterns) {
+			Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns) {
 		this.cellConstructor = cellConstructor;
 		this.rules = rules;
 		this.descenders = descenders;
@@ -194,7 +194,7 @@ public abstract class AbstractLanguage<C extends GenericConsCell<T, C>, T extend
 	}
 	
 	@Override
-	public Map<Pattern, Action<C, T, R, D, L, Matcher>> getPatterns() {
+	public Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns() {
 		return patterns;
 	}
 }

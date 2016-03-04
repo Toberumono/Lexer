@@ -215,7 +215,7 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	 * @return an unmodifiable view of the patterns {@link Map} (this view is backed by the internal {@link Map} and only needs to be
 	 *         retrieved once)
 	 */
-	public Map<Pattern, Action<C, T, R, D, L, Matcher>> getPatterns();
+	public Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns();
 	
 	/**
 	 * @return the cell constructor being used by the {@link Lexer}

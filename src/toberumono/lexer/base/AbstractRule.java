@@ -25,7 +25,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
 public class AbstractRule<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
 		implements Rule<C, T, R, D, L> {
 	private final Pattern pattern;
-	private final Action<C, T, R, D, L, MatchResult> action;
+	private final LexerAction<C, T, R, D, L, MatchResult> action;
 	
 	/**
 	 * Constructs a new {@link Rule} with the given data
@@ -47,7 +47,7 @@ public class AbstractRule<C extends GenericConsCell<T, C>, T extends GenericCons
 	 * @param action
 	 *            the action to perform on the part of the input matched by this {@link Rule}
 	 */
-	public AbstractRule(Pattern pattern, Action<C, T, R, D, L, MatchResult> action) {
+	public AbstractRule(Pattern pattern, LexerAction<C, T, R, D, L, MatchResult> action) {
 		this.pattern = pattern;
 		this.action = action;
 	}
@@ -58,7 +58,7 @@ public class AbstractRule<C extends GenericConsCell<T, C>, T extends GenericCons
 	}
 	
 	@Override
-	public Action<C, T, R, D, L, MatchResult> getAction() {
+	public LexerAction<C, T, R, D, L, MatchResult> getAction() {
 		return action;
 	}
 }

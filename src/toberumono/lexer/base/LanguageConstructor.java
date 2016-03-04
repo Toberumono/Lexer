@@ -42,11 +42,11 @@ public interface LanguageConstructor<C extends GenericConsCell<T, C>, T extends 
 	 * @param names
 	 *            a {@link Map} containing the names that are in use
 	 * @param patterns
-	 *            a {@link Map} that maps {@link Pattern Patterns} to their associated {@link Action} actions
+	 *            a {@link Map} that maps {@link Pattern Patterns} to their associated {@link LexerAction} actions
 	 * @return a {@link Language} with the given data
 	 */
 	public Language<C, T, R, D, L> construct(ConsCellConstructor<T, C> cellConstructor, Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores,
-			Map<Pattern, String> names, Map<Pattern, Action<C, T, R, D, L, Matcher>> patterns);
+			Map<Pattern, String> names, Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns);
 			
 	/**
 	 * Constructs an empty {@link Language} with the given {@link ConsCellConstructor}
