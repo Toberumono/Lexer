@@ -12,7 +12,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * 
  * @author Toberumono
  */
-public class LexerException extends Exception {
+public class LexerException extends RuntimeException {
 	private final LexerState<?, ?, ?, ?, ?> state; //We have to use wildcards because Exceptions cannot have generic parameters
 	
 	/**
