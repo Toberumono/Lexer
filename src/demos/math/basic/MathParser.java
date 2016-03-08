@@ -34,7 +34,7 @@ public class MathParser {
 	public MathParser() {
 		lexer = new BasicLexer(DefaultIgnorePatterns.WHITESPACE); //We don't want to error out if there is whitespace in the expression
 		lexer.addDescender("parentheses", new BasicDescender("(", ")", PARENTHESES));
-		lexer.addRule("number", new BasicRule(Pattern.compile("([0-9]+(\\.[0-9]*)?|\\.[0-9]+)"), (l, s, m) -> new ConsCell(Double.parseDouble(m.group()), OPERATOR)));
+		lexer.addRule("number", new BasicRule(Pattern.compile("([0-9]+(\\.[0-9]*)?|\\.[0-9]+)"), (l, s, m) -> new ConsCell(Double.parseDouble(m.group()), NUMBER)));
 		lexer.addRule("addition", new BasicRule(Pattern.compile("+", Pattern.LITERAL), (l, s, m) -> new ConsCell(addition, OPERATOR)));
 		lexer.addRule("subtraction", new BasicRule(Pattern.compile("-", Pattern.LITERAL), (l, s, m) -> new ConsCell(subtraction, OPERATOR)));
 		lexer.addRule("multiplication", new BasicRule(Pattern.compile("*", Pattern.LITERAL), (l, s, m) -> new ConsCell(multiplication, OPERATOR)));

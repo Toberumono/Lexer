@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 import toberumono.lexer.BasicDescender;
 import toberumono.lexer.BasicLexer;
 import toberumono.lexer.BasicRule;
-import toberumono.lexer.errors.LexerException;
 import toberumono.lexer.util.DefaultIgnorePatterns;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
@@ -18,27 +17,35 @@ import toberumono.structures.sexpressions.ConsType;
  * 
  * @author Toberumono
  */
-public class MathParser {
+public class ExtendableMathParser {
 	private static final ConsType NUMBER = new ConsType("number"), OPERATOR = new ConsType("operator");
-	private static final Operator addition = new Operator(0, (t, u) -> new ConsCell(new Double(((Double) t.getCar()) + ((Double) u.getCar())), NUMBER));
-	private static final Operator subtraction = new Operator(0, (t, u) -> new ConsCell(new Double(((Double) t.getCar()) - ((Double) u.getCar())), NUMBER));
-	private static final Operator multiplication = new Operator(1, (t, u) -> new ConsCell(new Double(((Double) t.getCar()) * ((Double) u.getCar())), NUMBER));
-	private static final Operator division = new Operator(1, (t, u) -> new ConsCell(new Double(((Double) t.getCar()) / ((Double) u.getCar())), NUMBER));
-	private static final Operator mod = new Operator(2, (t, u) -> new ConsCell(new Double(((Double) t.getCar()) % ((Double) u.getCar())), NUMBER));
-	private static final Operator power = new Operator(3, (t, u) -> new ConsCell(new Double(Math.pow((Double) t.getCar(), (Double) u.getCar())), NUMBER));
+	private static final Operator addition = new Operator(0, (t, u) -> new ConsCell(new Double(((Number) t.getCar()).doubleValue() + ((Number) u.getCar()).doubleValue()), NUMBER));
+	private static final Operator subtraction = new Operator(0, (t, u) -> new ConsCell(new Double(((Number) t.getCar()).doubleValue() - ((Number) u.getCar()).doubleValue()), NUMBER));
+	private static final Operator multiplication = new Operator(1, (t, u) -> new ConsCell(new Double(((Number) t.getCar()).doubleValue() * ((Number) u.getCar()).doubleValue()), NUMBER));
+	private static final Operator division = new Operator(1, (t, u) -> new ConsCell(new Double(((Number) t.getCar()).doubleValue() / ((Number) u.getCar()).doubleValue()), NUMBER));
+	private static final Operator mod = new Operator(2, (t, u) -> new ConsCell(new Double(((Number) t.getCar()).doubleValue() % ((Number) u.getCar()).doubleValue()), NUMBER));
+	private static final Operator power = new Operator(3, (t, u) -> new ConsCell(new Double(Math.pow(((Number) t.getCar()).doubleValue(), ((Number) u.getCar()).doubleValue())), NUMBER));
 	
 	private final BasicLexer lexer;
+	
 	private final Map<String, Operator> operators;
 	private int highestPrecedence = 0, lowestPrecedence = 0;
-
+	
 	/**
-	 * Initializes a {@link MathParser} that handles algebraic expressions.
+	 * Initializes a {@link ExtendableMathParser} that handles algebraic expressions.
 	 */
-	public MathParser() {
+	public ExtendableMathParser() {
 		this(true);
 	}
 	
-	public MathParser(boolean loadCoreOperators) {
+	/**
+	 * Initializes a {@link ExtendableMathParser} that optionally loads addition, subtraction, multiplication, division, modulo, and
+	 * power operators if {@code loadCoreOperators} is set to {@code true}.
+	 * 
+	 * @param loadCoreOperators
+	 *            whether to load the basic mathematical operators as previously described
+	 */
+	public ExtendableMathParser(boolean loadCoreOperators) {
 		lexer = new BasicLexer(DefaultIgnorePatterns.WHITESPACE);
 		operators = new HashMap<>();
 		lexer.addDescender("parentheses", new BasicDescender("(", ")", (l, s, m) -> evaluateExpression(m)));
@@ -53,6 +60,17 @@ public class MathParser {
 		}
 	}
 	
+	/**
+	 * Adds an {@link Operator} with the given {@code name} and {@link Pattern} to the {@link ExtendableMathParser}.
+	 * 
+	 * @param name
+	 *            the name of the {@link Operator}
+	 * @param pattern
+	 *            the {@link Pattern} by which the operator can be identified
+	 * @param operator
+	 *            the {@link Operator} to add
+	 * @return {@code true} if the {@link Operator} was successfully added
+	 */
 	public boolean addOperator(String name, Pattern pattern, Operator operator) {
 		if (name == null)
 			throw new NullPointerException("The operator's name cannot be null");
@@ -71,6 +89,14 @@ public class MathParser {
 		return true;
 	}
 	
+	/**
+	 * Removes an {@link Operator} from the {@link ExtendableMathParser} by name if it exists.
+	 * 
+	 * @param name
+	 *            the name of the {@link Operator} to remove
+	 * @return the removed {@link Operator} or {@code null} if the named {@link Operator} was not found in the
+	 *         {@link ExtendableMathParser}
+	 */
 	public Operator removeOperator(String name) {
 		if (!operators.containsKey(name))
 			return null;
@@ -89,10 +115,29 @@ public class MathParser {
 		return operator;
 	}
 	
-	public Double evaluateExpression(String expression) throws LexerException {
+	/**
+	 * Evaluates the algebraic expression encoded in the given {@link String}.<br>
+	 * Forwards to {@link #evaluateExpression(ConsCell)}
+	 * 
+	 * @param expression
+	 *            a {@link String} containing an algebraic expression
+	 * @return a {@link Double} equal to the result of evaluating the expression
+	 * @see #evaluateExpression(ConsCell)
+	 */
+	public Double evaluateExpression(String expression) {
 		return ((Number) evaluateExpression(lexer.lex(expression)).getCar()).doubleValue();
 	}
 	
+	/**
+	 * Evaluates the algebraic expression encoded in the given {@link ConsCell}.<br>
+	 * <b>NOTE:</b> This directly modifies {@code expression}. Make a copy of {@code expression} if you will need to re-use
+	 * it.
+	 * 
+	 * @param expression
+	 *            a {@link ConsCell} containing an algebraic expression
+	 * @return a {@link ConsCell} containing the result of evaluating the expression as a {@link Double}
+	 * @see #evaluateExpression(String)
+	 */
 	public ConsCell evaluateExpression(ConsCell expression) {
 		ConsCell current, left, right;
 		for (int i = highestPrecedence; i >= lowestPrecedence; i--) {
