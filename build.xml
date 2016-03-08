@@ -49,6 +49,7 @@
 
 	<patternset id="Build Excludes">
 		<exclude name="**/*.css" />
+		<exclude name="**/demo/**" />
 		<!--Add the names of files to exclude from the src directory here.-->
 	</patternset>
 
