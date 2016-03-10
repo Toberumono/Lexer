@@ -49,6 +49,7 @@
 
 	<patternset id="Build Excludes">
 		<exclude name="**/*.css" />
+		<exclude name="**/*.class" />
 		<!--Add the names of files to exclude from the src directory here.-->
 	</patternset>
 
@@ -102,7 +103,9 @@
 					<patternset refid="libraries" />
 				</multirootfileset>
 			</path>
-			<identitymapper />
+			<scriptmapper language="javascript">
+				self.addMappedName(source.replace(/ /g, "%20"));
+			</scriptmapper>
 		</pathconvert>
 	</target>
 
