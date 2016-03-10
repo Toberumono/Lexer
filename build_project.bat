@@ -8,7 +8,7 @@ del structures.zip
 Rename Structures-master structures
 
 cd structures
-call setup_project.bat
+if exist setup_project.bat (call setup_project.bat) else (call ant)
 
 cd ..\
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/Toberumono/Utils/archive/master.zip', 'utils.zip')"
@@ -17,7 +17,7 @@ del utils.zip
 Rename Utils-master utils
 
 cd utils
-call setup_project.bat
+if exist setup_project.bat (call setup_project.bat) else (call ant)
 
 cd ..\
 cd %startpath%
