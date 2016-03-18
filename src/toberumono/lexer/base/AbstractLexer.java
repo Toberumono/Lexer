@@ -1,6 +1,6 @@
 package toberumono.lexer.base;
 
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -176,28 +176,20 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	
 	@Override
 	public final int skipIgnores(LexerState<C, T, R, D, L> state) {
-		Matcher longest = null;
-		LexerAction<C, T, R, D, L, Matcher> match = null;
-		int pos = state.getHead();
-		while (true) {
-			longest = null;
-			match = null;
-			for (Pattern p : state.getLanguage().getPatterns().keySet()) {
-				Matcher m = p.matcher(state.getInput());
-				if (m.find(pos) && m.start() == pos && (longest == null || m.end() > longest.end())) {
-					longest = m;
-					match = state.getLanguage().getPatterns().get(p);
-				}
+		int head = state.getHead(), longest = head;
+		Collection<Pattern> ignores = state.getLanguage().getIgnores().values(); //Avoids chaining through these functions every time
+		for (Matcher m = null;;) { //Because head == longest if the loop wasn't broken, we don't need to assign longest to head here
+			for (Pattern p : ignores) {
+				m = p.matcher(state.getInput());
+				if (m.find(head) && m.start() == head && m.end() > longest)
+					longest = m.end();
 			}
-			if (longest != null && match == null)
-				pos = longest.end();
+			if (longest > head)
+				head = longest;
 			else
 				break;
 		}
-		int oldHead = state.getHead();
-		state.setHead(pos);
-		return pos - oldHead;
-	}
+		return head - state.setHead(head);
 	}
 	
 	@Override
