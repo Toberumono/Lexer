@@ -39,8 +39,8 @@ public class ExtendableMathParser {
 	}
 	
 	/**
-	 * Initializes a {@link ExtendableMathParser} that optionally loads addition, subtraction, multiplication, division, modulo, and
-	 * power operators if {@code loadCoreOperators} is set to {@code true}.
+	 * Initializes a {@link ExtendableMathParser} that optionally loads addition, subtraction, multiplication, division,
+	 * modulo, and power operators if {@code loadCoreOperators} is set to {@code true}.
 	 * 
 	 * @param loadCoreOperators
 	 *            whether to load the basic mathematical operators as previously described
@@ -81,10 +81,10 @@ public class ExtendableMathParser {
 		if (operators.containsKey(name))
 			return false;
 		lexer.addRule(name, new BasicRule(pattern, (l, s, m) -> new ConsCell(operator, OPERATOR)));
-		if (operator.getPrecendence() > highestPrecedence)
-			highestPrecedence = operator.getPrecendence();
-		else if (operator.getPrecendence() < lowestPrecedence)
-			lowestPrecedence = operator.getPrecendence();
+		if (operator.getPrecedence() > highestPrecedence)
+			highestPrecedence = operator.getPrecedence();
+		else if (operator.getPrecedence() < lowestPrecedence)
+			lowestPrecedence = operator.getPrecedence();
 		operators.put(name, operator);
 		return true;
 	}
@@ -102,14 +102,14 @@ public class ExtendableMathParser {
 			return null;
 		lexer.removeRule(name);
 		Operator operator = operators.remove(name); //Guaranteed to not be null
-		if (operator.getPrecendence() == highestPrecedence || operator.getPrecendence() == lowestPrecedence) {
+		if (operator.getPrecedence() == highestPrecedence || operator.getPrecedence() == lowestPrecedence) {
 			highestPrecedence = 0;
 			lowestPrecedence = 0;
 			for (Operator op : operators.values()) {
-				if (op.getPrecendence() > highestPrecedence)
-					highestPrecedence = op.getPrecendence();
-				else if (op.getPrecendence() < lowestPrecedence)
-					lowestPrecedence = op.getPrecendence();
+				if (op.getPrecedence() > highestPrecedence)
+					highestPrecedence = op.getPrecedence();
+				else if (op.getPrecedence() < lowestPrecedence)
+					lowestPrecedence = op.getPrecedence();
 			}
 		}
 		return operator;
@@ -130,7 +130,7 @@ public class ExtendableMathParser {
 	
 	/**
 	 * Evaluates the algebraic expression encoded in the given {@link ConsCell}.<br>
-	 * <b>NOTE:</b> This directly modifies {@code expression}. Make a copy of {@code expression} if you will need to re-use
+	 * <b>NOTE:</b> This directly modifies {@code expression}. Make a copy of {@code expression} if you will need to reuse
 	 * it.
 	 * 
 	 * @param expression
@@ -140,27 +140,19 @@ public class ExtendableMathParser {
 	 */
 	public ConsCell evaluateExpression(ConsCell expression) {
 		ConsCell current, left, right;
-		for (int i = highestPrecedence; i >= lowestPrecedence; i--) {
-			current = expression;
-			while (!current.isLastConsCell()) {
-				if (current.getCarType() != OPERATOR)
-					current = current.getNextConsCell();
-				else {
-					if (((Operator) current.getCar()).getPrecendence() == i) {
-						left = current.getPreviousConsCell();
-						right = current.getNextConsCell();
-						
-						current.replaceCar(((Operator) current.getCar()).apply(left, right));
-						
-						if (left == expression)
-							expression = current;
-						left.remove();
-						right.remove();
-						current = current.getNextConsCell();
-					}
+		for (int i = highestPrecedence; i >= lowestPrecedence; i--)
+			for (current = expression; current != null; current = current.getNextConsCell())
+				if (current.getCarType() == OPERATOR && ((Operator) current.getCar()).getPrecedence() == i) {
+					left = current.getPreviousConsCell();
+					right = current.getNextConsCell();
+					
+					current.replaceCar(((Operator) current.getCar()).apply(left, right));
+					
+					if (left == expression)
+						expression = current;
+					left.remove(); //We're done processing both the left and right expressions
+					right.remove();
 				}
-			}
-		}
 		return expression;
 	}
 }

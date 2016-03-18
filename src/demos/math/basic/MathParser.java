@@ -68,27 +68,19 @@ public class MathParser {
 	 */
 	public ConsCell evaluateExpression(ConsCell expression) {
 		ConsCell current, left, right;
-		for (int i = 3; i >= 0; i--) {
-			current = expression;
-			while (!current.isLastConsCell()) {
-				if (current.getCarType() != OPERATOR)
-					current = current.getNextConsCell();
-				else {
-					if (((Operator) current.getCar()).getPriority() == i) {
-						left = handleParentheses(current.getPreviousConsCell());
-						right = handleParentheses(current.getNextConsCell());
-						
-						current.replaceCar(((Operator) current.getCar()).apply(left, right));
-						
-						if (left == expression)
-							expression = current;
-						left.remove(); //We're done processing both the left and right expressions
-						right.remove();
-						current = current.getNextConsCell();
-					}
+		for (int i = 3; i >= 0; i--)
+			for (current = expression; current != null; current = current.getNextConsCell())
+				if (current.getCarType() == OPERATOR && ((Operator) current.getCar()).getPriority() == i) {
+					left = handleParentheses(current.getPreviousConsCell());
+					right = handleParentheses(current.getNextConsCell());
+					
+					current.replaceCar(((Operator) current.getCar()).apply(left, right));
+					
+					if (left == expression)
+						expression = current;
+					left.remove(); //We're done processing both the left and right expressions
+					right.remove();
 				}
-			}
-		}
 		return expression;
 	}
 	

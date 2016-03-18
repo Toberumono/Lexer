@@ -30,7 +30,7 @@ public class Operator implements BinaryOperator<ConsCell> {
 	/**
 	 * @return the precedence of the {@link Operator}
 	 */
-	public int getPrecendence() {
+	public int getPrecedence() {
 		return priority;
 	}
 	
