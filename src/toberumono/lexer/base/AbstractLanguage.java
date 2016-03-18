@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import toberumono.lexer.errors.PatternCollisionException;
 import toberumono.lexer.errors.UnbalancedDescenderException;
-import toberumono.lexer.util.DefaultPattern;
 import toberumono.structures.sexpressions.ConsCellConstructor;
 import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
@@ -159,11 +158,6 @@ public abstract class AbstractLanguage<C extends GenericConsCell<T, C>, T extend
 	}
 	
 	@Override
-	public void addIgnore(DefaultPattern ignore) {
-		addIgnore(ignore.getName(), ignore.getPattern());
-	}
-	
-	@Override
 	public synchronized Pattern removeIgnore(String name) {
 		Pattern out = ignores.remove(name);
 		if (out == null)
@@ -171,11 +165,6 @@ public abstract class AbstractLanguage<C extends GenericConsCell<T, C>, T extend
 		patterns.remove(out);
 		names.remove(out);
 		return out;
-	}
-	
-	@Override
-	public Pattern removeIgnore(DefaultPattern ignore) {
-		return removeIgnore(ignore.getName());
 	}
 	
 	@Override

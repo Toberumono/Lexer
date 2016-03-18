@@ -1,6 +1,6 @@
 package toberumono.lexer.base;
 
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -17,8 +17,8 @@ import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
- * An implementation of the core components of {@link Lexer}.
- * This represents a generic tokenizer that uses a set of user-defined rules to tokenize a {@link String} input.<br>
+ * An implementation of the core components of {@link Lexer}. This represents a generic tokenizer that uses a set of
+ * user-defined rules to tokenize a {@link String} input.<br>
  * While this implementation is designed to work with cons-cell esque tokens (e.g. those from Lisp), it can theoretically be
  * modified to work with other structures.
  * 
@@ -35,7 +35,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  *            the implementation of {@link Lexer} to be used
  */
 public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
-		implements Lexer<C, T, R, D, L>, Language<C, T, R, D, L> {
+		implements Lexer<C, T, R, D, L> {
 	private final Language<C, T, R, D, L> language;
 	private final ConsCellConstructor<T, C> cellConstructor;
 	private final T emptyType;
@@ -47,8 +47,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	 *            a function that takes no arguments and returns a new instance of the class extending
 	 *            {@link GenericConsCell}
 	 * @param languageConstructor
-	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link Language}
-	 *            to be used
+	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link Language} to be used
 	 * @param emptyType
 	 *            the {@code Type} that represents an empty (or null) value in the {@code ConsCell} type that this
 	 *            {@code Lexer} uses.
@@ -75,8 +74,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	 *            a function that takes no arguments and returns a new instance of the class extending
 	 *            {@link GenericConsCell}
 	 * @param languageConstructor
-	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link Language}
-	 *            to be used
+	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link Language} to be used
 	 * @param emptyType
 	 *            the {@code Type} that represents an empty (or null) value in the {@code ConsCell} type that this
 	 *            {@code Lexer} uses.
@@ -128,7 +126,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 				state.appendMatch(cell);
 		}
 		C out = state.getRoot();
-		return out == null ? cellConstructor.construct() : out;
+		return out;
 	}
 	
 	@Override
@@ -168,7 +166,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 				return cell;
 			}
 			C out = state.getRoot();
-			return out == null ? cellConstructor.construct() : out;
+			return out;
 		}
 		finally {
 			if (!advance)
@@ -178,116 +176,20 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	
 	@Override
 	public final int skipIgnores(LexerState<C, T, R, D, L> state) {
-		Matcher longest = null;
-		LexerAction<C, T, R, D, L, Matcher> match = null;
-		int pos = state.getHead();
-		while (true) {
-			longest = null;
-			match = null;
-			for (Pattern p : state.getLanguage().getPatterns().keySet()) {
-				Matcher m = p.matcher(state.getInput());
-				if (m.find(pos) && m.start() == pos && (longest == null || m.end() > longest.end())) {
-					longest = m;
-					match = state.getLanguage().getPatterns().get(p);
-				}
+		int head = state.getHead(), longest = head;
+		Collection<Pattern> ignores = state.getLanguage().getIgnores().values(); //Avoids chaining through these functions every time
+		for (Matcher m = null;;) { //Because head == longest if the loop wasn't broken, we don't need to assign longest to head here
+			for (Pattern p : ignores) {
+				m = p.matcher(state.getInput());
+				if (m.find(head) && m.start() == head && m.end() > longest)
+					longest = m.end();
 			}
-			if (longest != null && match == null)
-				pos = longest.end();
+			if (longest > head)
+				head = longest;
 			else
 				break;
 		}
-		int oldHead = state.getHead();
-		state.setHead(pos);
-		return pos - oldHead;
-	}
-	
-	@Override
-	public void addRule(String name, R rule) {
-		language.addRule(name, rule);
-	}
-	
-	@Override
-	public R removeRule(String name) {
-		return language.removeRule(name);
-	}
-	
-	@Override
-	public R getRule(String name) {
-		return language.getRule(name);
-	}
-	
-	@Override
-	public Map<String, R> getRules() {
-		return Collections.unmodifiableMap(language.getRules());
-	}
-	
-	@Override
-	public void addDescender(String name, D descender) {
-		language.addDescender(name, descender);
-	}
-	
-	@Override
-	public D removeDescender(String name) {
-		return language.removeDescender(name);
-	}
-	
-	@Override
-	public D getDescender(String name) {
-		return language.getDescender(name);
-	}
-	
-	@Override
-	public Map<String, D> getDescenders() {
-		return Collections.unmodifiableMap(language.getDescenders());
-	}
-	
-	@Override
-	public void addIgnore(String name, Pattern pattern) {
-		language.addIgnore(name, pattern);
-	}
-	
-	@Override
-	public void addIgnore(DefaultPattern ignore) {
-		language.addIgnore(ignore.getName(), ignore.getPattern());
-	}
-	
-	@Override
-	public Pattern removeIgnore(String name) {
-		return language.removeIgnore(name);
-	}
-	
-	@Override
-	public Pattern removeIgnore(DefaultPattern ignore) {
-		return language.removeIgnore(ignore);
-	}
-	
-	@Override
-	public Pattern getIgnore(String name) {
-		return language.getIgnore(name);
-	}
-	
-	@Override
-	public Map<String, Pattern> getIgnores() {
-		return Collections.unmodifiableMap(language.getIgnores());
-	}
-	
-	@Override
-	public Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns() {
-		return Collections.unmodifiableMap(language.getPatterns());
-	}
-	
-	/**
-	 * Tells the lexer to skip over the {@link Pattern} in the given regex {@code String}.<br>
-	 * This now just forwards to {@link #addIgnore(String, Pattern)}. Use it instead.
-	 * 
-	 * @param name
-	 *            the name with which to reference this ignore pattern
-	 * @param ignore
-	 *            the {@link Pattern} to ignore
-	 */
-	@Deprecated
-	public final void ignore(String name, Pattern ignore) {
-		language.addIgnore(name, ignore);
+		return head - state.setHead(head);
 	}
 	
 	@Override
@@ -303,10 +205,5 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	@Override
 	public T getEmptyType() {
 		return emptyType;
-	}
-
-	@Override
-	public Map<Pattern, String> getNames() {
-		return language.getNames();
 	}
 }

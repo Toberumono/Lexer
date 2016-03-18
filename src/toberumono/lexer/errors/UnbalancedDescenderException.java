@@ -13,10 +13,10 @@ import toberumono.lexer.base.LexerState;
 public class UnbalancedDescenderException extends LexerException {
 
 	/**
-	 * Constructs an {@link UnbalancedDescenderException} based on the given {@link LexerState state}.
+	 * Constructs an {@link UnbalancedDescenderException} based on the given {@link LexerState}.
 	 * 
 	 * @param state
-	 *            the {@link LexerState State} of the {@link Lexer} immediately prior to the exception being raised
+	 *            the {@link LexerState} of the {@link Lexer} immediately prior to the exception being raised
 	 */
 	public UnbalancedDescenderException(LexerState<?, ?, ?, ?, ?> state) {
 		this(state.getInput(), state.getHead(), state);
@@ -31,7 +31,7 @@ public class UnbalancedDescenderException extends LexerException {
 	 * @param index
 	 *            the index at which it was found
 	 * @param state
-	 *            the {@link LexerState State} of the {@link Lexer} immediately prior to the exception being raised
+	 *            the {@link LexerState} of the {@link Lexer} immediately prior to the exception being raised
 	 */
 	public UnbalancedDescenderException(String input, int index, LexerState<?, ?, ?, ?, ?> state) {
 		super("Unbalanced descender at " + index + " in " + input, state);

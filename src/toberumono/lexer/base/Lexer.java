@@ -1,13 +1,12 @@
 package toberumono.lexer.base;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import toberumono.lexer.errors.EmptyInputException;
 import toberumono.lexer.errors.LexerException;
-import toberumono.lexer.errors.PatternCollisionException;
-import toberumono.lexer.util.DefaultPattern;
 import toberumono.structures.sexpressions.ConsCellConstructor;
 import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
@@ -29,14 +28,16 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
+public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
+		extends Language<C, T, R, D, L> {
 	
 	/**
-	 * Tokenizes a {@code String}
+	 * Tokenizes a {@link String}
 	 * 
 	 * @param input
-	 *            the {@code String} to tokenize
-	 * @return the {@code ConsCell}s in the {@code String}
+	 *            the {@link String} to tokenize
+	 * @return the tokens in the {@link String} (wrapped in {@link GenericConsCell ConsCells}) or {@code null} if none were
+	 *         found
 	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
 	 * @see #lex(LexerState)
@@ -44,12 +45,13 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	public C lex(String input) throws LexerException;
 	
 	/**
-	 * Processes the given {@link LexerState State}.<br>
+	 * Tokenizes the remaining {@link LexerState#getInput() input} in the given {@link LexerState}.<br>
 	 * Use {@link #lex(String)} to tokenize an input from the beginning.
 	 * 
 	 * @param state
 	 *            the {@link LexerState} to process
-	 * @return the {@code ConsCell}s in the {@code String}
+	 * @return the tokens in the {@link LexerState LexerState's} {@link LexerState#getInput() input} (wrapped in
+	 *         {@link GenericConsCell ConsCells}) or {@code null} if none were found
 	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
 	 * @see #lex(String)
@@ -57,17 +59,22 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	public C lex(LexerState<C, T, R, D, L> state) throws LexerException;
 	
 	/**
-	 * Gets the next {@link GenericConsCell ConsCell} using the given {@link LexerState State}.<br>
-	 * This will throw an {@link EmptyInputException} if it encounters a close cell.<br>
+	 * Gets the next token (wrapped in a {@link GenericConsCell ConsCell}) in the {@link LexerState LexerState's}
+	 * {@link LexerState#getInput() input}.<br>
+	 * This will throw an {@link EmptyInputException} if it encounters a close token.<br>
 	 * If {@code advance} is {@code true}, then this <i>will</i> modify {@code state's} head position.
 	 * 
 	 * @param state
 	 *            the {@link LexerState} to use
 	 * @param advance
 	 *            whether to advance {@code state's} head position
-	 * @return the next {@link GenericConsCell ConsCell} in the input
+	 * @return the next token in the {@link LexerState LexerState's} {@link LexerState#getInput() input} (wrapped in a
+	 *         {@link GenericConsCell ConsCell})
 	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
+	 * @throws EmptyInputException
+	 *             if the next token in the {@link LexerState LexerState's} {@link LexerState#getInput() input} was a close
+	 *             token
 	 */
 	public C getNextConsCell(LexerState<C, T, R, D, L> state, boolean advance) throws LexerException;
 	
@@ -80,142 +87,6 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	 * @return the number of characters that were skipped
 	 */
 	public int skipIgnores(LexerState<C, T, R, D, L> state);
-	
-	/**
-	 * Adds a new rule
-	 * 
-	 * @param name
-	 *            the name of the rule
-	 * @param rule
-	 *            the rule
-	 * @throws PatternCollisionException
-	 *             if a {@link Pattern} being added is already loaded
-	 */
-	public void addRule(String name, R rule);
-	
-	/**
-	 * Removes a rule
-	 * 
-	 * @param name
-	 *            the name of the rule to remove
-	 * @return the removed rule if a rule of that name existed, otherwise {@code null}
-	 */
-	public R removeRule(String name);
-	
-	/**
-	 * Gets a rule by name
-	 * 
-	 * @param name
-	 *            the name of the rule to get
-	 * @return the rule if a rule corresponding to that name is loaded, otherwise {@code null}
-	 */
-	public R getRule(String name);
-	
-	/**
-	 * @return an unmodifiable view of the rules map (this view is backed by the internal map and only needs to be retrieved
-	 *         once)
-	 */
-	public Map<String, R> getRules();
-	
-	/**
-	 * Adds a new {@link Descender}.
-	 * 
-	 * @param name
-	 *            the name of the {@link Descender}
-	 * @param descender
-	 *            the {@link Descender}
-	 * @throws PatternCollisionException
-	 *             if a {@link Pattern} being added is already loaded
-	 */
-	public void addDescender(String name, D descender);
-	
-	/**
-	 * Removes a {@link Descender}
-	 * 
-	 * @param name
-	 *            the name of the {@link Descender} to remove
-	 * @return the removed {@link Descender} if a {@link Descender} of that name existed,
-	 *         otherwise {@code null}
-	 */
-	public D removeDescender(String name);
-	
-	/**
-	 * Gets a {@link Descender} by name.
-	 * 
-	 * @param name
-	 *            the name of the {@link Descender} to get
-	 * @return the {@link Descender} if a {@link Descender} corresponding to that name is loaded, otherwise {@code null}
-	 */
-	public D getDescender(String name);
-	
-	/**
-	 * @return an unmodifiable view of the {@link Descender Descenders} {@link Map} (this view is backed by the internal {@link Map} and only needs to be
-	 *         retrieved once)
-	 */
-	public Map<String, D> getDescenders();
-	
-	/**
-	 * Adds a new {@link Pattern} that the {@link Lexer} should recognize but not do anything with (in other words, ignore).
-	 * 
-	 * @param name
-	 *            the name with which to reference the ignored {@link Pattern}
-	 * @param pattern
-	 *            the {@link Pattern} to ignore
-	 * @throws PatternCollisionException
-	 *             if a {@link Pattern} being added is already loaded
-	 */
-	public void addIgnore(String name, Pattern pattern);
-	
-	/**
-	 * Adds the {@link DefaultPattern} to the {@link Lexer}.
-	 * 
-	 * @param ignore
-	 *            the {@link DefaultPattern} to add
-	 * @throws PatternCollisionException
-	 *             if a {@link Pattern} being added is already loaded
-	 */
-	public void addIgnore(DefaultPattern ignore);
-	
-	/**
-	 * Removes an ignored {@link Pattern}
-	 * 
-	 * @param name
-	 *            the name of the ignored {@link Pattern} to remove
-	 * @return the removed {@link Pattern} if a {@link Pattern} of that name existed, otherwise {@code null}
-	 */
-	public Pattern removeIgnore(String name);
-	
-	/**
-	 * Removes the {@link DefaultPattern} from the {@link Lexer}
-	 * 
-	 * @param ignore
-	 *            the {@link DefaultPattern} to remove
-	 * @return the {@link Pattern} that was being ignored if it was loaded, otherwise {@code null}
-	 */
-	public Pattern removeIgnore(DefaultPattern ignore);
-	
-	/**
-	 * Gets an ignored {@link Pattern} by name
-	 * 
-	 * @param name
-	 *            the name of the ignored {@link Pattern} to get
-	 * @return the ignored {@link Pattern} if one corresponding to that name is loaded, otherwise {@code null}
-	 */
-	public Pattern getIgnore(String name);
-	
-	/**
-	 * @return an unmodifiable view of the ignores {@link Map} (this view is backed by the internal {@link Map} and only needs to be
-	 *         retrieved once)
-	 */
-	public Map<String, Pattern> getIgnores();
-	
-	/**
-	 * The patterns map that is used in the actual lexing loop. This is mainly for internal use.
-	 * 
-	 * @return an unmodifiable view of the patterns {@link Map} (this view is backed by the internal {@link Map} and only needs to be
-	 *         retrieved once)
-	 */
-	public Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns();
 	
 	/**
 	 * @return the cell constructor being used by the {@link Lexer}
@@ -231,4 +102,96 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	 * @return the the {@link GenericConsType} that represents empty values
 	 */
 	public T getEmptyType();
+	
+	/* ************************************************************************************************* */
+	/* The default implementation of methods from Language is to forward to the Lexer's primary Language */
+	/* ************************************************************************************************* */
+	
+	@Override
+	public default void addRule(String name, R rule) {
+		getLanguage().addRule(name, rule);
+	}
+	
+	@Override
+	public default R removeRule(String name) {
+		return getLanguage().removeRule(name);
+	}
+	
+	@Override
+	public default R getRule(String name) {
+		return getLanguage().getRule(name);
+	}
+	
+	/**
+	 * @return an <i>unmodifiable</i> view of the {@link Rule Rules} in the {@link Language}
+	 */
+	@Override
+	public default Map<String, R> getRules() {
+		return Collections.unmodifiableMap(getLanguage().getRules());
+	}
+	
+	@Override
+	public default void addDescender(String name, D descender) {
+		getLanguage().addDescender(name, descender);
+	}
+	
+	@Override
+	public default D removeDescender(String name) {
+		return getLanguage().removeDescender(name);
+	}
+	
+	@Override
+	public default D getDescender(String name) {
+		return getLanguage().getDescender(name);
+	}
+	
+	/**
+	 * @return an <i>unmodifiable</i> view of the {@link Descender Descenders} in the {@link Language}
+	 */
+	@Override
+	public default Map<String, D> getDescenders() {
+		return Collections.unmodifiableMap(getLanguage().getDescenders());
+	}
+	
+	@Override
+	public default void addIgnore(String name, Pattern pattern) {
+		getLanguage().addIgnore(name, pattern);
+	}
+	
+	@Override
+	public default Pattern removeIgnore(String name) {
+		return getLanguage().removeIgnore(name);
+	}
+	
+	@Override
+	public default Pattern getIgnore(String name) {
+		return getLanguage().getIgnore(name);
+	}
+	
+	/**
+	 * @return an <i>unmodifiable</i> view of the {@link Pattern Patterns} that define input that can be ignored in the
+	 *         {@link Language}
+	 */
+	@Override
+	public default Map<String, Pattern> getIgnores() {
+		return Collections.unmodifiableMap(getLanguage().getIgnores());
+	}
+	
+	/**
+	 * @return an <i>unmodifiable</i> view of the names used by the {@link Rule Rules}, {@link Descender Descenders}, and
+	 *         ignoreable {@link Pattern Patterns} in the {@link Language}
+	 */
+	@Override
+	public default Map<Pattern, String> getNames() {
+		return Collections.unmodifiableMap(getLanguage().getNames());
+	}
+	
+	/**
+	 * @return an <i>unmodifiable</i> view of the {@link LexerAction LexerActions} to perform for each {@link Pattern} in the
+	 *         {@link Language}
+	 */
+	@Override
+	public default Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns() {
+		return Collections.unmodifiableMap(getLanguage().getPatterns());
+	}
 }

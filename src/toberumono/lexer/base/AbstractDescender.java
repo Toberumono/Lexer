@@ -3,7 +3,6 @@ package toberumono.lexer.base;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
-import toberumono.structures.sexpressions.ConsCellConstructor;
 import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
@@ -41,7 +40,7 @@ public class AbstractDescender<C extends GenericConsCell<T, C>, T extends Generi
 	 */
 	public AbstractDescender(String open, String close, T type) {
 		this(Pattern.compile(open, Pattern.LITERAL), Pattern.compile(close, Pattern.LITERAL), (lexer, state, match) -> {},
-				(lexer, state, match) -> ((ConsCellConstructor<T, C>) lexer.getConsCellConstructor()).construct(match, type, null, lexer.getEmptyType()));
+				(lexer, state, match) -> lexer.getConsCellConstructor().construct(match, type, null, lexer.getEmptyType()));
 	}
 	
 	/**
@@ -86,7 +85,7 @@ public class AbstractDescender<C extends GenericConsCell<T, C>, T extends Generi
 	 *            the {@link GenericConsType type} to be associated with the {@link Descender}
 	 */
 	public AbstractDescender(Pattern open, Pattern close, T type) {
-		this(open, close, (lexer, state, match) -> {}, (lexer, state, match) -> ((ConsCellConstructor<T, C>) lexer.getConsCellConstructor()).construct(match, type, null, lexer.getEmptyType()));
+		this(open, close, (lexer, state, match) -> {}, (lexer, state, match) -> lexer.getConsCellConstructor().construct(match, type, null, lexer.getEmptyType()));
 	}
 	
 	/**

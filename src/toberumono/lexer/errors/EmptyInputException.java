@@ -14,7 +14,7 @@ public class EmptyInputException extends LexerException {
 	 * Constructs an {@link EmptyInputException} with the default message.
 	 * 
 	 * @param state
-	 *            the {@link LexerState State} of the {@link Lexer} immediately prior to the exception being raised
+	 *            the {@link LexerState} of the {@link Lexer} immediately prior to the exception being raised
 	 */
 	public EmptyInputException(LexerState<?, ?, ?, ?, ?> state) {
 		super("The end of the input has been reached.", state);

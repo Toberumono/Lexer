@@ -83,6 +83,6 @@ public enum NumberPatterns implements DefaultPattern,NumberPatternsConstants {
 	
 }
 
-interface NumberPatternsConstants { //Only way to make DN accessible to the PICKY_DOUBLE enum
+interface NumberPatternsConstants { //Only way to make DN accessible to the PICKY_DOUBLE and COMPLEX enum values
 	String DN = "(([1-9][0-9]*|0)\\.(0*[1-9][0-9]*|0?)|\\.0*[1-9][0-9]*)", PM = "\\s*[+-]\\s*", PMDN = PM + DN;
 }
