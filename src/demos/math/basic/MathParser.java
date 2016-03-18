@@ -1,5 +1,6 @@
 package demos.math.basic;
 
+import java.util.Scanner;
 import java.util.function.BinaryOperator;
 import java.util.regex.Pattern;
 
@@ -96,6 +97,25 @@ public class MathParser {
 		if (expression.getCarType() == PARENTHESES)
 			expression.replaceCar(evaluateExpression((ConsCell) expression.getCar()));
 		return expression;
+	}
+	
+	/**
+	 * A simple REPL for the {@link MathParser}.
+	 * 
+	 * @param args
+	 *            command-line arguments (ignored)
+	 */
+	public static void main(String[] args) {
+		MathParser parser = new MathParser();
+		System.out.println("Enter equations on single lines. The program exits on EOF or an empty line.");
+		try (Scanner scanner = new Scanner(System.in)) {
+			while (scanner.hasNextLine()) {
+				String input = scanner.nextLine();
+				if (input.length() == 0)
+					return;
+				System.out.println(input + " = " + parser.evaluateExpression(input));
+			}
+		}
 	}
 }
 

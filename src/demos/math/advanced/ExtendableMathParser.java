@@ -2,6 +2,7 @@ package demos.math.advanced;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import toberumono.lexer.BasicDescender;
@@ -49,7 +50,7 @@ public class ExtendableMathParser {
 		lexer = new BasicLexer(DefaultIgnorePatterns.WHITESPACE);
 		operators = new HashMap<>();
 		lexer.addDescender("parentheses", new BasicDescender("(", ")", (l, s, m) -> evaluateExpression(m)));
-		lexer.addRule("number", new BasicRule(Pattern.compile("([0-9]+(\\.[0-9]*)?|\\.[0-9]+)"), (l, s, m) -> new ConsCell(Double.parseDouble(m.group()), OPERATOR)));
+		lexer.addRule("number", new BasicRule(Pattern.compile("([0-9]+(\\.[0-9]*)?|\\.[0-9]+)"), (l, s, m) -> new ConsCell(Double.parseDouble(m.group()), NUMBER)));
 		if (loadCoreOperators) {
 			addOperator("addition", Pattern.compile("+", Pattern.LITERAL), addition);
 			addOperator("subtraction", Pattern.compile("-", Pattern.LITERAL), subtraction);
@@ -154,5 +155,24 @@ public class ExtendableMathParser {
 					right.remove();
 				}
 		return expression;
+	}
+	
+	/**
+	 * A simple REPL for the {@link ExtendableMathParser}.
+	 * 
+	 * @param args
+	 *            command-line arguments (ignored)
+	 */
+	public static void main(String[] args) {
+		ExtendableMathParser parser = new ExtendableMathParser();
+		System.out.println("Enter equations on single lines. The program exits on EOF or an empty line.");
+		try (Scanner scanner = new Scanner(System.in)) {
+			while (scanner.hasNextLine()) {
+				String input = scanner.nextLine();
+				if (input.length() == 0)
+					return;
+				System.out.println(input + " = " + parser.evaluateExpression(input));
+			}
+		}
 	}
 }
