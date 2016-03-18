@@ -126,7 +126,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 				state.appendMatch(cell);
 		}
 		C out = state.getRoot();
-		return out == null ? cellConstructor.construct() : out;
+		return out;
 	}
 	
 	@Override
@@ -166,7 +166,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 				return cell;
 			}
 			C out = state.getRoot();
-			return out == null ? cellConstructor.construct() : out;
+			return out;
 		}
 		finally {
 			if (!advance)

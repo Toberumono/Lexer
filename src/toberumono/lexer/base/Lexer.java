@@ -32,11 +32,12 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 		extends Language<C, T, R, D, L> {
 	
 	/**
-	 * Tokenizes a {@code String}
+	 * Tokenizes a {@link String}
 	 * 
 	 * @param input
-	 *            the {@code String} to tokenize
-	 * @return the {@code ConsCell}s in the {@code String}
+	 *            the {@link String} to tokenize
+	 * @return the tokens in the {@link String} (wrapped in {@link GenericConsCell ConsCells}) or {@code null} if none were
+	 *         found
 	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
 	 * @see #lex(LexerState)
@@ -44,12 +45,13 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	public C lex(String input) throws LexerException;
 	
 	/**
-	 * Processes the given {@link LexerState State}.<br>
+	 * Tokenizes the remaining {@link LexerState#getInput() input} in the given {@link LexerState}.<br>
 	 * Use {@link #lex(String)} to tokenize an input from the beginning.
 	 * 
 	 * @param state
 	 *            the {@link LexerState} to process
-	 * @return the {@code ConsCell}s in the {@code String}
+	 * @return the tokens in the {@link LexerState LexerState's} {@link LexerState#getInput() input} (wrapped in
+	 *         {@link GenericConsCell ConsCells}) or {@code null} if none were found
 	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
 	 * @see #lex(String)
@@ -57,17 +59,22 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	public C lex(LexerState<C, T, R, D, L> state) throws LexerException;
 	
 	/**
-	 * Gets the next {@link GenericConsCell ConsCell} using the given {@link LexerState State}.<br>
-	 * This will throw an {@link EmptyInputException} if it encounters a close cell.<br>
+	 * Gets the next token (wrapped in a {@link GenericConsCell ConsCell}) in the {@link LexerState LexerState's}
+	 * {@link LexerState#getInput() input}.<br>
+	 * This will throw an {@link EmptyInputException} if it encounters a close token.<br>
 	 * If {@code advance} is {@code true}, then this <i>will</i> modify {@code state's} head position.
 	 * 
 	 * @param state
 	 *            the {@link LexerState} to use
 	 * @param advance
 	 *            whether to advance {@code state's} head position
-	 * @return the next {@link GenericConsCell ConsCell} in the input
+	 * @return the next token in the {@link LexerState LexerState's} {@link LexerState#getInput() input} (wrapped in a
+	 *         {@link GenericConsCell ConsCell})
 	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
+	 * @throws EmptyInputException
+	 *             if the next token in the {@link LexerState LexerState's} {@link LexerState#getInput() input} was a close
+	 *             token
 	 */
 	public C getNextConsCell(LexerState<C, T, R, D, L> state, boolean advance) throws LexerException;
 	
@@ -162,7 +169,8 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	}
 	
 	/**
-	 * @return an <i>unmodifiable</i> view of the {@link Descender Descenders} in the {@link Language}
+	 * @return an <i>unmodifiable</i> view of the {@link Pattern Patterns} that define input that can be ignored in the
+	 *         {@link Language}
 	 */
 	@Override
 	public default Map<String, Pattern> getIgnores() {

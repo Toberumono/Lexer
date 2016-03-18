@@ -164,5 +164,4 @@ public interface Language<C extends GenericConsCell<T, C>, T extends GenericCons
 	 * @return the {@link LexerAction LexerActions} to perform for each {@link Pattern} in the {@link Language}
 	 */
 	public Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns();
-	
 }
