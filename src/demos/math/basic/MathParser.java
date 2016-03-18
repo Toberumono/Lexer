@@ -17,7 +17,7 @@ import toberumono.structures.sexpressions.ConsType;
  * @author Toberumono
  */
 public class MathParser {
-	private static final ConsType NUMBER = new ConsType("number"), OPERATOR = new ConsType("operator"), PARENTHESES = new ConsType("parentheses");
+	private static final ConsType NUMBER = new ConsType("number"), OPERATOR = new ConsType("operator"), PARENTHESES = new ConsType("parentheses", "(", ")");
 	
 	private static final Operator addition = new Operator(0, (t, u) -> new ConsCell(new Double(((Double) t.getCar()) + ((Double) u.getCar())), NUMBER));
 	private static final Operator subtraction = new Operator(0, (t, u) -> new ConsCell(new Double(((Double) t.getCar()) - ((Double) u.getCar())), NUMBER));
