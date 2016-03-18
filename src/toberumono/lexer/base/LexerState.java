@@ -128,9 +128,9 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 * @return the previous position of the head
 	 */
 	public int setHead(int pos) {
-		int oldIndex = getHead();
+		int oldHead = getHead();
 		head = pos;
-		return oldIndex;
+		return oldHead;
 	}
 	
 	/**
@@ -228,10 +228,10 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	/**
 	 * This method returns true if any untokenized input remains after skipping over cells that are set to be ignored and the
 	 * next matched cell would not be an ascent cell.<br>
-	 * <b><i>Note</i></b>: This is <i>slow</i> - the {@link Lexer} already performs these checks before getting the next
+	 * <b>Note</b>: This is <i>slow</i> - the {@link Lexer} already implicitly performs these checks before getting the next
 	 * cell, so if you are calling this regularly, consider re-working the logic behind your rules.
 	 * 
-	 * @return {@code true} if there is still untokenized input at the current descent level, otherwise false.
+	 * @return {@code true} if there is still untokenized input at the current descent level, otherwise {@code false}.
 	 */
 	public boolean hasNext() {
 		if (getHead() + getLexer().skipIgnores(this) < getInput().length()) {

@@ -17,8 +17,8 @@ import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
 /**
- * An implementation of the core components of {@link Lexer}.
- * This represents a generic tokenizer that uses a set of user-defined rules to tokenize a {@link String} input.<br>
+ * An implementation of the core components of {@link Lexer}. This represents a generic tokenizer that uses a set of
+ * user-defined rules to tokenize a {@link String} input.<br>
  * While this implementation is designed to work with cons-cell esque tokens (e.g. those from Lisp), it can theoretically be
  * modified to work with other structures.
  * 
@@ -47,8 +47,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	 *            a function that takes no arguments and returns a new instance of the class extending
 	 *            {@link GenericConsCell}
 	 * @param languageConstructor
-	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link Language}
-	 *            to be used
+	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link Language} to be used
 	 * @param emptyType
 	 *            the {@code Type} that represents an empty (or null) value in the {@code ConsCell} type that this
 	 *            {@code Lexer} uses.
@@ -75,8 +74,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	 *            a function that takes no arguments and returns a new instance of the class extending
 	 *            {@link GenericConsCell}
 	 * @param languageConstructor
-	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link Language}
-	 *            to be used
+	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link Language} to be used
 	 * @param emptyType
 	 *            the {@code Type} that represents an empty (or null) value in the {@code ConsCell} type that this
 	 *            {@code Lexer} uses.
