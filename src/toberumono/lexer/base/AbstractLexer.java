@@ -35,7 +35,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  *            the implementation of {@link Lexer} to be used
  */
 public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
-		implements Lexer<C, T, R, D, L>, Language<C, T, R, D, L> {
+		implements Lexer<C, T, R, D, L> {
 	private final Language<C, T, R, D, L> language;
 	private final ConsCellConstructor<T, C> cellConstructor;
 	private final T emptyType;
@@ -200,94 +200,6 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 		state.setHead(pos);
 		return pos - oldHead;
 	}
-	
-	@Override
-	public void addRule(String name, R rule) {
-		language.addRule(name, rule);
-	}
-	
-	@Override
-	public R removeRule(String name) {
-		return language.removeRule(name);
-	}
-	
-	@Override
-	public R getRule(String name) {
-		return language.getRule(name);
-	}
-	
-	@Override
-	public Map<String, R> getRules() {
-		return Collections.unmodifiableMap(language.getRules());
-	}
-	
-	@Override
-	public void addDescender(String name, D descender) {
-		language.addDescender(name, descender);
-	}
-	
-	@Override
-	public D removeDescender(String name) {
-		return language.removeDescender(name);
-	}
-	
-	@Override
-	public D getDescender(String name) {
-		return language.getDescender(name);
-	}
-	
-	@Override
-	public Map<String, D> getDescenders() {
-		return Collections.unmodifiableMap(language.getDescenders());
-	}
-	
-	@Override
-	public void addIgnore(String name, Pattern pattern) {
-		language.addIgnore(name, pattern);
-	}
-	
-	@Override
-	public void addIgnore(DefaultPattern ignore) {
-		language.addIgnore(ignore.getName(), ignore.getPattern());
-	}
-	
-	@Override
-	public Pattern removeIgnore(String name) {
-		return language.removeIgnore(name);
-	}
-	
-	@Override
-	public Pattern removeIgnore(DefaultPattern ignore) {
-		return language.removeIgnore(ignore);
-	}
-	
-	@Override
-	public Pattern getIgnore(String name) {
-		return language.getIgnore(name);
-	}
-	
-	@Override
-	public Map<String, Pattern> getIgnores() {
-		return Collections.unmodifiableMap(language.getIgnores());
-	}
-	
-	@Override
-	public Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns() {
-		return Collections.unmodifiableMap(language.getPatterns());
-	}
-	
-	/**
-	 * Tells the lexer to skip over the {@link Pattern} in the given regex {@code String}.<br>
-	 * This now just forwards to {@link #addIgnore(String, Pattern)}. Use it instead.
-	 * 
-	 * @param name
-	 *            the name with which to reference this ignore pattern
-	 * @param ignore
-	 *            the {@link Pattern} to ignore
-	 */
-	@Deprecated
-	public final void ignore(String name, Pattern ignore) {
-		language.addIgnore(name, ignore);
 	}
 	
 	@Override
@@ -303,10 +215,5 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	@Override
 	public T getEmptyType() {
 		return emptyType;
-	}
-
-	@Override
-	public Map<Pattern, String> getNames() {
-		return language.getNames();
 	}
 }

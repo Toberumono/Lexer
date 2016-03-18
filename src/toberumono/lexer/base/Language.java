@@ -9,7 +9,6 @@ import toberumono.lexer.util.DefaultPattern;
 import toberumono.structures.sexpressions.generic.GenericConsCell;
 import toberumono.structures.sexpressions.generic.GenericConsType;
 
-
 /**
  * This represents a language that can be used by a {@link Lexer} to tokenize an input {@link String}
  * 
@@ -28,39 +27,39 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
 public interface Language<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
 	
 	/**
-	 * Adds a new rule
+	 * Adds a new {@link Rule}
 	 * 
 	 * @param name
-	 *            the name of the rule
+	 *            the name of the {@link Rule}
 	 * @param rule
-	 *            the rule
+	 *            the {@link Rule}
 	 * @throws PatternCollisionException
 	 *             if a {@link Pattern} being added is already loaded
 	 */
-	void addRule(String name, R rule);
+	public void addRule(String name, R rule);
 	
 	/**
-	 * Removes a rule
+	 * Removes a {@link Rule}
 	 * 
 	 * @param name
-	 *            the name of the rule to remove
-	 * @return the removed rule if a rule of that name existed, otherwise {@code null}
+	 *            the name of the {@link Rule} to remove
+	 * @return the removed {@link Rule} if a {@link Rule} with that name existed, otherwise {@code null}
 	 */
-	R removeRule(String name);
+	public R removeRule(String name);
 	
 	/**
-	 * Gets a rule by name
+	 * Gets a {@link Rule} by name
 	 * 
 	 * @param name
-	 *            the name of the rule to get
-	 * @return the rule if a rule corresponding to that name is loaded, otherwise {@code null}
+	 *            the name of the {@link Rule} to get
+	 * @return the {@link Rule} if a {@link Rule} corresponding to that name is loaded, otherwise {@code null}
 	 */
-	R getRule(String name);
+	public R getRule(String name);
 	
 	/**
 	 * @return the {@link Rule Rules} in the {@link Language}
 	 */
-	Map<String, R> getRules();
+	public Map<String, R> getRules();
 	
 	/**
 	 * Adds a new {@link Descender}.
@@ -72,16 +71,16 @@ public interface Language<C extends GenericConsCell<T, C>, T extends GenericCons
 	 * @throws PatternCollisionException
 	 *             if a {@link Pattern} being added is already loaded
 	 */
-	void addDescender(String name, D descender);
+	public void addDescender(String name, D descender);
 	
 	/**
 	 * Removes a {@link Descender}
 	 * 
 	 * @param name
 	 *            the name of the {@link Descender} to remove
-	 * @return the removed {@link Descender} if a {@link Descender} of that name existed, otherwise {@code null}
+	 * @return the removed {@link Descender} if a {@link Descender} with that name existed, otherwise {@code null}
 	 */
-	D removeDescender(String name);
+	public D removeDescender(String name);
 	
 	/**
 	 * Gets a descender by name.
@@ -90,12 +89,12 @@ public interface Language<C extends GenericConsCell<T, C>, T extends GenericCons
 	 *            the name of the descender to get
 	 * @return the descender if a descender corresponding to that name is loaded, otherwise {@code null}
 	 */
-	D getDescender(String name);
+	public D getDescender(String name);
 	
 	/**
-	 * @return the {@link Descender} in the {@link Language}
+	 * @return the {@link Descender Descenders} in the {@link Language}
 	 */
-	Map<String, D> getDescenders();
+	public Map<String, D> getDescenders();
 	
 	/**
 	 * Adds a new {@link Pattern} that the lexer should recognize but not do anything with (in other words, ignore).
@@ -107,7 +106,7 @@ public interface Language<C extends GenericConsCell<T, C>, T extends GenericCons
 	 * @throws PatternCollisionException
 	 *             if a {@link Pattern} being added is already loaded
 	 */
-	void addIgnore(String name, Pattern pattern);
+	public void addIgnore(String name, Pattern pattern);
 	
 	/**
 	 * Adds the {@link DefaultPattern} to the lexer.
@@ -117,7 +116,9 @@ public interface Language<C extends GenericConsCell<T, C>, T extends GenericCons
 	 * @throws PatternCollisionException
 	 *             if a {@link Pattern} being added is already loaded
 	 */
-	void addIgnore(DefaultPattern ignore);
+	public default void addIgnore(DefaultPattern ignore) {
+		addIgnore(ignore.getName(), ignore.getPattern());
+	}
 	
 	/**
 	 * Removes an ignored {@link Pattern}
@@ -126,7 +127,7 @@ public interface Language<C extends GenericConsCell<T, C>, T extends GenericCons
 	 *            the name of the ignored {@link Pattern} to remove
 	 * @return the removed {@link Pattern} if a {@link Pattern} of that name existed, otherwise {@code null}
 	 */
-	Pattern removeIgnore(String name);
+	public Pattern removeIgnore(String name);
 	
 	/**
 	 * Removes the {@link DefaultPattern} from the lexer.
@@ -135,7 +136,9 @@ public interface Language<C extends GenericConsCell<T, C>, T extends GenericCons
 	 *            the {@link DefaultPattern} to remove
 	 * @return the {@link Pattern} that was being ignored if it was loaded in the lexer, otherwise {@code null}
 	 */
-	Pattern removeIgnore(DefaultPattern ignore);
+	public default Pattern removeIgnore(DefaultPattern ignore) {
+		return removeIgnore(ignore.getName());
+	}
 	
 	/**
 	 * Gets an ignored {@link Pattern} by name
@@ -144,22 +147,22 @@ public interface Language<C extends GenericConsCell<T, C>, T extends GenericCons
 	 *            the name of the ignored {@link Pattern} to get
 	 * @return the ignored {@link Pattern} if one corresponding to that name is loaded, otherwise {@code null}
 	 */
-	Pattern getIgnore(String name);
+	public Pattern getIgnore(String name);
 	
 	/**
-	 * @return the map containing pattern that are ignored in the {@link Language}
+	 * @return the {@link Pattern Patterns} that define input that can be ignored in the {@link Language}
 	 */
-	Map<String, Pattern> getIgnores();
+	public Map<String, Pattern> getIgnores();
 	
 	/**
-	 * @return the names used by {@link Rule Rules}, {@link Descender Descenders}, and ignores in the
-	 *         {@link Language}
+	 * @return the names used by the {@link Rule Rules}, {@link Descender Descenders}, and ignoreable {@link Pattern
+	 *         Patterns} in the {@link Language}
 	 */
-	Map<Pattern, String> getNames();
+	public Map<Pattern, String> getNames();
 	
 	/**
-	 * @return the a mapping {@link Pattern} to {@link LexerAction} to perform when the {@link Pattern} is matched
+	 * @return the {@link LexerAction LexerActions} to perform for each {@link Pattern} in the {@link Language}
 	 */
-	Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns();
+	public Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns();
 	
 }
