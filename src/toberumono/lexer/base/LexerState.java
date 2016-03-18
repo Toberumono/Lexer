@@ -23,8 +23,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
-		implements Cloneable {
+public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
 	private final String input;
 	private final D descender;
 	private final L lexer;
@@ -276,19 +275,13 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 		return new LexerState<>(getInput(), getHead(), getDescender(), getLexer(), language);
 	}
 	
-	@Override
-	public LexerState<C, T, R, D, L> clone() {
-		return new LexerState<>(this, getRoot(), getLast());
-	}
-	
 	/**
-	 * Creates a deep clone of the {@link LexerState} - that is, the language, root, and last fields are entirely independent
-	 * from those of the base {@link LexerState}.
-	 * 
-	 * @return a deep copy of the {@link LexerState}
+	 * @return a copy of the {@link LexerState} where only the {@link GenericConsCell GenericConsCells} are cloned.
 	 */
-	public LexerState<C, T, R, D, L> deepClone() {
-		C root = getRoot().clone();
-		return new LexerState<>(this, root, root.getLastConsCell());
+	public LexerState<C, T, R, D, L> copy() {
+		LexerState<C, T, R, D, L> copy = new LexerState<>(this, root, last);
+		copy.root = copy.root.clone();
+		copy.last = copy.root.getLastConsCell();
+		return copy;
 	}
 }

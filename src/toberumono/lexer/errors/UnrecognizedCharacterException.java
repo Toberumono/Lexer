@@ -14,10 +14,10 @@ import toberumono.lexer.base.Rule;
 public class UnrecognizedCharacterException extends LexerException {
 	
 	/**
-	 * Constructs an {@link UnrecognizedCharacterException} based on the given {@link LexerState state}.
+	 * Constructs an {@link UnrecognizedCharacterException} based on the given {@link LexerState}.
 	 * 
 	 * @param state
-	 *            the {@link LexerState State} of the {@link Lexer} immediately prior to the exception being raised
+	 *            the {@link LexerState} of the {@link Lexer} immediately prior to the exception being raised
 	 */
 	public UnrecognizedCharacterException(LexerState<?, ?, ?, ?, ?> state) {
 		this(state.getInput(), state.getHead(), state);
@@ -32,7 +32,7 @@ public class UnrecognizedCharacterException extends LexerException {
 	 * @param index
 	 *            the index at which it was encountered
 	 * @param state
-	 *            the {@link LexerState State} of the {@link Lexer} immediately prior to the exception being raised
+	 *            the {@link LexerState} of the {@link Lexer} immediately prior to the exception being raised
 	 */
 	public UnrecognizedCharacterException(String input, int index, LexerState<?, ?, ?, ?, ?> state) {
 		super("Unknown character at " + index + ": " + input.charAt(index) + "\nRemaining Input: " + input.substring(index), state);

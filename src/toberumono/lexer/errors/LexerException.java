@@ -20,11 +20,11 @@ public class LexerException extends RuntimeException {
 	 * be initialized by a call to {@link #initCause}.
 	 * 
 	 * @param state
-	 *            the {@link LexerState State} of the {@link Lexer} immediately prior to the exception being raised
+	 *            the {@link LexerState} of the {@link Lexer} immediately prior to the exception being raised
 	 */
 	public LexerException(LexerState<?, ?, ?, ?, ?> state) {
 		super();
-		this.state = state.deepClone();
+		this.state = state.copy();
 	}
 	
 	/**
@@ -34,11 +34,11 @@ public class LexerException extends RuntimeException {
 	 * @param message
 	 *            the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
 	 * @param state
-	 *            the {@link LexerState State} of the {@link Lexer} immediately prior to the exception being raised
+	 *            the {@link LexerState} of the {@link Lexer} immediately prior to the exception being raised
 	 */
 	public LexerException(String message, LexerState<?, ?, ?, ?, ?> state) {
 		super(message);
-		this.state = state.deepClone();
+		this.state = state.copy();
 	}
 	
 	/**
@@ -48,11 +48,11 @@ public class LexerException extends RuntimeException {
 	 * @param cause
 	 *            the reason that this exception is being thrown
 	 * @param state
-	 *            the {@link LexerState State} of the {@link Lexer} immediately prior to the exception being raised
+	 *            the {@link LexerState} of the {@link Lexer} immediately prior to the exception being raised
 	 */
 	public LexerException(Throwable cause, LexerState<?, ?, ?, ?, ?> state) {
 		super(cause);
-		this.state = state.deepClone();
+		this.state = state.copy();
 	}
 	
 	/**
@@ -66,11 +66,11 @@ public class LexerException extends RuntimeException {
 	 *            the cause (which is saved for later retrieval by the {@link #getCause()} method). (A {@code null} value is
 	 *            permitted, and indicates that the cause is nonexistent or unknown.)
 	 * @param state
-	 *            the {@link LexerState State} of the {@link Lexer} immediately prior to the exception being raised
+	 *            the {@link LexerState} of the {@link Lexer} immediately prior to the exception being raised
 	 */
 	public LexerException(String message, Throwable cause, LexerState<?, ?, ?, ?, ?> state) {
 		super(message, cause);
-		this.state = state.deepClone();
+		this.state = state.copy();
 	}
 	
 	/**
@@ -87,7 +87,7 @@ public class LexerException extends RuntimeException {
 	 *            the implementation of {@link Descender} in use
 	 * @param <L>
 	 *            the implementation of {@link Lexer} in use
-	 * @return the {@link LexerState State} of the {@link Lexer} immediately prior to the exception being raised
+	 * @return the {@link LexerState} of the {@link Lexer} immediately prior to the exception being raised
 	 */
 	@SuppressWarnings("unchecked")
 	public <C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> LexerState<C, T, R, D, L>
