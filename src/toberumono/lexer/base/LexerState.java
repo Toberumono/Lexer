@@ -4,8 +4,8 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import toberumono.structures.sexpressions.generic.GenericConsCell;
-import toberumono.structures.sexpressions.generic.GenericConsType;
+import toberumono.structures.sexpressions.ConsCell;
+import toberumono.structures.sexpressions.ConsType;
 
 /**
  * A container that stores the state information of a lexing operation.<br>
@@ -13,9 +13,9 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * 
  * @author Toberumono
  * @param <C>
- *            the implementation of {@link GenericConsCell} to be used
+ *            the implementation of {@link ConsCell} to be used
  * @param <T>
- *            the implementation of {@link GenericConsType} to be used
+ *            the implementation of {@link ConsType} to be used
  * @param <R>
  *            the implementation of {@link Rule} to be used
  * @param <D>
@@ -23,7 +23,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
+public class LexerState<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
 	private final String input;
 	private final D descender;
 	private final L lexer;
@@ -156,11 +156,12 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 *            the cell to append
 	 * @return {@code this} for easy chaining
 	 */
+	@SuppressWarnings("unchecked")
 	public LexerState<C, T, R, D, L> appendMatch(C cell) {
 		if (root == null)
 			setRoot(setLast(cell));
 		else
-			setLast(getLast().append(cell));
+			setLast((C) getLast().append(cell));
 		return this;
 	}
 	
@@ -199,6 +200,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	 *         there has yet to be a match or all of the matched {@code ConsCells} were popped via {@link #popLast()})
 	 * @see #getLast()
 	 */
+	@SuppressWarnings("unchecked")
 	public C popLast() {
 		if (getLast() == null)
 			return getLast();
@@ -206,7 +208,7 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 		if (getLast() == getRoot())
 			setRoot(setLast(null));
 		else {
-			setLast(getLast().getPreviousConsCell());
+			setLast((C) getLast().getPrevious());
 			ret.remove();
 		}
 		return ret;
@@ -276,12 +278,13 @@ public class LexerState<C extends GenericConsCell<T, C>, T extends GenericConsTy
 	}
 	
 	/**
-	 * @return a copy of the {@link LexerState} where only the {@link GenericConsCell GenericConsCells} are cloned.
+	 * @return a copy of the {@link LexerState} where only the {@link ConsCell ConsCells} are cloned.
 	 */
+	@SuppressWarnings("unchecked")
 	public LexerState<C, T, R, D, L> copy() {
 		LexerState<C, T, R, D, L> copy = new LexerState<>(this, root, last);
-		copy.root = copy.root.clone();
-		copy.last = copy.root.getLastConsCell();
+		copy.root = (C) copy.root.clone();
+		copy.last = (C) copy.root.getLast();
 		return copy;
 	}
 }

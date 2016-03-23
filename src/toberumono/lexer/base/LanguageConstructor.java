@@ -6,17 +6,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import toberumono.structures.sexpressions.ConsCellConstructor;
-import toberumono.structures.sexpressions.generic.GenericConsCell;
-import toberumono.structures.sexpressions.generic.GenericConsType;
+import toberumono.structures.sexpressions.ConsCell;
+import toberumono.structures.sexpressions.ConsType;
 
 /**
  * A functional interface that represents the constructors for a {@link Language}.
  * 
  * @author Toberumono
  * @param <C>
- *            the implementation of {@link GenericConsCell} to be used
+ *            the implementation of {@link ConsCell} to be used
  * @param <T>
- *            the implementation of {@link GenericConsType} to be used
+ *            the implementation of {@link ConsType} to be used
  * @param <R>
  *            the implementation of {@link Rule} to be used
  * @param <D>
@@ -25,7 +25,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  *            the implementation of {@link Lexer} to be used
  */
 @FunctionalInterface
-public interface LanguageConstructor<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
+public interface LanguageConstructor<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
 	
 	/**
 	 * Constructs a {@link Language} with the given {@link ConsCellConstructor} and data maps. Note that the

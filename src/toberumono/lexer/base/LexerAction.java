@@ -1,17 +1,17 @@
 package toberumono.lexer.base;
 
 import toberumono.lexer.errors.LexerException;
-import toberumono.structures.sexpressions.generic.GenericConsCell;
-import toberumono.structures.sexpressions.generic.GenericConsType;
+import toberumono.structures.sexpressions.ConsCell;
+import toberumono.structures.sexpressions.ConsType;
 
 /**
  * Represents an action to {@link #perform(Lexer, LexerState, Object) perform} when matching an open token.
  * 
  * @author Toberumono
  * @param <C>
- *            the implementation of {@link GenericConsCell} to be used
+ *            the implementation of {@link ConsCell} to be used
  * @param <T>
- *            the implementation of {@link GenericConsType} to be used
+ *            the implementation of {@link ConsType} to be used
  * @param <R>
  *            the implementation of {@link Rule} to be used
  * @param <D>
@@ -22,7 +22,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  *            the type of the matched data
  */
 @FunctionalInterface
-public interface LexerAction<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>, O> {
+public interface LexerAction<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>, O> {
 	
 	/**
 	 * Performs the action
@@ -33,7 +33,7 @@ public interface LexerAction<C extends GenericConsCell<T, C>, T extends GenericC
 	 *            the lexer's state
 	 * @param match
 	 *            the value that was matched
-	 * @return an instance of {@link GenericConsCell}
+	 * @return an instance of {@link ConsCell}
 	 * @throws LexerException
 	 *             if an error occurs
 	 */

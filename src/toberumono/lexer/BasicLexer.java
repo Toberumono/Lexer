@@ -12,6 +12,7 @@ import toberumono.lexer.util.DefaultIgnorePatterns;
 import toberumono.lexer.util.DefaultPattern;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
+import toberumono.structures.sexpressions.CoreConsType;
 
 /**
  * A basic implementation of {@link Lexer}. For most purposes, using this implementation should be more than
@@ -29,7 +30,7 @@ public class BasicLexer extends AbstractLexer<ConsCell, ConsType, BasicRule, Bas
 	 *            few common patterns.
 	 */
 	public BasicLexer(DefaultPattern... ignore) {
-		super(ConsCell::new, BasicLanguage::new, ConsType.EMPTY, ignore);
+		super(ConsCell::new, BasicLanguage::new, CoreConsType.EMPTY, ignore);
 	}
 	
 	/**
@@ -50,6 +51,6 @@ public class BasicLexer extends AbstractLexer<ConsCell, ConsType, BasicRule, Bas
 	 */
 	public BasicLexer(Map<String, BasicRule> rules, Map<String, BasicDescender> descenders, Map<String, Pattern> ignores,
 			Map<Pattern, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, Matcher>> patterns, DefaultPattern... ignore) {
-		super(rules, descenders, ignores, patterns, ConsCell::new, BasicLanguage::new, ConsType.EMPTY, ignore);
+		super(rules, descenders, ignores, patterns, ConsCell::new, BasicLanguage::new, CoreConsType.EMPTY, ignore);
 	}
 }

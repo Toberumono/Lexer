@@ -5,14 +5,14 @@ import java.util.regex.Pattern;
 import toberumono.lexer.base.AbstractLexer;
 import toberumono.lexer.base.LanguageConstructor;
 import toberumono.structures.sexpressions.ConsCellConstructor;
-import toberumono.structures.sexpressions.generic.GenericConsType;
+import toberumono.structures.sexpressions.ConsType;
 
 /**
  * A few patterns that are commonly included as spacing between tokens and should therefore be ignored.<br>
  * Mainly used in the {@link AbstractLexer AbstractLexer's} constructor.
  * 
  * @author Toberumono
- * @see AbstractLexer#AbstractLexer(ConsCellConstructor, LanguageConstructor, GenericConsType, DefaultPattern...)
+ * @see AbstractLexer#AbstractLexer(ConsCellConstructor, LanguageConstructor, ConsType, DefaultPattern...)
  * @see CommentPatterns
  */
 public enum DefaultIgnorePatterns implements DefaultPattern {

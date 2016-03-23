@@ -5,14 +5,14 @@ import java.util.regex.Pattern;
 import toberumono.lexer.base.AbstractLexer;
 import toberumono.lexer.base.LanguageConstructor;
 import toberumono.structures.sexpressions.ConsCellConstructor;
-import toberumono.structures.sexpressions.generic.GenericConsType;
+import toberumono.structures.sexpressions.ConsType;
 
 /**
  * A few {@link Pattern Patterns} for various comment styles.<br>
  * Mainly used in the {@link AbstractLexer AbstractLexer's} constructor.
  * 
  * @author Toberumono
- * @see AbstractLexer#AbstractLexer(ConsCellConstructor, LanguageConstructor, GenericConsType, DefaultPattern...)
+ * @see AbstractLexer#AbstractLexer(ConsCellConstructor, LanguageConstructor, ConsType, DefaultPattern...)
  * @see DefaultIgnorePatterns
  */
 public enum CommentPatterns implements DefaultPattern {

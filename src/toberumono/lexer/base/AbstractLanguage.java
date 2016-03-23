@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 import toberumono.lexer.errors.PatternCollisionException;
 import toberumono.lexer.errors.UnbalancedDescenderException;
 import toberumono.structures.sexpressions.ConsCellConstructor;
-import toberumono.structures.sexpressions.generic.GenericConsCell;
-import toberumono.structures.sexpressions.generic.GenericConsType;
+import toberumono.structures.sexpressions.ConsCell;
+import toberumono.structures.sexpressions.ConsType;
 
 /**
  * An implementation of the core components of {@link Language}.
@@ -17,9 +17,9 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * 
  * @author Toberumono
  * @param <C>
- *            the implementation of {@link GenericConsCell} to be used
+ *            the implementation of {@link ConsCell} to be used
  * @param <T>
- *            the implementation of {@link GenericConsType} to be used
+ *            the implementation of {@link ConsType} to be used
  * @param <R>
  *            the implementation of {@link Rule} to be used
  * @param <D>
@@ -27,7 +27,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public abstract class AbstractLanguage<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> implements Language<C, T, R, D, L> {
+public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> implements Language<C, T, R, D, L> {
 	private final Map<String, R> rules;
 	private final Map<String, D> descenders;
 	private final Map<String, Pattern> ignores;

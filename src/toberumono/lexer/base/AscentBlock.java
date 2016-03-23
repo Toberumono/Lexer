@@ -2,8 +2,8 @@ package toberumono.lexer.base;
 
 import java.util.regex.Matcher;
 
-import toberumono.structures.sexpressions.generic.GenericConsCell;
-import toberumono.structures.sexpressions.generic.GenericConsType;
+import toberumono.structures.sexpressions.ConsCell;
+import toberumono.structures.sexpressions.ConsType;
 
 /**
  * This is a simple marker interface that is used internally by {@link AbstractLanguage} and {@link AbstractLexer} to
@@ -11,9 +11,9 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * 
  * @author Toberumono
  * @param <C>
- *            the implementation of {@link GenericConsCell} to be used
+ *            the implementation of {@link ConsCell} to be used
  * @param <T>
- *            the implementation of {@link GenericConsType} to be used
+ *            the implementation of {@link ConsType} to be used
  * @param <R>
  *            the implementation of {@link Rule} to be used
  * @param <D>
@@ -22,5 +22,5 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  *            the implementation of {@link Lexer} to be used
  */
 @FunctionalInterface
-public interface AscentBlock<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
+public interface AscentBlock<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
 		extends LexerAction<C, T, R, D, L, Matcher> {}

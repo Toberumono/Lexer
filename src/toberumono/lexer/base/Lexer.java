@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 import toberumono.lexer.errors.EmptyInputException;
 import toberumono.lexer.errors.LexerException;
 import toberumono.structures.sexpressions.ConsCellConstructor;
-import toberumono.structures.sexpressions.generic.GenericConsCell;
-import toberumono.structures.sexpressions.generic.GenericConsType;
+import toberumono.structures.sexpressions.ConsCell;
+import toberumono.structures.sexpressions.ConsType;
 
 /**
  * This represents a generic tokenizer that uses a set of user-defined rules to tokenize a {@link String} input.<br>
@@ -18,9 +18,9 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * 
  * @author Toberumono
  * @param <C>
- *            the implementation of {@link GenericConsCell} to be used
+ *            the implementation of {@link ConsCell} to be used
  * @param <T>
- *            the implementation of {@link GenericConsType} to be used
+ *            the implementation of {@link ConsType} to be used
  * @param <R>
  *            the implementation of {@link Rule} to be used
  * @param <D>
@@ -28,7 +28,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
+public interface Lexer<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
 		extends Language<C, T, R, D, L> {
 	
 	/**
@@ -36,7 +36,7 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	 * 
 	 * @param input
 	 *            the {@link String} to tokenize
-	 * @return the tokens in the {@link String} (wrapped in {@link GenericConsCell ConsCells}) or {@code null} if none were
+	 * @return the tokens in the {@link String} (wrapped in {@link ConsCell ConsCells}) or {@code null} if none were
 	 *         found
 	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
@@ -51,7 +51,7 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	 * @param state
 	 *            the {@link LexerState} to process
 	 * @return the tokens in the {@link LexerState LexerState's} {@link LexerState#getInput() input} (wrapped in
-	 *         {@link GenericConsCell ConsCells}) or {@code null} if none were found
+	 *         {@link ConsCell ConsCells}) or {@code null} if none were found
 	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
 	 * @see #lex(String)
@@ -59,7 +59,7 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	public C lex(LexerState<C, T, R, D, L> state) throws LexerException;
 	
 	/**
-	 * Gets the next token (wrapped in a {@link GenericConsCell ConsCell}) in the {@link LexerState LexerState's}
+	 * Gets the next token (wrapped in a {@link ConsCell ConsCell}) in the {@link LexerState LexerState's}
 	 * {@link LexerState#getInput() input}.<br>
 	 * This will throw an {@link EmptyInputException} if it encounters a close token.<br>
 	 * If {@code advance} is {@code true}, then this <i>will</i> modify {@code state's} head position.
@@ -69,7 +69,7 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	 * @param advance
 	 *            whether to advance {@code state's} head position
 	 * @return the next token in the {@link LexerState LexerState's} {@link LexerState#getInput() input} (wrapped in a
-	 *         {@link GenericConsCell ConsCell})
+	 *         {@link ConsCell ConsCell})
 	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
 	 * @throws EmptyInputException
@@ -99,7 +99,7 @@ public interface Lexer<C extends GenericConsCell<T, C>, T extends GenericConsTyp
 	public Language<C, T, R, D, L> getLanguage();
 	
 	/**
-	 * @return the the {@link GenericConsType} that represents empty values
+	 * @return the the {@link ConsType} that represents empty values
 	 */
 	public T getEmptyType();
 	

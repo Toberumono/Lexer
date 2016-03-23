@@ -4,8 +4,8 @@ import toberumono.lexer.base.Descender;
 import toberumono.lexer.base.Lexer;
 import toberumono.lexer.base.LexerState;
 import toberumono.lexer.base.Rule;
-import toberumono.structures.sexpressions.generic.GenericConsCell;
-import toberumono.structures.sexpressions.generic.GenericConsType;
+import toberumono.structures.sexpressions.ConsCell;
+import toberumono.structures.sexpressions.ConsType;
 
 /**
  * Root class for all exceptions thrown by this library.
@@ -78,9 +78,9 @@ public class LexerException extends RuntimeException {
 	 * threw the exception in the first place.
 	 * 
 	 * @param <C>
-	 *            the implementation of {@link GenericConsCell} in use
+	 *            the implementation of {@link ConsCell} in use
 	 * @param <T>
-	 *            the implementation of {@link GenericConsType} in use
+	 *            the implementation of {@link ConsType} in use
 	 * @param <R>
 	 *            the implementation of {@link Rule} in use
 	 * @param <D>
@@ -90,7 +90,7 @@ public class LexerException extends RuntimeException {
 	 * @return the {@link LexerState} of the {@link Lexer} immediately prior to the exception being raised
 	 */
 	@SuppressWarnings("unchecked")
-	public <C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> LexerState<C, T, R, D, L>
+	public <C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> LexerState<C, T, R, D, L>
 			getState() {
 		return (LexerState<C, T, R, D, L>) state;
 	}

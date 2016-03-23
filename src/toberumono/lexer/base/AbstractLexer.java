@@ -13,8 +13,8 @@ import toberumono.lexer.errors.UnrecognizedCharacterException;
 import toberumono.lexer.util.DefaultIgnorePatterns;
 import toberumono.lexer.util.DefaultPattern;
 import toberumono.structures.sexpressions.ConsCellConstructor;
-import toberumono.structures.sexpressions.generic.GenericConsCell;
-import toberumono.structures.sexpressions.generic.GenericConsType;
+import toberumono.structures.sexpressions.ConsCell;
+import toberumono.structures.sexpressions.ConsType;
 
 /**
  * An implementation of the core components of {@link Lexer}. This represents a generic tokenizer that uses a set of
@@ -24,9 +24,9 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * 
  * @author Toberumono
  * @param <C>
- *            the implementation of {@link GenericConsCell} to be used
+ *            the implementation of {@link ConsCell} to be used
  * @param <T>
- *            the implementation of {@link GenericConsType} to be used
+ *            the implementation of {@link ConsType} to be used
  * @param <R>
  *            the implementation of {@link Rule} to be used
  * @param <D>
@@ -34,7 +34,7 @@ import toberumono.structures.sexpressions.generic.GenericConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
+public class AbstractLexer<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
 		implements Lexer<C, T, R, D, L> {
 	private final Language<C, T, R, D, L> language;
 	private final ConsCellConstructor<T, C> cellConstructor;
@@ -45,7 +45,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	 * 
 	 * @param cellConstructor
 	 *            a function that takes no arguments and returns a new instance of the class extending
-	 *            {@link GenericConsCell}
+	 *            {@link ConsCell}
 	 * @param languageConstructor
 	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link Language} to be used
 	 * @param emptyType
@@ -72,7 +72,7 @@ public class AbstractLexer<C extends GenericConsCell<T, C>, T extends GenericCon
 	 *            the {@link Map} in which to store the active patterns
 	 * @param cellConstructor
 	 *            a function that takes no arguments and returns a new instance of the class extending
-	 *            {@link GenericConsCell}
+	 *            {@link ConsCell}
 	 * @param languageConstructor
 	 *            a {@link LanguageConstructor} that returns a new instance of the type of {@link Language} to be used
 	 * @param emptyType

@@ -8,6 +8,7 @@ import toberumono.lexer.BasicDescender;
 import toberumono.lexer.BasicLexer;
 import toberumono.lexer.BasicRule;
 import toberumono.lexer.util.DefaultIgnorePatterns;
+import toberumono.structures.sexpressions.BasicConsType;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
 
@@ -18,7 +19,7 @@ import toberumono.structures.sexpressions.ConsType;
  * @author Toberumono
  */
 public class MathParser {
-	private static final ConsType NUMBER = new ConsType("number"), OPERATOR = new ConsType("operator"), PARENTHESES = new ConsType("parentheses", "(", ")");
+	private static final ConsType NUMBER = new BasicConsType("number"), OPERATOR = new BasicConsType("operator"), PARENTHESES = new BasicConsType("parentheses", "(", ")");
 	
 	private static final Operator addition = new Operator(0, (t, u) -> new ConsCell(new Double(((Double) t.getCar()) + ((Double) u.getCar())), NUMBER));
 	private static final Operator subtraction = new Operator(0, (t, u) -> new ConsCell(new Double(((Double) t.getCar()) - ((Double) u.getCar())), NUMBER));
@@ -70,10 +71,10 @@ public class MathParser {
 	public ConsCell evaluateExpression(ConsCell expression) {
 		ConsCell current, left, right;
 		for (int i = 3; i >= 0; i--)
-			for (current = expression; current != null; current = current.getNextConsCell())
+			for (current = expression; current != null; current = current.getNext())
 				if (current.getCarType() == OPERATOR && ((Operator) current.getCar()).getPriority() == i) {
-					left = handleParentheses(current.getPreviousConsCell());
-					right = handleParentheses(current.getNextConsCell());
+					left = handleParentheses(current.getPrevious());
+					right = handleParentheses(current.getNext());
 					
 					current.replaceCar(((Operator) current.getCar()).apply(left, right));
 					
