@@ -94,8 +94,13 @@ public class AbstractLexer<C extends ConsCell, T extends ConsType, R extends Rul
 	
 	@Override
 	public C lex(String input) throws LexerException {
+		return lex(input, this.getLanguage());
+	}
+	
+	@Override
+	public C lex(String input, Language<C, T, R, D, L> language) throws LexerException {
 		@SuppressWarnings("unchecked") //The Lexer is guaranteed to match L
-		LexerState<C, T, R, D, L> state = new LexerState<>(input, 0, null, (L) this);
+		LexerState<C, T, R, D, L> state = new LexerState<>(input, 0, null, (L) this, language);
 		return lex(state);
 	}
 	

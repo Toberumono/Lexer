@@ -36,13 +36,26 @@ public interface Lexer<C extends ConsCell, T extends ConsType, R extends Rule<C,
 	 * 
 	 * @param input
 	 *            the {@link String} to tokenize
-	 * @return the tokens in the {@link String} (wrapped in {@link ConsCell ConsCells}) or {@code null} if none were
-	 *         found
+	 * @return the tokens in the {@link String} (wrapped in {@link ConsCell ConsCells}) or {@code null} if none were found
 	 * @throws LexerException
 	 *             so that lexer exceptions can be propagated back to the original caller
 	 * @see #lex(LexerState)
 	 */
 	public C lex(String input) throws LexerException;
+	
+	/**
+	 * Tokenizes a {@link String} using the given {@link Language}
+	 * 
+	 * @param input
+	 *            the {@link String} to tokenize
+	 * @param language
+	 *            the {@link Language} to use when tokenizing {@code input}
+	 * @return the tokens in the {@link String} (wrapped in {@link ConsCell ConsCells}) or {@code null} if none were found
+	 * @throws LexerException
+	 *             so that lexer exceptions can be propagated back to the original caller
+	 * @see #lex(LexerState)
+	 */
+	public C lex(String input, Language<C, T, R, D, L> language) throws LexerException;
 	
 	/**
 	 * Tokenizes the remaining {@link LexerState#getInput() input} in the given {@link LexerState}.<br>
