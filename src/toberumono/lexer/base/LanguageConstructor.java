@@ -2,7 +2,7 @@ package toberumono.lexer.base;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import toberumono.structures.sexpressions.ConsCell;
@@ -43,7 +43,7 @@ public interface LanguageConstructor<C extends ConsCell, T extends ConsType, R e
 	 * @return a {@link Language} with the given data
 	 */
 	public Language<C, T, R, D, L> construct(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, String> names,
-			Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns);
+			Map<Pattern, LexerAction<C, T, R, D, L, MatchResult>> patterns);
 	
 	/**
 	 * Constructs an empty {@link Language}

@@ -3,7 +3,7 @@ package toberumono.lexer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.regex.Matcher;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import toberumono.lexer.base.AbstractLanguage;
@@ -45,7 +45,7 @@ public class BasicLanguage extends AbstractLanguage<ConsCell, ConsType, BasicRul
 	 *            a {@link Map} that maps {@link Pattern Patterns} to their associated {@link LexerAction LexerActions}
 	 */
 	public BasicLanguage(HashMap<String, BasicRule> rules, HashMap<String, BasicDescender> descenders, HashMap<String, Pattern> ignores, HashMap<Pattern, String> names,
-			HashMap<Pattern, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, Matcher>> patterns) {
+			HashMap<Pattern, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, MatchResult>> patterns) {
 		super(rules, descenders, ignores, names, patterns);
 	}
 	
@@ -67,7 +67,7 @@ public class BasicLanguage extends AbstractLanguage<ConsCell, ConsType, BasicRul
 	 *            a {@link Map} that maps {@link Pattern Patterns} to their associated {@link LexerAction LexerActions}
 	 */
 	public BasicLanguage(Map<String, BasicRule> rules, Map<String, BasicDescender> descenders, Map<String, Pattern> ignores, Map<Pattern, String> names,
-			Map<Pattern, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, Matcher>> patterns) {
+			Map<Pattern, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, MatchResult>> patterns) {
 		super(rules, descenders, ignores, names, patterns);
 	}
 	
@@ -98,7 +98,7 @@ public class BasicLanguage extends AbstractLanguage<ConsCell, ConsType, BasicRul
 	 *            specified above
 	 */
 	public BasicLanguage(Map<String, BasicRule> rules, Map<String, BasicDescender> descenders, Map<String, Pattern> ignores, Map<Pattern, String> names,
-			Map<Pattern, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, Matcher>> patterns, BiFunction<Map<?, ?>, String, Map<?, ?>> cloner) {
+			Map<Pattern, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, MatchResult>> patterns, BiFunction<Map<?, ?>, String, Map<?, ?>> cloner) {
 		super(rules, descenders, ignores, names, patterns, cloner);
 	}
 }

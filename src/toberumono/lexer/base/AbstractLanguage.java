@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.regex.Matcher;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import toberumono.lexer.errors.PatternCollisionException;
@@ -38,7 +38,7 @@ public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R
 	private Map<String, D> descenders;
 	private Map<String, Pattern> ignores;
 	private Map<Pattern, String> names;
-	private Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns;
+	private Map<Pattern, LexerAction<C, T, R, D, L, MatchResult>> patterns;
 	private final BiFunction<Map<?, ?>, String, Map<?, ?>> cloner;
 	
 	/**
@@ -65,7 +65,7 @@ public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R
 	 *            a {@link Map} that maps {@link Pattern Patterns} to their associated {@link LexerAction LexerActions}
 	 */
 	public AbstractLanguage(HashMap<String, R> rules, HashMap<String, D> descenders, HashMap<String, Pattern> ignores, HashMap<Pattern, String> names,
-			HashMap<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns) {
+			HashMap<Pattern, LexerAction<C, T, R, D, L, MatchResult>> patterns) {
 		this(rules, descenders, ignores, names, patterns, (m, e) -> (Map<?, ?>) ((HashMap<?, ?>) m).clone());
 	}
 	
@@ -87,7 +87,7 @@ public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R
 	 *            a {@link Map} that maps {@link Pattern Patterns} to their associated {@link LexerAction LexerActions}
 	 */
 	public AbstractLanguage(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, String> names,
-			Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns) {
+			Map<Pattern, LexerAction<C, T, R, D, L, MatchResult>> patterns) {
 		this(rules, descenders, ignores, names, patterns, AbstractLanguage::tryClone);
 	}
 	
@@ -118,7 +118,7 @@ public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R
 	 *            specified above
 	 */
 	public AbstractLanguage(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, String> names,
-			Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns, BiFunction<Map<?, ?>, String, Map<?, ?>> cloner) {
+			Map<Pattern, LexerAction<C, T, R, D, L, MatchResult>> patterns, BiFunction<Map<?, ?>, String, Map<?, ?>> cloner) {
 		this.rules = Objects.requireNonNull(rules, "The rules map cannot be null.");
 		this.descenders = Objects.requireNonNull(descenders, "The descenders map cannot be null.");
 		this.ignores = Objects.requireNonNull(ignores, "The ignores map cannot be null.");
@@ -133,7 +133,7 @@ public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R
 			throw new PatternCollisionException(rule.getPattern(), names.get(rule.getPattern()));
 		rules.put(name, rule);
 		names.put(rule.getPattern(), name + "::rule");
-		patterns.put(rule.getPattern(), rule.getAction()::perform);
+		patterns.put(rule.getPattern(), rule.getAction());
 	}
 	
 	@Override
@@ -238,7 +238,7 @@ public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R
 	}
 	
 	@Override
-	public Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns() {
+	public Map<Pattern, LexerAction<C, T, R, D, L, MatchResult>> getPatterns() {
 		return patterns;
 	}
 	
@@ -284,7 +284,7 @@ public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R
 			clone.descenders = (Map<String, D>) cloner.apply(clone.descenders, "descenders");
 			clone.ignores = (Map<String, Pattern>) cloner.apply(clone.ignores, "ignores");
 			clone.names = (Map<Pattern, String>) cloner.apply(clone.names, "names");
-			clone.patterns = (Map<Pattern, LexerAction<C, T, R, D, L, Matcher>>) cloner.apply(clone.patterns, "patterns");
+			clone.patterns = (Map<Pattern, LexerAction<C, T, R, D, L, MatchResult>>) cloner.apply(clone.patterns, "patterns");
 			return clone;
 		}
 		catch (CloneNotSupportedException e) {

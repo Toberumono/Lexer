@@ -2,13 +2,13 @@ package toberumono.lexer.base;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.regex.Matcher;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import toberumono.lexer.errors.EmptyInputException;
 import toberumono.lexer.errors.LexerException;
-import toberumono.structures.sexpressions.ConsCellConstructor;
 import toberumono.structures.sexpressions.ConsCell;
+import toberumono.structures.sexpressions.ConsCellConstructor;
 import toberumono.structures.sexpressions.ConsType;
 
 /**
@@ -191,7 +191,7 @@ public interface Lexer<C extends ConsCell, T extends ConsType, R extends Rule<C,
 	 *         {@link Language}
 	 */
 	@Override
-	public default Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns() {
+	public default Map<Pattern, LexerAction<C, T, R, D, L, MatchResult>> getPatterns() {
 		return Collections.unmodifiableMap(getLanguage().getPatterns());
 	}
 }

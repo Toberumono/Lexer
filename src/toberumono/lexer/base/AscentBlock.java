@@ -1,6 +1,6 @@
 package toberumono.lexer.base;
 
-import java.util.regex.Matcher;
+import java.util.regex.MatchResult;
 
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
@@ -23,4 +23,4 @@ import toberumono.structures.sexpressions.ConsType;
  */
 @FunctionalInterface
 public interface AscentBlock<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
-		extends LexerAction<C, T, R, D, L, Matcher> {}
+		extends LexerAction<C, T, R, D, L, MatchResult> {}

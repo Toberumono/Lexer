@@ -1,7 +1,7 @@
 package toberumono.lexer.base;
 
 import java.util.Map;
-import java.util.regex.Matcher;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import toberumono.lexer.errors.PatternCollisionException;
@@ -164,7 +164,7 @@ public interface Language<C extends ConsCell, T extends ConsType, R extends Rule
 	/**
 	 * @return the {@link LexerAction LexerActions} to perform for each {@link Pattern} in the {@link Language}
 	 */
-	public Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns();
+	public Map<Pattern, LexerAction<C, T, R, D, L, MatchResult>> getPatterns();
 	
 	/**
 	 * @return a clone of the {@link Language} that is in keeping with the conventions specified by {@link Cloneable}
