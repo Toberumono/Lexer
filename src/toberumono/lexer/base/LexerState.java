@@ -1,5 +1,6 @@
 package toberumono.lexer.base;
 
+import java.util.Stack;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +28,7 @@ public class LexerState<C extends ConsCell, T extends ConsType, R extends Rule<C
 	private final String input;
 	private final D descender;
 	private final L lexer;
-	private final Language<C, T, R, D, L> language;
+	private final Stack<Language<C, T, R, D, L>> language;
 	private int head;
 	private C root, last;
 	
@@ -68,7 +69,8 @@ public class LexerState<C extends ConsCell, T extends ConsType, R extends Rule<C
 		this.head = head;
 		this.descender = descender;
 		this.lexer = lexer;
-		this.language = language;
+		this.language = new Stack<>();
+		this.language.push(language);
 		last = root = null;
 	}
 	
@@ -262,16 +264,40 @@ public class LexerState<C extends ConsCell, T extends ConsType, R extends Rule<C
 	 * @return the {@link Language} in use
 	 */
 	public Language<C, T, R, D, L> getLanguage() {
-		return language;
+		return language.peek();
+	}
+	
+	/**
+	 * Pops the active {@link Language} from the {@link LexerState LexerState's} {@link Language} stack. This effectively
+	 * reverts to the last-active {@link Language}.
+	 * 
+	 * @return the popped {@link Language}
+	 */
+	public Language<C, T, R, D, L> popLanguage() {
+		return language.pop();
+	}
+	
+	/**
+	 * Pushes the {@link Language} onto the {@link LexerState LexerState's} {@link Language} stack. This changes the
+	 * {@link LexerState LexerState's} active {@link Language} while also providing a change history.
+	 * 
+	 * @param language
+	 *            the new {@link Language} to use
+	 */
+	public void pushLanguage(Language<C, T, R, D, L> language) {
+		this.language.push(language);
 	}
 	
 	/**
 	 * Produces a shallow copy of this {@link LexerState} with the given {@link Language}. This method can be called from any
-	 * {@link LexerAction}.
+	 * {@link LexerAction}.<br>
+	 * This method can only be used with custom descenders and even then only with the utmost care. Use of
+	 * {@link #pushLanguage(Language)} and {@link #popLanguage()} is highly recommended.
 	 * 
 	 * @param language
 	 *            the new {@link Language} to use
 	 * @return a shallow copy of this {@link LexerState} with the given {@link Language}
+	 * @see #pushLanguage(Language)
 	 */
 	public LexerState<C, T, R, D, L> setLanguage(Language<C, T, R, D, L> language) {
 		return new LexerState<>(getInput(), getHead(), getDescender(), getLexer(), language);
