@@ -86,7 +86,7 @@ public class AbstractLexer<C extends ConsCell, T extends ConsType, R extends Rul
 			ConsCellConstructor<T, C> cellConstructor, LanguageConstructor<C, T, R, D, L> languageConstructor, T emptyType, DefaultPattern... ignore) {
 		this.cellConstructor = cellConstructor;
 		this.emptyType = emptyType;
-		this.language = languageConstructor.construct(cellConstructor, rules, descenders, ignores, new HashMap<>(), patterns);
+		this.language = languageConstructor.construct(rules, descenders, ignores, new HashMap<>(), patterns);
 		for (DefaultPattern p : ignore)
 			this.addIgnore(p);
 	}

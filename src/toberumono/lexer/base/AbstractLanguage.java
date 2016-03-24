@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 import toberumono.lexer.errors.PatternCollisionException;
 import toberumono.lexer.errors.UnbalancedDescenderException;
 import toberumono.structures.sexpressions.ConsCell;
-import toberumono.structures.sexpressions.ConsCellConstructor;
 import toberumono.structures.sexpressions.ConsType;
 
 /**
@@ -40,28 +39,20 @@ public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R
 	private Map<String, Pattern> ignores;
 	private Map<Pattern, String> names;
 	private Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns;
-	private final ConsCellConstructor<T, C> cellConstructor;
 	private final BiFunction<Map<?, ?>, String, Map<?, ?>> cloner;
 	
 	/**
-	 * Constructs an empty {@link AbstractLanguage} with the given {@link ConsCellConstructor}
-	 * 
-	 * @param cellConstructor
-	 *            the {@link ConsCellConstructor} to be used
+	 * Constructs an empty {@link AbstractLanguage}
 	 */
-	public AbstractLanguage(ConsCellConstructor<T, C> cellConstructor) {
-		this(cellConstructor, new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(),
-				(m, e) -> (Map<?, ?>) ((LinkedHashMap<?, ?>) m).clone());
+	public AbstractLanguage() {
+		this(new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), (m, e) -> (Map<?, ?>) ((LinkedHashMap<?, ?>) m).clone());
 	}
 	
 	/**
-	 * Constructs an {@link AbstractLanguage} with the given {@link ConsCellConstructor} and data maps<br>
-	 * <b>Note:</b> the {@link Map Maps} are <i>not</i> copied in the constructor<br>
-	 * <b>Note:</b> if any of the {@link Map Maps} do not meet the requirements specified in {@link #clone()}, the
-	 * {@link #AbstractLanguage(ConsCellConstructor, Map, Map, Map, Map, Map, BiFunction)} constructor should be used instead
+	 * Constructs an {@link AbstractLanguage} with the given data {@link Map Maps}<br>
+	 * This is provided as a convenience constructor with a faster cloning method for instances of {@link AbstractLanguage}
+	 * that use instances of {@link HashMap} for the internal {@link Map Maps}
 	 * 
-	 * @param cellConstructor
-	 *            the {@link ConsCellConstructor} to be used
 	 * @param rules
 	 *            a {@link Map} containing the {@link Rule Rules}
 	 * @param descenders
@@ -73,14 +64,36 @@ public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R
 	 * @param patterns
 	 *            a {@link Map} that maps {@link Pattern Patterns} to their associated {@link LexerAction LexerActions}
 	 */
-	public AbstractLanguage(ConsCellConstructor<T, C> cellConstructor, Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, String> names,
-			Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns) {
-		this(cellConstructor, rules, descenders, ignores, names, patterns, AbstractLanguage::tryClone);
+	public AbstractLanguage(HashMap<String, R> rules, HashMap<String, D> descenders, HashMap<String, Pattern> ignores, HashMap<Pattern, String> names,
+			HashMap<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns) {
+		this(rules, descenders, ignores, names, patterns, (m, e) -> (Map<?, ?>) ((HashMap<?, ?>) m).clone());
 	}
 	
 	/**
-	 * Constructs an {@link AbstractLanguage} with the given {@link ConsCellConstructor} and data maps. Note that the
-	 * {@link Map Maps} are <i>not</i> copied in the constructor<br>
+	 * Constructs an {@link AbstractLanguage} with the given data {@link Map Maps}<br>
+	 * <b>Note:</b> the {@link Map Maps} are <i>not</i> copied in the constructor<br>
+	 * <b>Note:</b> if any of the {@link Map Maps} do not meet the requirements specified in {@link #clone()}, the
+	 * {@link #AbstractLanguage(Map, Map, Map, Map, Map, BiFunction)} constructor should be used instead
+	 * 
+	 * @param rules
+	 *            a {@link Map} containing the {@link Rule Rules}
+	 * @param descenders
+	 *            a {@link Map} containing the {@link Descender Descenders}
+	 * @param ignores
+	 *            a {@link Map} containing the {@link Pattern Patterns} to ignore
+	 * @param names
+	 *            a {@link Map} containing the names that are in use
+	 * @param patterns
+	 *            a {@link Map} that maps {@link Pattern Patterns} to their associated {@link LexerAction LexerActions}
+	 */
+	public AbstractLanguage(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, String> names,
+			Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns) {
+		this(rules, descenders, ignores, names, patterns, AbstractLanguage::tryClone);
+	}
+	
+	/**
+	 * Constructs an {@link AbstractLanguage} with the given data {@link Map Maps}<br>
+	 * <b>Note:</b> the {@link Map Maps} are <i>not</i> copied in the constructor<br>
 	 * <b>Requirements for the {@code cloner} {@link BiFunction}</b>
 	 * <ol>
 	 * <li>The {@link BiFunction BiFunction's} first argument is the {@link Map} being cloned</li>
@@ -90,8 +103,6 @@ public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R
 	 * purposes</li>
 	 * </ol>
 	 * 
-	 * @param cellConstructor
-	 *            the {@link ConsCellConstructor} to be used
 	 * @param rules
 	 *            a {@link Map} containing the {@link Rule Rules}
 	 * @param descenders
@@ -106,9 +117,8 @@ public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R
 	 *            the {@link BiFunction} to be used to clone the internal {@link Map Maps}. It must meet the requirements
 	 *            specified above
 	 */
-	public AbstractLanguage(ConsCellConstructor<T, C> cellConstructor, Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, String> names,
+	public AbstractLanguage(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, String> names,
 			Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns, BiFunction<Map<?, ?>, String, Map<?, ?>> cloner) {
-		this.cellConstructor = cellConstructor;
 		this.rules = Objects.requireNonNull(rules, "The rules map cannot be null.");
 		this.descenders = Objects.requireNonNull(descenders, "The descenders map cannot be null.");
 		this.ignores = Objects.requireNonNull(ignores, "The ignores map cannot be null.");
@@ -167,7 +177,7 @@ public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R
 		patterns.put(descender.getClosePattern(), (AscentBlock<C, T, R, D, L>) (lexer, state, match) -> {
 			if (state.getDescender() != descender)
 				throw new UnbalancedDescenderException(state);
-			return descender.getCloseAction().perform(lexer, state, state.getRoot() == null ? cellConstructor.construct() : state.getRoot());
+			return descender.getCloseAction().perform(lexer, state, state.getRoot());
 		});
 	}
 	

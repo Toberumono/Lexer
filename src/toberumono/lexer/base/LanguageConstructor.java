@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import toberumono.structures.sexpressions.ConsCellConstructor;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
 
@@ -28,11 +27,9 @@ import toberumono.structures.sexpressions.ConsType;
 public interface LanguageConstructor<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
 	
 	/**
-	 * Constructs a {@link Language} with the given {@link ConsCellConstructor} and data maps. Note that the
-	 * {@link Map Maps} are <i>not</i> copied.
+	 * Constructs a {@link Language} with the given data maps<br>
+	 * <b>Note:</b> the {@link Map Maps} are <i>not</i> copied in the constructor<br>
 	 * 
-	 * @param cellConstructor
-	 *            the {@link ConsCellConstructor} to be used
 	 * @param rules
 	 *            a {@link Map} containing the {@link Rule Rules}
 	 * @param descenders
@@ -45,17 +42,15 @@ public interface LanguageConstructor<C extends ConsCell, T extends ConsType, R e
 	 *            a {@link Map} that maps {@link Pattern Patterns} to their associated {@link LexerAction} actions
 	 * @return a {@link Language} with the given data
 	 */
-	public Language<C, T, R, D, L> construct(ConsCellConstructor<T, C> cellConstructor, Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores,
-			Map<Pattern, String> names, Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns);
-			
+	public Language<C, T, R, D, L> construct(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, String> names,
+			Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> patterns);
+	
 	/**
-	 * Constructs an empty {@link Language} with the given {@link ConsCellConstructor}
+	 * Constructs an empty {@link Language}
 	 * 
-	 * @param cellConstructor
-	 *            the {@link ConsCellConstructor} to be used
 	 * @return an empty {@link Language}
 	 */
-	public default Language<C, T, R, D, L> construct(ConsCellConstructor<T, C> cellConstructor) {
-		return construct(cellConstructor, new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>());
+	public default Language<C, T, R, D, L> construct() {
+		return construct(new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>());
 	}
 }
