@@ -101,4 +101,14 @@ public class BasicLanguage extends AbstractLanguage<ConsCell, ConsType, BasicRul
 			Map<Pattern, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, MatchResult>> patterns, BiFunction<Map<?, ?>, String, Map<?, ?>> cloner) {
 		super(rules, descenders, ignores, names, patterns, cloner);
 	}
+	
+	@Override
+	public BasicLanguage clone() {
+		return (BasicLanguage) super.clone();
+	}
+	
+	@Override
+	public BasicLanguage clone(BiFunction<Map<?, ?>, String, Map<?, ?>> cloner) {
+		return (BasicLanguage) super.clone(cloner);
+	}
 }
