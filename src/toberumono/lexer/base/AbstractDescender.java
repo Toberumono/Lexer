@@ -7,8 +7,8 @@ import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
 
 /**
- * An implementation of the core components of {@link Descender}.
- * Represents the action to take upon seeing a particular descent-start cell.
+ * An implementation of the core components of {@link Descender}. Represents the action to take upon seeing a particular
+ * descent-start cell.
  * 
  * @author Toberumono
  * @param <C>
@@ -23,7 +23,7 @@ import toberumono.structures.sexpressions.ConsType;
  *            the implementation of {@link Lexer} to be used
  */
 public class AbstractDescender<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
-		implements Descender<C, T, R, D, L> {
+		implements Descender<C, T, R, D, L>, Cloneable {
 	private final Pattern open, close;
 	private final LexerAction<C, T, R, D, L, C> closeAction;
 	private final DescenderOpenAction<C, T, R, D, L, MatchResult> openAction;
@@ -140,5 +140,18 @@ public class AbstractDescender<C extends ConsCell, T extends ConsType, R extends
 	@Override
 	public DescenderOpenAction<C, T, R, D, L, MatchResult> getOpenAction() {
 		return openAction;
+	}
+	
+	@Override
+	public D clone() {
+		try {
+			@SuppressWarnings("unchecked")
+			D clone = (D) super.clone();
+			return clone;
+		}
+		catch (CloneNotSupportedException e) {
+			// this shouldn't happen, since we are Cloneable
+			throw new InternalError(e);
+		}
 	}
 }

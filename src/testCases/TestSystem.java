@@ -31,6 +31,7 @@ public class TestSystem {
 		lexer.addRule("Decimal", new BasicRule(DOUBLE.getPattern(), (l, s, match) -> new ConsCell(new Double(match.group()), decimal)));
 		lexer.addDescender("Parentheses", new BasicDescender("(", ")", new BasicConsType("Parentheses", "(", ")")));
 		lexer.addDescender("Brackets", new BasicDescender("[", "]", new BasicConsType("Brackets", "[", "]")));
+		lexer = lexer.clone();
 		String test = "10.0 100 ((3.0 300\n)) [51 5 6] ()";
 		try {
 			ConsCell token = lexer.lex(test);

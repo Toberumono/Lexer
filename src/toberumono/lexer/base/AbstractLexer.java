@@ -36,7 +36,7 @@ import toberumono.structures.sexpressions.ConsType;
  */
 public class AbstractLexer<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
 		implements Lexer<C, T, R, D, L> {
-	private final Language<C, T, R, D, L> language;
+	private Language<C, T, R, D, L> language;
 	private final ConsCellConstructor<T, C> cellConstructor;
 	private final T emptyType;
 	
@@ -205,5 +205,19 @@ public class AbstractLexer<C extends ConsCell, T extends ConsType, R extends Rul
 	@Override
 	public T getEmptyType() {
 		return emptyType;
+	}
+	
+	@Override
+	public L clone() {
+		try {
+			@SuppressWarnings("unchecked")
+			L clone = (L) super.clone();
+			((AbstractLexer<C, T, R, D, L>) clone).language = clone.getLanguage().clone();
+			return clone;
+		}
+		catch (CloneNotSupportedException e) {
+			// this shouldn't happen, since we are Cloneable
+			throw new InternalError(e);
+		}
 	}
 }

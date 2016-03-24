@@ -10,7 +10,8 @@ import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
 
 /**
- * This represents a language that can be used by a {@link Lexer} to tokenize an input {@link String}
+ * This represents a language that can be used by a {@link Lexer} to tokenize an input {@link String}.<br>
+ * <b>Note:</b> all implementations of {@link Language} <i>must</i> implement {@link Cloneable}.
  * 
  * @author Toberumono
  * @param <C>
@@ -24,7 +25,7 @@ import toberumono.structures.sexpressions.ConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public interface Language<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
+public interface Language<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> extends Cloneable {
 	
 	/**
 	 * Adds a new {@link Rule}
@@ -164,4 +165,9 @@ public interface Language<C extends ConsCell, T extends ConsType, R extends Rule
 	 * @return the {@link LexerAction LexerActions} to perform for each {@link Pattern} in the {@link Language}
 	 */
 	public Map<Pattern, LexerAction<C, T, R, D, L, Matcher>> getPatterns();
+	
+	/**
+	 * @return a clone of the {@link Language} that is in keeping with the conventions specified by {@link Cloneable}
+	 */
+	public Language<C, T, R, D, L> clone();
 }

@@ -23,7 +23,7 @@ import toberumono.structures.sexpressions.ConsType;
  *            the implementation of {@link Lexer} to be used
  */
 public class AbstractRule<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
-		implements Rule<C, T, R, D, L> {
+		implements Rule<C, T, R, D, L>, Cloneable {
 	private final Pattern pattern;
 	private final LexerAction<C, T, R, D, L, MatchResult> action;
 	
@@ -60,5 +60,18 @@ public class AbstractRule<C extends ConsCell, T extends ConsType, R extends Rule
 	@Override
 	public LexerAction<C, T, R, D, L, MatchResult> getAction() {
 		return action;
+	}
+	
+	@Override
+	public R clone() {
+		try {
+			@SuppressWarnings("unchecked")
+			R clone = (R) super.clone();
+			return clone;
+		}
+		catch (CloneNotSupportedException e) {
+			// this shouldn't happen, since we are Cloneable
+			throw new InternalError(e);
+		}
 	}
 }
