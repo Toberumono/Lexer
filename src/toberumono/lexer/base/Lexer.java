@@ -10,6 +10,7 @@ import toberumono.lexer.errors.LexerException;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsCellConstructor;
 import toberumono.structures.sexpressions.ConsType;
+import toberumono.structures.sexpressions.GenericConsCell;
 
 /**
  * This represents a generic tokenizer that uses a set of user-defined rules to tokenize a {@link String} input.<br>
@@ -28,7 +29,7 @@ import toberumono.structures.sexpressions.ConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public interface Lexer<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
+public interface Lexer<C extends GenericConsCell<C, T>, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
 		extends Language<C, T, R, D, L> {
 	
 	/**
@@ -104,7 +105,7 @@ public interface Lexer<C extends ConsCell, T extends ConsType, R extends Rule<C,
 	/**
 	 * @return the cell constructor being used by the {@link Lexer}
 	 */
-	public ConsCellConstructor<T, C> getConsCellConstructor();
+	public ConsCellConstructor<C, T> getConsCellConstructor();
 	
 	/**
 	 * @return the default {@link Language} for the {@link Lexer}
@@ -207,4 +208,10 @@ public interface Lexer<C extends ConsCell, T extends ConsType, R extends Rule<C,
 	public default Map<Pattern, LexerAction<C, T, R, D, L, MatchResult>> getPatterns() {
 		return Collections.unmodifiableMap(getLanguage().getPatterns());
 	}
+	
+	/**
+	 * @return a clone of the {@link Lexer} that is in keeping with the conventions specified by {@link Cloneable}
+	 */
+	@Override
+	public L clone();
 }

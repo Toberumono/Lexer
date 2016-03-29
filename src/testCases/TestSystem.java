@@ -32,11 +32,11 @@ public class TestSystem {
 		lexer.addDescender("Parentheses", new BasicDescender("(", ")", new BasicConsType("Parentheses", "(", ")")));
 		lexer.addDescender("Brackets", new BasicDescender("[", "]", new BasicConsType("Brackets", "[", "]")));
 		lexer = lexer.clone();
-		String test = "10.0 100 ((3.0 300\n)) [51 5 6] ()";
+		String test = "10.0 100 ((3.0 300\n)) [51 5 6]\t ()";
 		try {
 			ConsCell token = lexer.lex(test);
 			System.out.println(test + " -> " + token.clone().structureString());
-			System.out.println("length: " + token.length());
+			System.out.println("length: " + token.structuralClone().length());
 			for (ConsCell t : token)
 				System.out.println(t);
 		}

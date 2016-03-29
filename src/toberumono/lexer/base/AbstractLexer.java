@@ -16,6 +16,7 @@ import toberumono.lexer.util.DefaultPattern;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsCellConstructor;
 import toberumono.structures.sexpressions.ConsType;
+import toberumono.structures.sexpressions.GenericConsCell;
 
 /**
  * An implementation of the core components of {@link Lexer}. This represents a generic tokenizer that uses a set of
@@ -35,10 +36,10 @@ import toberumono.structures.sexpressions.ConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public class AbstractLexer<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
+public class AbstractLexer<C extends GenericConsCell<C, T>, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
 		implements Lexer<C, T, R, D, L> {
 	private Language<C, T, R, D, L> language;
-	private final ConsCellConstructor<T, C> cellConstructor;
+	private final ConsCellConstructor<C, T> cellConstructor;
 	private final T emptyType;
 	
 	/**
@@ -56,7 +57,7 @@ public class AbstractLexer<C extends ConsCell, T extends ConsType, R extends Rul
 	 *            A list of patterns to ignore. The {@link DefaultIgnorePatterns} enum has a few common patterns.
 	 * @see DefaultIgnorePatterns
 	 */
-	public AbstractLexer(ConsCellConstructor<T, C> cellConstructor, LanguageConstructor<C, T, R, D, L> languageConstructor, T emptyType, DefaultPattern... ignore) {
+	public AbstractLexer(ConsCellConstructor<C, T> cellConstructor, LanguageConstructor<C, T, R, D, L> languageConstructor, T emptyType, DefaultPattern... ignore) {
 		this(new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), cellConstructor, languageConstructor, emptyType, ignore);
 	}
 	
@@ -84,7 +85,7 @@ public class AbstractLexer<C extends ConsCell, T extends ConsType, R extends Rul
 	 * @see DefaultIgnorePatterns
 	 */
 	public AbstractLexer(Map<String, R> rules, Map<String, D> descenders, Map<String, Pattern> ignores, Map<Pattern, LexerAction<C, T, R, D, L, MatchResult>> patterns,
-			ConsCellConstructor<T, C> cellConstructor, LanguageConstructor<C, T, R, D, L> languageConstructor, T emptyType, DefaultPattern... ignore) {
+			ConsCellConstructor<C, T> cellConstructor, LanguageConstructor<C, T, R, D, L> languageConstructor, T emptyType, DefaultPattern... ignore) {
 		this.cellConstructor = cellConstructor;
 		this.emptyType = emptyType;
 		this.language = languageConstructor.construct(rules, descenders, ignores, new HashMap<>(), patterns);
@@ -199,7 +200,7 @@ public class AbstractLexer<C extends ConsCell, T extends ConsType, R extends Rul
 	}
 	
 	@Override
-	public final ConsCellConstructor<T, C> getConsCellConstructor() {
+	public final ConsCellConstructor<C, T> getConsCellConstructor() {
 		return cellConstructor;
 	}
 	
@@ -222,8 +223,7 @@ public class AbstractLexer<C extends ConsCell, T extends ConsType, R extends Rul
 			return clone;
 		}
 		catch (CloneNotSupportedException e) {
-			// this shouldn't happen, since we are Cloneable
-			throw new InternalError(e);
+			throw new InternalError(e); //This shouldn't happen because we are Cloneable
 		}
 	}
 }

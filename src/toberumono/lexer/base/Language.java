@@ -8,6 +8,7 @@ import toberumono.lexer.errors.PatternCollisionException;
 import toberumono.lexer.util.DefaultPattern;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
+import toberumono.structures.sexpressions.GenericConsCell;
 
 /**
  * This represents a language that can be used by a {@link Lexer} to tokenize an input {@link String}.<br>
@@ -25,7 +26,7 @@ import toberumono.structures.sexpressions.ConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public interface Language<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> extends Cloneable {
+public interface Language<C extends GenericConsCell<C, T>, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> extends Cloneable {
 	
 	/**
 	 * Adds a new {@link Rule}

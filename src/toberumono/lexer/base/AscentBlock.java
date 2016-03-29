@@ -4,6 +4,7 @@ import java.util.regex.MatchResult;
 
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
+import toberumono.structures.sexpressions.GenericConsCell;
 
 /**
  * This is a simple marker interface that is used internally by {@link AbstractLanguage} and {@link AbstractLexer} to
@@ -22,5 +23,5 @@ import toberumono.structures.sexpressions.ConsType;
  *            the implementation of {@link Lexer} to be used
  */
 @FunctionalInterface
-public interface AscentBlock<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
+public interface AscentBlock<C extends GenericConsCell<C, T>, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
 		extends LexerAction<C, T, R, D, L, MatchResult> {}

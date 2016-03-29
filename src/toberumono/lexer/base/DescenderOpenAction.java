@@ -3,6 +3,7 @@ package toberumono.lexer.base;
 import toberumono.lexer.errors.LexerException;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
+import toberumono.structures.sexpressions.GenericConsCell;
 
 /**
  * Represents an action to apply to a matched part of an input.
@@ -22,7 +23,7 @@ import toberumono.structures.sexpressions.ConsType;
  *            the type of the matched data
  */
 @FunctionalInterface
-public interface DescenderOpenAction<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>, O> {
+public interface DescenderOpenAction<C extends GenericConsCell<C, T>, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>, O> {
 	/**
 	 * Performs the action
 	 * 

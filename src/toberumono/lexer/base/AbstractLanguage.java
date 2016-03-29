@@ -15,6 +15,7 @@ import toberumono.lexer.errors.PatternCollisionException;
 import toberumono.lexer.errors.UnbalancedDescenderException;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
+import toberumono.structures.sexpressions.GenericConsCell;
 
 /**
  * An implementation of the core components of {@link Language}. This represents a language that can be used by a
@@ -32,7 +33,7 @@ import toberumono.structures.sexpressions.ConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
+public abstract class AbstractLanguage<C extends GenericConsCell<C, T>, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
 		implements Language<C, T, R, D, L>, Cloneable {
 	private Map<String, R> rules;
 	private Map<String, D> descenders;
@@ -288,8 +289,7 @@ public abstract class AbstractLanguage<C extends ConsCell, T extends ConsType, R
 			return clone;
 		}
 		catch (CloneNotSupportedException e) {
-			// this shouldn't happen, since we are Cloneable
-			throw new InternalError(e);
+			throw new InternalError(e); //This shouldn't happen because we are Cloneable
 		}
 	}
 	

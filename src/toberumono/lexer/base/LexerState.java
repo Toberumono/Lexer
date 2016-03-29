@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
+import toberumono.structures.sexpressions.GenericConsCell;
 
 /**
  * A container that stores the state information of a lexing operation.<br>
@@ -24,11 +25,11 @@ import toberumono.structures.sexpressions.ConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public class LexerState<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
+public class LexerState<C extends GenericConsCell<C, T>, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
 	private final String input;
 	private final D descender;
-	private final L lexer;
-	private final Stack<Language<C, T, R, D, L>> language;
+	private L lexer;
+	private Stack<Language<C, T, R, D, L>> language;
 	private int head;
 	private C root, last;
 	
@@ -158,12 +159,11 @@ public class LexerState<C extends ConsCell, T extends ConsType, R extends Rule<C
 	 *            the cell to append
 	 * @return {@code this} for easy chaining
 	 */
-	@SuppressWarnings("unchecked")
 	public LexerState<C, T, R, D, L> appendMatch(C cell) {
 		if (root == null)
 			setRoot(setLast(cell));
 		else
-			setLast((C) getLast().append(cell));
+			setLast(getLast().append(cell));
 		return this;
 	}
 	
@@ -202,7 +202,6 @@ public class LexerState<C extends ConsCell, T extends ConsType, R extends Rule<C
 	 *         there has yet to be a match or all of the matched {@code ConsCells} were popped via {@link #popLast()})
 	 * @see #getLast()
 	 */
-	@SuppressWarnings("unchecked")
 	public C popLast() {
 		if (getLast() == null)
 			return getLast();
@@ -210,7 +209,7 @@ public class LexerState<C extends ConsCell, T extends ConsType, R extends Rule<C
 		if (getLast() == getRoot())
 			setRoot(setLast(null));
 		else {
-			setLast((C) getLast().getPrevious());
+			setLast(getLast().getPrevious());
 			ret.remove();
 		}
 		return ret;
@@ -306,11 +305,14 @@ public class LexerState<C extends ConsCell, T extends ConsType, R extends Rule<C
 	/**
 	 * @return a copy of the {@link LexerState} where only the {@link ConsCell ConsCells} are cloned.
 	 */
-	@SuppressWarnings("unchecked")
 	public LexerState<C, T, R, D, L> copy() {
 		LexerState<C, T, R, D, L> copy = new LexerState<>(this, root, last);
-		copy.root = (C) copy.root.clone();
-		copy.last = (C) copy.root.getLast();
+		copy.root = copy.root.clone();
+		copy.last = copy.root.getLast();
+		copy.lexer = copy.lexer.clone();
+		copy.language = new Stack<>();
+		for(int i = 0; i < language.size(); i++)
+			copy.language.push(language.get(i).clone());
 		return copy;
 	}
 }

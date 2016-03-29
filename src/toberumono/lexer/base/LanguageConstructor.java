@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
+import toberumono.structures.sexpressions.GenericConsCell;
 
 /**
  * A functional interface that represents the constructors for a {@link Language}.
@@ -24,7 +25,7 @@ import toberumono.structures.sexpressions.ConsType;
  *            the implementation of {@link Lexer} to be used
  */
 @FunctionalInterface
-public interface LanguageConstructor<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
+public interface LanguageConstructor<C extends GenericConsCell<C, T>, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>> {
 	
 	/**
 	 * Constructs a {@link Language} with the given data maps<br>

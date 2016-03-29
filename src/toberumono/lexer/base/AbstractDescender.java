@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
+import toberumono.structures.sexpressions.GenericConsCell;
 
 /**
  * An implementation of the core components of {@link Descender}. Represents the action to take upon seeing a particular
@@ -22,7 +23,7 @@ import toberumono.structures.sexpressions.ConsType;
  * @param <L>
  *            the implementation of {@link Lexer} to be used
  */
-public class AbstractDescender<C extends ConsCell, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
+public class AbstractDescender<C extends GenericConsCell<C, T>, T extends ConsType, R extends Rule<C, T, R, D, L>, D extends Descender<C, T, R, D, L>, L extends Lexer<C, T, R, D, L>>
 		implements Descender<C, T, R, D, L>, Cloneable {
 	private final Pattern open, close;
 	private final LexerAction<C, T, R, D, L, C> closeAction;
@@ -150,8 +151,7 @@ public class AbstractDescender<C extends ConsCell, T extends ConsType, R extends
 			return clone;
 		}
 		catch (CloneNotSupportedException e) {
-			// this shouldn't happen, since we are Cloneable
-			throw new InternalError(e);
+			throw new InternalError(e); //This shouldn't happen because we are Cloneable
 		}
 	}
 }
