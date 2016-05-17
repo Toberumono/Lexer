@@ -307,11 +307,13 @@ public class LexerState<C extends GenericConsCell<C, T>, T extends ConsType, R e
 	 */
 	public LexerState<C, T, R, D, L> copy() {
 		LexerState<C, T, R, D, L> copy = new LexerState<>(this, root, last);
-		copy.root = copy.root.clone();
-		copy.last = copy.root.getLast();
+		if (copy.root != null) {
+			copy.root = copy.root.clone();
+			copy.last = copy.root.getLast();
+		}
 		copy.lexer = copy.lexer.clone();
 		copy.language = new Stack<>();
-		for(int i = 0; i < language.size(); i++)
+		for (int i = 0; i < language.size(); i++)
 			copy.language.push(language.get(i).clone());
 		return copy;
 	}
