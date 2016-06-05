@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import toberumono.lexer.base.AbstractRule;
 import toberumono.lexer.base.LexerAction;
-import toberumono.lexer.base.Rule;
+import toberumono.lexer.util.DefaultPattern;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
 
@@ -17,26 +17,56 @@ import toberumono.structures.sexpressions.ConsType;
 public class BasicRule extends AbstractRule<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer> {
 	
 	/**
-	 * Constructs a new {@link Rule} with the given data
+	 * Constructs a new {@link BasicRule} with the given {@link Pattern} and {@link ConsType}.
 	 * 
 	 * @param pattern
-	 *            the regex {@link Pattern} for this {@link Rule} to use.
+	 *            the {@link Pattern} that describes tokens that the {@link BasicRule} can process
 	 * @param type
-	 *            the type for {@code ConsCell}s matched by this rule
+	 *            the {@link ConsType type} of the {@code car} value of the {@link ConsCell ConsCells} matched by this
+	 *            {@link BasicRule rule}
 	 */
 	public BasicRule(Pattern pattern, ConsType type) {
 		super(pattern, type);
 	}
 	
 	/**
-	 * Constructs a new {@link Rule} with the given data
+	 * Constructs a new {@link BasicRule} with the given {@link Pattern} and {@link LexerAction}.
 	 * 
 	 * @param pattern
-	 *            the regex {@link Pattern} for this {@link Rule} to use.
+	 *            the {@link Pattern} that describes tokens that the {@link BasicRule} can process
 	 * @param action
-	 *            the action to perform on the part of the input matched by this {@link Rule}
+	 *            the {@link LexerAction action} to perform on the part of the input matched by the {@link BasicRule
+	 *            rule's} {@link Pattern}
 	 */
 	public BasicRule(Pattern pattern, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, MatchResult> action) {
+		super(pattern, action);
+	}
+	
+	/**
+	 * Constructs a new {@link BasicRule} with the given {@link DefaultPattern} and {@link ConsType}.
+	 * 
+	 * @param pattern
+	 *            the {@link DefaultPattern} containing the regex {@link Pattern} that describes tokens that the
+	 *            {@link BasicRule} can process
+	 * @param type
+	 *            the {@link ConsType type} of the {@code car} value of the {@link ConsCell ConsCells} matched by this
+	 *            {@link BasicRule rule}
+	 */
+	public BasicRule(DefaultPattern pattern, ConsType type) {
+		super(pattern, type);
+	}
+	
+	/**
+	 * Constructs a new {@link BasicRule} with the given {@link DefaultPattern} and {@link LexerAction}.
+	 * 
+	 * @param pattern
+	 *            the {@link DefaultPattern} containing the regex {@link Pattern} that describes tokens that the
+	 *            {@link BasicRule} can process
+	 * @param action
+	 *            the {@link LexerAction action} to perform on the part of the input matched by the {@link BasicRule
+	 *            rule's} {@link Pattern}
+	 */
+	public BasicRule(DefaultPattern pattern, LexerAction<ConsCell, ConsType, BasicRule, BasicDescender, BasicLexer, MatchResult> action) {
 		super(pattern, action);
 	}
 }
