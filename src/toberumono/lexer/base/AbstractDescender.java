@@ -61,7 +61,7 @@ public class AbstractDescender<C extends GenericConsCell<C, T>, T extends ConsTy
 	}
 	
 	/**
-	 * Constructs a {@link AbstractDescender} with the given open and close tokens and open and close actions.
+	 * Constructs an {@link AbstractDescender} with the given open and close tokens and open and close actions.
 	 * 
 	 * @param open
 	 *            the open token
@@ -77,7 +77,7 @@ public class AbstractDescender<C extends GenericConsCell<C, T>, T extends ConsTy
 	}
 	
 	/**
-	 * Constructs a {@link AbstractDescender} that corresponds to the given type with the given open and close tokens.
+	 * Constructs an {@link AbstractDescender} that corresponds to the given type with the given open and close tokens.
 	 * 
 	 * @param open
 	 *            the {@link Pattern} that describes the {@link AbstractDescender AbstractDescender's} open tokens
@@ -91,7 +91,7 @@ public class AbstractDescender<C extends GenericConsCell<C, T>, T extends ConsTy
 	}
 	
 	/**
-	 * Constructs a {@link AbstractDescender} that takes no action when the open token is matched with the given open and
+	 * Constructs an {@link AbstractDescender} that takes no action when the open token is matched with the given open and
 	 * close tokens and close action.
 	 * 
 	 * @param open
@@ -106,7 +106,7 @@ public class AbstractDescender<C extends GenericConsCell<C, T>, T extends ConsTy
 	}
 	
 	/**
-	 * Constructs a {@link AbstractDescender} with the given open and close tokens and open and close actions.
+	 * Constructs an {@link AbstractDescender} with the given open and close tokens and open and close actions.
 	 * 
 	 * @param open
 	 *            the {@link Pattern} that describes the {@link AbstractDescender AbstractDescender's} open tokens
@@ -125,7 +125,7 @@ public class AbstractDescender<C extends GenericConsCell<C, T>, T extends ConsTy
 	}
 	
 	/**
-	 * Constructs a {@link AbstractDescender} that corresponds to the given type with the given open and close tokens.
+	 * Constructs an {@link AbstractDescender} that corresponds to the given type with the given open and close tokens.
 	 * 
 	 * @param open
 	 *            the {@link DefaultPattern} containing the regex {@link Pattern} that describes the {@link AbstractDescender
@@ -141,7 +141,7 @@ public class AbstractDescender<C extends GenericConsCell<C, T>, T extends ConsTy
 	}
 	
 	/**
-	 * Constructs a {@link AbstractDescender} that takes no action when the open token is matched with the given open and
+	 * Constructs an {@link AbstractDescender} that takes no action when the open token is matched with the given open and
 	 * close tokens and close action.
 	 * 
 	 * @param open
@@ -158,7 +158,7 @@ public class AbstractDescender<C extends GenericConsCell<C, T>, T extends ConsTy
 	}
 	
 	/**
-	 * Constructs a {@link AbstractDescender} with the given open and close tokens and open and close actions.
+	 * Constructs an {@link AbstractDescender} with the given open and close tokens and open and close actions.
 	 * 
 	 * @param open
 	 *            the {@link DefaultPattern} containing the regex {@link Pattern} that describes the {@link AbstractDescender
