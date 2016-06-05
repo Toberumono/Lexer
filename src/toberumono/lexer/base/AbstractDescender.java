@@ -3,6 +3,7 @@ package toberumono.lexer.base;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
+import toberumono.lexer.util.DefaultPattern;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
 import toberumono.structures.sexpressions.GenericConsCell;
@@ -121,6 +122,57 @@ public class AbstractDescender<C extends GenericConsCell<C, T>, T extends ConsTy
 		this.close = close;
 		this.openAction = openAction;
 		this.closeAction = closeAction;
+	}
+	
+	/**
+	 * Constructs a {@link AbstractDescender} that corresponds to the given type with the given open and close tokens.
+	 * 
+	 * @param open
+	 *            the {@link DefaultPattern} containing the regex {@link Pattern} that describes the {@link AbstractDescender
+	 *            AbstractDescender's} open tokens
+	 * @param close
+	 *            the {@link DefaultPattern} containing the regex {@link Pattern} that describes the {@link AbstractDescender
+	 *            AbstractDescender's} open tokens
+	 * @param type
+	 *            the {@link ConsType type} to be associated with the {@link AbstractDescender}
+	 */
+	public AbstractDescender(DefaultPattern open, DefaultPattern close, T type) {
+		this(open.getPattern(), close.getPattern(), type);
+	}
+	
+	/**
+	 * Constructs a {@link AbstractDescender} that takes no action when the open token is matched with the given open and
+	 * close tokens and close action.
+	 * 
+	 * @param open
+	 *            the {@link DefaultPattern} containing the regex {@link Pattern} that describes the {@link AbstractDescender
+	 *            AbstractDescender's} open tokens
+	 * @param close
+	 *            the {@link DefaultPattern} containing the regex {@link Pattern} that describes the {@link AbstractDescender
+	 *            AbstractDescender's} open tokens
+	 * @param closeAction
+	 *            the {@link LexerAction} to perform when the close token is encountered (prior to ascending)
+	 */
+	public AbstractDescender(DefaultPattern open, DefaultPattern close, LexerAction<C, T, R, D, L, C> closeAction) {
+		this(open.getPattern(), close.getPattern(), closeAction);
+	}
+	
+	/**
+	 * Constructs a {@link AbstractDescender} with the given open and close tokens and open and close actions.
+	 * 
+	 * @param open
+	 *            the {@link DefaultPattern} containing the regex {@link Pattern} that describes the {@link AbstractDescender
+	 *            AbstractDescender's} open tokens
+	 * @param close
+	 *            the {@link DefaultPattern} containing the regex {@link Pattern} that describes the {@link AbstractDescender
+	 *            AbstractDescender's} open tokens
+	 * @param openAction
+	 *            the {@link DescenderOpenAction} to perform when the open token is encountered (prior to descending)
+	 * @param closeAction
+	 *            the {@link LexerAction} to perform when the close token is encountered (prior to ascending)
+	 */
+	public AbstractDescender(DefaultPattern open, DefaultPattern close, DescenderOpenAction<C, T, R, D, L, MatchResult> openAction, LexerAction<C, T, R, D, L, C> closeAction) {
+		this(open.getPattern(), close.getPattern(), openAction, closeAction);
 	}
 	
 	@Override

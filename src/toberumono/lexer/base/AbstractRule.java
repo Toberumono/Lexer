@@ -3,6 +3,7 @@ package toberumono.lexer.base;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
+import toberumono.lexer.util.DefaultPattern;
 import toberumono.structures.sexpressions.ConsCell;
 import toberumono.structures.sexpressions.ConsType;
 import toberumono.structures.sexpressions.GenericConsCell;
@@ -55,6 +56,34 @@ public class AbstractRule<C extends GenericConsCell<C, T>, T extends ConsType, R
 		this.action = action;
 	}
 	
+	/**
+	 * Constructs a new {@link AbstractRule} with the given {@link DefaultPattern} and {@link ConsType}.
+	 * 
+	 * @param pattern
+	 *            the {@link DefaultPattern} containing the regex {@link Pattern} that describes tokens that the
+	 *            {@link AbstractRule} can process
+	 * @param type
+	 *            the {@link ConsType type} of the {@code car} value of the {@link GenericConsCell ConsCells} matched by this
+	 *            {@link AbstractRule rule}
+	 */
+	public AbstractRule(DefaultPattern pattern, T type) {
+		this(pattern.getPattern(), type);
+	}
+	
+	/**
+	 * Constructs a new {@link AbstractRule} with the given {@link DefaultPattern} and {@link LexerAction}.
+	 * 
+	 * @param pattern
+	 *            the {@link DefaultPattern} containing the regex {@link Pattern} that describes tokens that the
+	 *            {@link AbstractRule} can process
+	 * @param action
+	 *            the {@link LexerAction action} to perform on the part of the input matched by the {@link AbstractRule
+	 *            rule's} {@link Pattern}
+	 */
+	public AbstractRule(DefaultPattern pattern, LexerAction<C, T, R, D, L, MatchResult> action) {
+		this(pattern.getPattern(), action);
+	}
+	
 	@Override
 	public Pattern getPattern() {
 		return pattern;
@@ -68,8 +97,7 @@ public class AbstractRule<C extends GenericConsCell<C, T>, T extends ConsType, R
 	@Override
 	public R clone() {
 		try {
-			@SuppressWarnings("unchecked")
-			R clone = (R) super.clone();
+			@SuppressWarnings("unchecked") R clone = (R) super.clone();
 			return clone;
 		}
 		catch (CloneNotSupportedException e) {
