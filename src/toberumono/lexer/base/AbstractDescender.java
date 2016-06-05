@@ -37,7 +37,7 @@ public class AbstractDescender<C extends GenericConsCell<C, T>, T extends ConsTy
 	 * @param close
 	 *            the close token
 	 * @param type
-	 *            the {@link ConsType type} to be associated with the {@link Descender}
+	 *            the {@link ConsType type} to be associated with the {@link AbstractDescender}
 	 */
 	public AbstractDescender(String open, String close, T type) {
 		this(Pattern.compile(open, Pattern.LITERAL), Pattern.compile(close, Pattern.LITERAL), (lexer, state, match) -> {},
@@ -79,11 +79,11 @@ public class AbstractDescender<C extends GenericConsCell<C, T>, T extends ConsTy
 	 * Constructs a {@link AbstractDescender} that corresponds to the given type with the given open and close tokens.
 	 * 
 	 * @param open
-	 *            the open token
+	 *            the {@link Pattern} that describes the {@link AbstractDescender AbstractDescender's} open tokens
 	 * @param close
-	 *            the close token
+	 *            the {@link Pattern} that describes the {@link AbstractDescender AbstractDescender's} close tokens
 	 * @param type
-	 *            the {@link ConsType type} to be associated with the {@link Descender}
+	 *            the {@link ConsType type} to be associated with the {@link AbstractDescender}
 	 */
 	public AbstractDescender(Pattern open, Pattern close, T type) {
 		this(open, close, (lexer, state, match) -> {}, (lexer, state, match) -> lexer.getConsCellConstructor().construct(match, type, null, lexer.getEmptyType()));
@@ -94,9 +94,9 @@ public class AbstractDescender<C extends GenericConsCell<C, T>, T extends ConsTy
 	 * close tokens and close action.
 	 * 
 	 * @param open
-	 *            the open token
+	 *            the {@link Pattern} that describes the {@link AbstractDescender AbstractDescender's} open tokens
 	 * @param close
-	 *            the close token
+	 *            the {@link Pattern} that describes the {@link AbstractDescender AbstractDescender's} close tokens
 	 * @param closeAction
 	 *            the {@link LexerAction} to perform when the close token is encountered (prior to ascending)
 	 */
@@ -108,9 +108,9 @@ public class AbstractDescender<C extends GenericConsCell<C, T>, T extends ConsTy
 	 * Constructs a {@link AbstractDescender} with the given open and close tokens and open and close actions.
 	 * 
 	 * @param open
-	 *            the open token
+	 *            the {@link Pattern} that describes the {@link AbstractDescender AbstractDescender's} open tokens
 	 * @param close
-	 *            the close token
+	 *            the {@link Pattern} that describes the {@link AbstractDescender AbstractDescender's} close tokens
 	 * @param openAction
 	 *            the {@link DescenderOpenAction} to perform when the open token is encountered (prior to descending)
 	 * @param closeAction
@@ -146,8 +146,7 @@ public class AbstractDescender<C extends GenericConsCell<C, T>, T extends ConsTy
 	@Override
 	public D clone() {
 		try {
-			@SuppressWarnings("unchecked")
-			D clone = (D) super.clone();
+			@SuppressWarnings("unchecked") D clone = (D) super.clone();
 			return clone;
 		}
 		catch (CloneNotSupportedException e) {
