@@ -36,7 +36,7 @@ public enum NumberPatterns implements DefaultPattern,NumberPatternsConstants {
 	 * @see #PICKY_DOUBLE
 	 * @see #INTEGER
 	 */
-	DOUBLE(Pattern.compile("[+-]?([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+)")),
+	DOUBLE(Pattern.compile("[+-]?([0-9]+(\\.[0-9]*)?|\\.[0-9]+)")),
 	/**
 	 * Describes a double with a more rigorous format. This <i>cannot</i> start with 0 unless it equals 0, 0., or 0.0.
 	 * 
@@ -84,5 +84,5 @@ public enum NumberPatterns implements DefaultPattern,NumberPatternsConstants {
 }
 
 interface NumberPatternsConstants { //Only way to make DN accessible to the PICKY_DOUBLE and COMPLEX enum values
-	String DN = "(([1-9][0-9]*|0)\\.(0*[1-9][0-9]*|0?)|\\.0*[1-9][0-9]*)", PM = "\\s*[+-]\\s*", PMDN = PM + DN;
+	String DN = "(([1-9][0-9]*|0)(\\.(0*[1-9][0-9]*|0?))?|\\.0*[1-9][0-9]*)", PM = "\\s*[+-]\\s*", PMDN = PM + DN;
 }
