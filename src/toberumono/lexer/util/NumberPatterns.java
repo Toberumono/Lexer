@@ -15,14 +15,23 @@ import toberumono.structures.sexpressions.ConsType;
  * @see AbstractLexer#AbstractLexer(ConsCellConstructor, LanguageConstructor, ConsType, DefaultPattern...)
  * @see CommentPatterns
  */
-public enum NumberPatterns implements DefaultPattern,NumberPatternsConstants {
+public enum NumberPatterns implements DefaultPattern, NumberPatternsConstants {
 	/**
 	 * Describes an integer. This <i>can</i> start with 0.
 	 * 
+	 * @see #SIGNLESS_INTEGER
 	 * @see #PICKY_INTEGER
 	 * @see #DOUBLE
 	 */
 	INTEGER(Pattern.compile("[+-]?[0-9]+")),
+	/**
+	 * Describes an integer without the preceding +/- sign. This <i>can</i> start with 0.
+	 * 
+	 * @see #INTEGER
+	 * @see #SIGNLESS_PICKY_INTEGER
+	 * @see #SIGNLESS_DOUBLE
+	 */
+	SIGNLESS_INTEGER(Pattern.compile("[0-9]+")),
 	/**
 	 * Describes an integer with a more rigorous format. This <i>cannot</i> start with 0 unless it equals 0.
 	 * 
@@ -31,6 +40,14 @@ public enum NumberPatterns implements DefaultPattern,NumberPatternsConstants {
 	 */
 	PICKY_INTEGER(Pattern.compile("[+-]?([1-9][0-9]*|0)")),
 	/**
+	 * Describes an integer without the preceding +/- sign with a more rigorous format. This <i>cannot</i> start with 0 unless it equals 0.
+	 * 
+	 * @see #PICKY_INTEGER
+	 * @see #SIGNLESS_INTEGER
+	 * @see #SIGNLESS_PICKY_DOUBLE
+	 */
+	SIGNLESS_PICKY_INTEGER(Pattern.compile("[+-]?([1-9][0-9]*|0)")),
+	/**
 	 * Describes a double. This <i>can</i> start with 0.
 	 * 
 	 * @see #PICKY_DOUBLE
@@ -38,12 +55,28 @@ public enum NumberPatterns implements DefaultPattern,NumberPatternsConstants {
 	 */
 	DOUBLE(Pattern.compile("[+-]?([0-9]+(\\.[0-9]*)?|\\.[0-9]+)")),
 	/**
+	 * Describes a double without the preceding +/- sign. This <i>can</i> start with 0.
+	 * 
+	 * @see #DOUBLE
+	 * @see #SIGNLESS_PICKY_DOUBLE
+	 * @see #SIGNLESS_INTEGER
+	 */
+	SIGNLESS_DOUBLE(Pattern.compile("([0-9]+(\\.[0-9]*)?|\\.[0-9]+)")),
+	/**
 	 * Describes a double with a more rigorous format. This <i>cannot</i> start with 0 unless it equals 0, 0., or 0.0.
 	 * 
 	 * @see #DOUBLE
 	 * @see #PICKY_INTEGER
 	 */
 	PICKY_DOUBLE(Pattern.compile("[+-]?" + DN)),
+	/**
+	 * Describes a double without the preceding +/- sign with a more rigorous format. This <i>cannot</i> start with 0 unless it equals 0, 0., or 0.0.
+	 * 
+	 * @see #PICKY_DOUBLE
+	 * @see #SIGNLESS_DOUBLE
+	 * @see #SIGNLESS_PICKY_INTEGER
+	 */
+	SIGNLESS_PICKY_DOUBLE(Pattern.compile("[+-]?" + DN)),
 	/**
 	 * Describes a complex number of the following forms:
 	 * <table summary="Complex Number Formats">
@@ -67,8 +100,34 @@ public enum NumberPatterns implements DefaultPattern,NumberPatternsConstants {
 	 * 
 	 * @see #PICKY_DOUBLE
 	 */
-	COMPLEX(Pattern.compile("[+-]?((i|i[*/]?" + DN + "|" + DN + "[*/]?i)(" + PMDN + ")?|" + DN + "(" + PM + "(i|i[*/]?" + DN + "|" + DN + "[*/]?i))?)"));
+	COMPLEX(Pattern.compile("[+-]?((i|i[*/]?" + DN + "|" + DN + "[*/]?i)(" + PMDN + ")?|" + DN + "(" + PM + "(i|i[*/]?" + DN + "|" + DN + "[*/]?i))?)")),
 	//Number formats:                     i, ai, ia, ai+-b, ia+-b, i+-b                |                    a, a+-i, a+-bi, a+-ib
+	/**
+	 * Describes a complex number of the following forms:
+	 * <table summary="Complex Number Formats">
+	 * <tr>
+	 * <td>i</td>
+	 * <td>ai</td>
+	 * <td>ai&plusmn;b</td>
+	 * <td>a&plusmn;bi</td>
+	 * <td>a&plusmn;i</td>
+	 * </tr>
+	 * <tr>
+	 * <td>a</td>
+	 * <td>ia</td>
+	 * <td>ia&plusmn;b</td>
+	 * <td>a&plusmn;ib</td>
+	 * <td>i&plusmn;b</td>
+	 * </tr>
+	 * </table>
+	 * <br>
+	 * NOTE: This uses the same pattern as {@link #PICKY_DOUBLE}
+	 * 
+	 * @see #COMPLEX
+	 * @see #SIGNLESS_PICKY_DOUBLE
+	 */
+	SIGNLESS_COMPLEX(Pattern.compile("((i|i[*/]?" + DN + "|" + DN + "[*/]?i)(" + PMDN + ")?|" + DN + "(" + PM + "(i|i[*/]?" + DN + "|" + DN + "[*/]?i))?)"));
+	//Number formats:                         i, ai, ia, ai+-b, ia+-b, i+-b                |                    a, a+-i, a+-bi, a+-ib
 	
 	private final Pattern pattern;
 	

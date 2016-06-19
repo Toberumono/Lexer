@@ -176,8 +176,10 @@ public class LexerState<C extends GenericConsCell<C, T>, T extends ConsType, R e
 	 * @return {@code this} for easy chaining
 	 */
 	public LexerState<C, T, R, D, L> appendMatch(C cell) {
-		if (root == null)
-			setRoot(setLast(cell));
+		if (root == null) {
+			setRoot(cell);
+			setLast(cell.getLast());
+		}
 		else
 			setLast(getLast().append(cell));
 		return this;
