@@ -34,8 +34,7 @@ public class LexerState<C extends GenericConsCell<C, T>, T extends ConsType, R e
 	private C root, last;
 	
 	/**
-	 * Constructs a new {@link LexerState} with the given state information. This should generally only be called from
-	 * {@link Lexer#lex(String)}.
+	 * Constructs a new {@link LexerState} with the given state information. This should generally only be called from {@link Lexer#lex(String)}.
 	 * 
 	 * @param input
 	 *            the input to be tokenized
@@ -51,8 +50,7 @@ public class LexerState<C extends GenericConsCell<C, T>, T extends ConsType, R e
 	}
 	
 	/**
-	 * Constructs a new {@link LexerState} with the given state information. This should generally only be called from
-	 * {@link Lexer#lex(String)}.
+	 * Constructs a new {@link LexerState} with the given state information. This should generally only be called from {@link Lexer#lex(String)}.
 	 * 
 	 * @param input
 	 *            the input to be tokenized
@@ -66,12 +64,30 @@ public class LexerState<C extends GenericConsCell<C, T>, T extends ConsType, R e
 	 *            the {@link Language} that the {@link LexerState} is to use
 	 */
 	public LexerState(String input, int head, D descender, L lexer, Language<C, T, R, D, L> language) {
+		this(input, head, descender, lexer, new Stack<>());
+		this.language.push(language);
+	}
+	
+	/**
+	 * Constructs a new {@link LexerState} with the given state information. This should generally only be called from {@link #descend(Descender)}.
+	 * 
+	 * @param input
+	 *            the input to be tokenized
+	 * @param head
+	 *            the position from which the next match must start
+	 * @param descender
+	 *            the most recent descender
+	 * @param lexer
+	 *            the {@link Lexer} for which the {@link LexerState} was created
+	 * @param language
+	 *            the {@link Language} that the {@link LexerState} is to use
+	 */
+	public LexerState(String input, int head, D descender, L lexer, Stack<Language<C, T, R, D, L>> language) {
 		this.input = input;
 		this.head = head;
 		this.descender = descender;
 		this.lexer = lexer;
-		this.language = new Stack<>();
-		this.language.push(language);
+		this.language = language;
 		last = root = null;
 	}
 	
@@ -169,12 +185,12 @@ public class LexerState<C extends GenericConsCell<C, T>, T extends ConsType, R e
 	
 	/**
 	 * Gets the most recently appended {@code ConsCell} from the output and returns it.<br>
-	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> {@code ConsCell}, just the last {@code ConsCell} that was
-	 * appended to the output.<br>
+	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> {@code ConsCell}, just the last {@code ConsCell} that was appended to the
+	 * output.<br>
 	 * In order to remove the {@code ConsCell} from the output, use {@link #popLast()}
 	 * 
-	 * @return the most recently appended {@code ConsCell} or {@code null} if no such {@code ConsCell} exists (this occurs if
-	 *         there has yet to be a match or all of the matched {@code ConsCells} were popped via {@link #popLast()})
+	 * @return the most recently appended {@code ConsCell} or {@code null} if no such {@code ConsCell} exists (this occurs if there has yet to be a
+	 *         match or all of the matched {@code ConsCells} were popped via {@link #popLast()})
 	 * @see #popLast()
 	 */
 	public C getLast() {
@@ -194,12 +210,12 @@ public class LexerState<C extends GenericConsCell<C, T>, T extends ConsType, R e
 	
 	/**
 	 * Removes the most recently appended {@code ConsCell} from the output and returns it.<br>
-	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> {@code ConsCell}, just the last {@code ConsCell} that was
-	 * appended to the output.<br>
+	 * <b>NOTE</b>: This is not necessarily the last <i>matched</i> {@code ConsCell}, just the last {@code ConsCell} that was appended to the
+	 * output.<br>
 	 * Use {@link #getLast()} to get the {@code ConsCell} without removing it.
 	 * 
-	 * @return the most recently appended {@code ConsCell} or {@code null} if no such {@code ConsCell} exists (this occurs if
-	 *         there has yet to be a match or all of the matched {@code ConsCells} were popped via {@link #popLast()})
+	 * @return the most recently appended {@code ConsCell} or {@code null} if no such {@code ConsCell} exists (this occurs if there has yet to be a
+	 *         match or all of the matched {@code ConsCells} were popped via {@link #popLast()})
 	 * @see #getLast()
 	 */
 	public C popLast() {
@@ -216,22 +232,21 @@ public class LexerState<C extends GenericConsCell<C, T>, T extends ConsType, R e
 	}
 	
 	/**
-	 * Constructs a new {@link LexerState} with the same fields but {@code null} cells and the descender set to
-	 * {@code descender}.
+	 * Constructs a new {@link LexerState} with the same fields but {@code null} cells and the descender set to {@code descender}.
 	 * 
 	 * @param descender
 	 *            the {@link Descender} that was encountered
 	 * @return a separate {@link LexerState} that is used to watch for the correct close cell
 	 */
 	public LexerState<C, T, R, D, L> descend(D descender) {
-		return new LexerState<>(getInput(), getHead(), descender, getLexer());
+		return new LexerState<>(getInput(), getHead(), descender, getLexer(), language);
 	}
 	
 	/**
-	 * This method returns true if any untokenized input remains after skipping over cells that are set to be ignored and the
-	 * next matched cell would not be an ascent cell.<br>
-	 * <b>Note</b>: This is <i>slow</i> - the {@link Lexer} already implicitly performs these checks before getting the next
-	 * cell, so if you are calling this regularly, consider re-working the logic behind your rules.
+	 * This method returns true if any untokenized input remains after skipping over cells that are set to be ignored and the next matched cell would
+	 * not be an ascent cell.<br>
+	 * <b>Note</b>: This is <i>slow</i> - the {@link Lexer} already implicitly performs these checks before getting the next cell, so if you are
+	 * calling this regularly, consider re-working the logic behind your rules.
 	 * 
 	 * @return {@code true} if there is still untokenized input at the current descent level, otherwise {@code false}.
 	 */
@@ -267,8 +282,8 @@ public class LexerState<C extends GenericConsCell<C, T>, T extends ConsType, R e
 	}
 	
 	/**
-	 * Pops the active {@link Language} from the {@link LexerState LexerState's} {@link Language} stack. This effectively
-	 * reverts to the last-active {@link Language}.
+	 * Pops the active {@link Language} from the {@link LexerState LexerState's} {@link Language} stack. This effectively reverts to the last-active
+	 * {@link Language}.
 	 * 
 	 * @return the popped {@link Language}
 	 */
@@ -277,8 +292,8 @@ public class LexerState<C extends GenericConsCell<C, T>, T extends ConsType, R e
 	}
 	
 	/**
-	 * Pushes the {@link Language} onto the {@link LexerState LexerState's} {@link Language} stack. This changes the
-	 * {@link LexerState LexerState's} active {@link Language} while also providing a change history.
+	 * Pushes the {@link Language} onto the {@link LexerState LexerState's} {@link Language} stack. This changes the {@link LexerState LexerState's}
+	 * active {@link Language} while also providing a change history.
 	 * 
 	 * @param language
 	 *            the new {@link Language} to use
@@ -288,10 +303,9 @@ public class LexerState<C extends GenericConsCell<C, T>, T extends ConsType, R e
 	}
 	
 	/**
-	 * Produces a shallow copy of this {@link LexerState} with the given {@link Language}. This method can be called from any
-	 * {@link LexerAction}.<br>
-	 * This method can only be used with custom descenders and even then only with the utmost care. Use of
-	 * {@link #pushLanguage(Language)} and {@link #popLanguage()} is highly recommended.
+	 * Produces a shallow copy of this {@link LexerState} with the given {@link Language}. This method can be called from any {@link LexerAction}.<br>
+	 * This method can only be used with custom descenders and even then only with the utmost care. Use of {@link #pushLanguage(Language)} and
+	 * {@link #popLanguage()} is highly recommended.
 	 * 
 	 * @param language
 	 *            the new {@link Language} to use
